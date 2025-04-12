@@ -20,7 +20,7 @@ function SigninPage() {
                     </div>
                     <button type="submit" class="btn">Login</button>
                     <div class="register-link">
-                        <p>Dont have an account? <Link to="https://form.jotform.com/251014306815447">Register</Link></p>
+                        <p>Don't have an account? <Link to="https://form.jotform.com/251014306815447">Register</Link></p>
                     </div>
                 </form>
             </div>
