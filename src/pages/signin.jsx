@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function SigninPage() {
     return (
         <div class="body-signin">
@@ -18,7 +20,7 @@ function SigninPage() {
                     </div>
                     <button type="submit" class="btn">Login</button>
                     <div class="register-link">
-                        <p>Dont have an account? <a href="#">Register</a></p>
+                        <p>Dont have an account? <Link to="https://form.jotform.com/251014306815447">Register</Link></p>
                     </div>
                 </form>
             </div>
