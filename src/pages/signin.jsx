@@ -18,7 +18,7 @@ function SigninPage() {
                     </div>
                     <button type="submit" class="btn">Login</button>
                     <div class="register-link">
-                        <p>Dont have an account? <a href="#">Register</a></p>
+                        <p>Don't have an account? <a href="#">Register</a></p>
                     </div>
                 </form>
             </div>
