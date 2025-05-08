@@ -1,21 +1,26 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Backend.Models
 {
     public class KhuyenMai
     {
         [Key]
-        [Required]
-        public int MaKhuyenMai { get; set; }
+        public int MaKM { get; set; }
 
         [Required]
-        public string Ten { get; set; }
+        [StringLength(100)]
+        public string TenKM { get; set; }
+
+        [StringLength(500)]
+        public string MoTa { get; set; }
 
         [Required]
-        public string Loai { get; set; }
+        public decimal PhanTramGiam { get; set; }
 
         [Required]
-        public decimal GiaTriGiam { get; set; }
+        public DateTime NgayBatDau { get; set; }
+
+        [Required]
+        public DateTime NgayKetThuc { get; set; }
     }
 }

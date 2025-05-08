@@ -14,7 +14,7 @@ namespace Backend.Models
         public NhanVien NhanVien { get; set; }
 
         [Required]
-        public DateTime Ngay { get; set; }
+        public DateTime NgayChamCong { get; set; }
 
         public TimeSpan GioVao { get; set; }
 

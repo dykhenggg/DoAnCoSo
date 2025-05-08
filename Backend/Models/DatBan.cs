@@ -8,24 +8,21 @@ namespace Backend.Models
         [Key]
         public int MaDatBan { get; set; }
 
-        [ForeignKey("KhachHang")]
-        public int MaKhachHang { get; set; }
+        [Required]
+        public int MaKH { get; set; }
 
-        [ForeignKey("Ban")]
+        [Required]
         public int MaBan { get; set; }
 
         [Required]
-        public DateTime ThoiGianDat { get; set; }
+        public DateTime NgayDat { get; set; }
 
-        [Required]
-        public int SoNguoi { get; set; }
+        public string GhiChu { get; set; }
 
-        [Required]
-        [StringLength(30)]
-        public string TrangThai { get; set; }
+        [ForeignKey("MaKH")]
+        public virtual KhachHang KhachHang { get; set; }
 
-        // Navigation properties
-        public KhachHang KhachHang { get; set; }
-        public Ban Ban { get; set; }
+        [ForeignKey("MaBan")]
+        public virtual Ban Ban { get; set; }
     }
 }

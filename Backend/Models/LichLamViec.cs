@@ -5,10 +5,8 @@ namespace Backend.Models
 {
     public class LichLamViec
     {
-
         [Key]
-        [Required]
-        public int Id { get; set; }
+        public int MaLichLamViec { get; set; }
 
         [Required]
         public int MaNhanVien { get; set; }
@@ -19,11 +17,12 @@ namespace Backend.Models
         [Required]
         public DateTime NgayLamViec { get; set; }
 
+        public string GhiChu { get; set; }
+
         [ForeignKey("MaNhanVien")]
-        public NhanVien NhanVien { get; set; }
+        public virtual NhanVien NhanVien { get; set; }
 
         [ForeignKey("MaCa")]
-        public CaLamViec CaLamViec { get; set; }
+        public virtual CaLamViec CaLamViec { get; set; }
     }
 }
-

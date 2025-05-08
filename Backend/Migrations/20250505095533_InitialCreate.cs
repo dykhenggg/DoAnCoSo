@@ -16,14 +16,28 @@ namespace Backend.Migrations
                 name: "Ban",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "integer", nullable: false)
+                    MaBan = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TenBan = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     SucChua = table.Column<int>(type: "integer", nullable: false),
                     TrangThai = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Ban", x => x.ID);
+                    table.PrimaryKey("PK_Ban", x => x.MaBan);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BoPhan",
+                columns: table => new
+                {
+                    MaBoPhan = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TenBoPhan = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BoPhan", x => x.MaBoPhan);
                 });
 
             migrationBuilder.CreateTable(
@@ -64,15 +78,35 @@ namespace Backend.Migrations
                 name: "KhuyenMai",
                 columns: table => new
                 {
-                    MaKhuyenMai = table.Column<int>(type: "integer", nullable: false)
+                    MaKM = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Ten = table.Column<string>(type: "text", nullable: false),
-                    Loai = table.Column<string>(type: "text", nullable: false),
-                    GiaTriGiam = table.Column<decimal>(type: "numeric", nullable: false)
+                    TenKM = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    MoTa = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    PhanTramGiam = table.Column<decimal>(type: "numeric", nullable: false),
+                    NgayBatDau = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    NgayKetThuc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_KhuyenMai", x => x.MaKhuyenMai);
+                    table.PrimaryKey("PK_KhuyenMai", x => x.MaKM);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "NhanVien",
+                columns: table => new
+                {
+                    MaNV = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    HoTen = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    SDT = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
+                    DiaChi = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    ChucVu = table.Column<string>(type: "text", nullable: false),
+                    TrangThai = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NhanVien", x => x.MaNV);
                 });
 
             migrationBuilder.CreateTable(
@@ -111,11 +145,10 @@ namespace Backend.Migrations
                 {
                     MaDatBan = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    MaKhachHang = table.Column<int>(type: "integer", nullable: false),
+                    MaKH = table.Column<int>(type: "integer", nullable: false),
                     MaBan = table.Column<int>(type: "integer", nullable: false),
-                    ThoiGianDat = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    SoNguoi = table.Column<int>(type: "integer", nullable: false),
-                    TrangThai = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false)
+                    NgayDat = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    GhiChu = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -124,11 +157,11 @@ namespace Backend.Migrations
                         name: "FK_DatBan_Ban_MaBan",
                         column: x => x.MaBan,
                         principalTable: "Ban",
-                        principalColumn: "ID",
+                        principalColumn: "MaBan",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DatBan_KhachHang_MaKhachHang",
-                        column: x => x.MaKhachHang,
+                        name: "FK_DatBan_KhachHang_MaKH",
+                        column: x => x.MaKH,
                         principalTable: "KhachHang",
                         principalColumn: "MaKhachHang",
                         onDelete: ReferentialAction.Cascade);
@@ -141,9 +174,9 @@ namespace Backend.Migrations
                     MaDonHang = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     KhachHangID = table.Column<int>(type: "integer", nullable: false),
-                    ThucDonID = table.Column<int>(type: "integer", nullable: false),
                     NgayDat = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    TrangThai = table.Column<string>(type: "text", nullable: false)
+                    TrangThai = table.Column<string>(type: "text", nullable: false),
+                    TongTien = table.Column<decimal>(type: "numeric(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -154,59 +187,75 @@ namespace Backend.Migrations
                         principalTable: "KhachHang",
                         principalColumn: "MaKhachHang",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_DonHang_ThucDon_ThucDonID",
-                        column: x => x.ThucDonID,
-                        principalTable: "ThucDon",
-                        principalColumn: "MaMon",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "NhanVien",
+                name: "CaLamViec",
                 columns: table => new
                 {
-                    MaNhanVien = table.Column<int>(type: "integer", nullable: false)
+                    MaCa = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    MaVaiTro = table.Column<int>(type: "integer", nullable: false),
-                    Ten = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    ChucVu = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    SoDienThoai = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
-                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    TenDangNhap = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    MatKhau = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false)
+                    GioBatDau = table.Column<TimeSpan>(type: "interval", nullable: false),
+                    GioKetThuc = table.Column<TimeSpan>(type: "interval", nullable: false),
+                    MaNhanVien = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NhanVien", x => x.MaNhanVien);
+                    table.PrimaryKey("PK_CaLamViec", x => x.MaCa);
                     table.ForeignKey(
-                        name: "FK_NhanVien_VaiTro_MaVaiTro",
-                        column: x => x.MaVaiTro,
-                        principalTable: "VaiTro",
-                        principalColumn: "MaVaiTro",
+                        name: "FK_CaLamViec_NhanVien_MaNhanVien",
+                        column: x => x.MaNhanVien,
+                        principalTable: "NhanVien",
+                        principalColumn: "MaNV",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "CT_DonHang",
+                name: "ChamCong",
                 columns: table => new
                 {
+                    MaChamCong = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    MaNhanVien = table.Column<int>(type: "integer", nullable: false),
+                    NgayChamCong = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    GioVao = table.Column<TimeSpan>(type: "interval", nullable: false),
+                    GioRa = table.Column<TimeSpan>(type: "interval", nullable: false),
+                    TrangThai = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChamCong", x => x.MaChamCong);
+                    table.ForeignKey(
+                        name: "FK_ChamCong_NhanVien_MaNhanVien",
+                        column: x => x.MaNhanVien,
+                        principalTable: "NhanVien",
+                        principalColumn: "MaNV",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ChiTietDonHang",
+                columns: table => new
+                {
+                    MaChiTiet = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     MaDonHang = table.Column<int>(type: "integer", nullable: false),
                     MaMon = table.Column<int>(type: "integer", nullable: false),
                     SoLuong = table.Column<int>(type: "integer", nullable: false),
-                    GiaTaiThoiDiem = table.Column<decimal>(type: "numeric", nullable: false)
+                    DonGia = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    ThanhTien = table.Column<decimal>(type: "numeric(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CT_DonHang", x => new { x.MaDonHang, x.MaMon });
+                    table.PrimaryKey("PK_ChiTietDonHang", x => x.MaChiTiet);
                     table.ForeignKey(
-                        name: "FK_CT_DonHang_DonHang_MaDonHang",
+                        name: "FK_ChiTietDonHang_DonHang_MaDonHang",
                         column: x => x.MaDonHang,
                         principalTable: "DonHang",
                         principalColumn: "MaDonHang",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CT_DonHang_ThucDon_MaMon",
+                        name: "FK_ChiTietDonHang_ThucDon_MaMon",
                         column: x => x.MaMon,
                         principalTable: "ThucDon",
                         principalColumn: "MaMon",
@@ -263,51 +312,7 @@ namespace Backend.Migrations
                         name: "FK_KhuyenMai_DonHang_KhuyenMai_MaKhuyenMai",
                         column: x => x.MaKhuyenMai,
                         principalTable: "KhuyenMai",
-                        principalColumn: "MaKhuyenMai",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CaLamViec",
-                columns: table => new
-                {
-                    MaCa = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    GioBatDau = table.Column<TimeSpan>(type: "interval", nullable: false),
-                    GioKetThuc = table.Column<TimeSpan>(type: "interval", nullable: false),
-                    MaNhanVien = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CaLamViec", x => x.MaCa);
-                    table.ForeignKey(
-                        name: "FK_CaLamViec_NhanVien_MaNhanVien",
-                        column: x => x.MaNhanVien,
-                        principalTable: "NhanVien",
-                        principalColumn: "MaNhanVien",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ChamCong",
-                columns: table => new
-                {
-                    MaChamCong = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    MaNhanVien = table.Column<int>(type: "integer", nullable: false),
-                    Ngay = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    GioVao = table.Column<TimeSpan>(type: "interval", nullable: false),
-                    GioRa = table.Column<TimeSpan>(type: "interval", nullable: false),
-                    TrangThai = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ChamCong", x => x.MaChamCong);
-                    table.ForeignKey(
-                        name: "FK_ChamCong_NhanVien_MaNhanVien",
-                        column: x => x.MaNhanVien,
-                        principalTable: "NhanVien",
-                        principalColumn: "MaNhanVien",
+                        principalColumn: "MaKM",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -315,15 +320,16 @@ namespace Backend.Migrations
                 name: "LichLamViec",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    MaLichLamViec = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     MaNhanVien = table.Column<int>(type: "integer", nullable: false),
                     MaCa = table.Column<int>(type: "integer", nullable: false),
-                    NgayLamViec = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    NgayLamViec = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    GhiChu = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LichLamViec", x => x.Id);
+                    table.PrimaryKey("PK_LichLamViec", x => x.MaLichLamViec);
                     table.ForeignKey(
                         name: "FK_LichLamViec_CaLamViec_MaCa",
                         column: x => x.MaCa,
@@ -334,7 +340,7 @@ namespace Backend.Migrations
                         name: "FK_LichLamViec_NhanVien_MaNhanVien",
                         column: x => x.MaNhanVien,
                         principalTable: "NhanVien",
-                        principalColumn: "MaNhanVien",
+                        principalColumn: "MaNV",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -349,8 +355,13 @@ namespace Backend.Migrations
                 column: "MaNhanVien");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CT_DonHang_MaMon",
-                table: "CT_DonHang",
+                name: "IX_ChiTietDonHang_MaDonHang",
+                table: "ChiTietDonHang",
+                column: "MaDonHang");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ChiTietDonHang_MaMon",
+                table: "ChiTietDonHang",
                 column: "MaMon");
 
             migrationBuilder.CreateIndex(
@@ -359,19 +370,14 @@ namespace Backend.Migrations
                 column: "MaBan");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DatBan_MaKhachHang",
+                name: "IX_DatBan_MaKH",
                 table: "DatBan",
-                column: "MaKhachHang");
+                column: "MaKH");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DonHang_KhachHangID",
                 table: "DonHang",
                 column: "KhachHangID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DonHang_ThucDonID",
-                table: "DonHang",
-                column: "ThucDonID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GiaoDichKho_MaDonHang",
@@ -397,21 +403,19 @@ namespace Backend.Migrations
                 name: "IX_LichLamViec_MaNhanVien",
                 table: "LichLamViec",
                 column: "MaNhanVien");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_NhanVien_MaVaiTro",
-                table: "NhanVien",
-                column: "MaVaiTro");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "BoPhan");
+
+            migrationBuilder.DropTable(
                 name: "ChamCong");
 
             migrationBuilder.DropTable(
-                name: "CT_DonHang");
+                name: "ChiTietDonHang");
 
             migrationBuilder.DropTable(
                 name: "DatBan");
@@ -424,6 +428,12 @@ namespace Backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "LichLamViec");
+
+            migrationBuilder.DropTable(
+                name: "VaiTro");
+
+            migrationBuilder.DropTable(
+                name: "ThucDon");
 
             migrationBuilder.DropTable(
                 name: "Ban");
@@ -444,13 +454,7 @@ namespace Backend.Migrations
                 name: "KhachHang");
 
             migrationBuilder.DropTable(
-                name: "ThucDon");
-
-            migrationBuilder.DropTable(
                 name: "NhanVien");
-
-            migrationBuilder.DropTable(
-                name: "VaiTro");
         }
     }
 }

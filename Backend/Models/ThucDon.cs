@@ -17,17 +17,17 @@ namespace Backend.Models
 
         [Required]
         [StringLength(100)] // Giới hạn độ dài tên món ăn
-        public string TenMon { get; set; }
+        public string? TenMon { get; set; }
 
         [Required]
         [Range(0, double.MaxValue, ErrorMessage = "Giá không thể âm.")] // Kiểm tra giá không âm
         public decimal Gia { get; set; }
 
         [Required]
-        public string LoaiMon { get; set; } // Loại món có thể là không null
+        public string? LoaiMon { get; set; } // Loại món có thể là không null
 
         [Required]
-        public string HinhAnh { get; set; } // Hình ảnh không cần nullable nếu bắt buộc
+        public string? HinhAnh { get; set; } // Hình ảnh không cần nullable nếu bắt buộc
 
         [Required]
         public TrangThaiMonAn TrangThai { get; set; } // Sử dụng enum để quản lý trạng thái

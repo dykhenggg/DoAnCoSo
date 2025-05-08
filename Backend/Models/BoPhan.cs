@@ -3,13 +3,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Backend.Models
 {
-    public class VaiTro
+    public class BoPhan
     {
         [Key]
-        [Required]
-        public int MaVaiTro { get; set; }
+        public int MaBoPhan { get; set; }
 
         [Required]
-        public string? TenVaiTro { get; set; }
+        [MaxLength(100)]
+        public string TenBoPhan { get; set; }
     }
 }

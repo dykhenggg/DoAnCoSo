@@ -18,7 +18,7 @@ namespace Backend.Data
         public DbSet<VaiTro> VaiTro { get; set; }
         public DbSet<NhanVien> NhanVien { get; set; }
         public DbSet<DonHang> DonHang { get; set; }
-        public DbSet<CT_DonHang> CT_DonHang { get; set; }
+        public DbSet<ChiTietDonHang> ChiTietDonHang { get; set; }
         public DbSet<KhuyenMai> KhuyenMai { get; set; }
         public DbSet<KhuyenMai_DonHang> KhuyenMai_DonHang { get; set; }
         public DbSet<CaLamViec> CaLamViec { get; set; }
@@ -27,17 +27,25 @@ namespace Backend.Data
         public DbSet<Kho> Kho { get; set; }
         public DbSet<GiaoDichKho> GiaoDichKho { get; set; }
         public DbSet<DatBan> DatBan { get; set; }
+        public DbSet<BoPhan> BoPhan { get; set; }
 
         // Tùy chỉnh nếu cần (mapping, relationship...)
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Composite key cho CT_DonHang
-            modelBuilder.Entity<CT_DonHang>()
-                .HasKey(c => new { c.MaDonHang, c.MaMon });
-
             // Composite key cho KhuyenMaiDonHang
             modelBuilder.Entity<KhuyenMai_DonHang>()
                 .HasKey(k => new { k.MaDonHang, k.MaKhuyenMai });
+
+            modelBuilder.Entity<ChiTietDonHang>()
+                .HasOne(c => c.DonHang)
+                .WithMany(d => d.ChiTietDonHang)
+                .HasForeignKey(c => c.MaDonHang)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<CaLamViec>()
+                .HasOne(c => c.NhanVien)
+                .WithMany(n => n.CaLamViec)
+                .HasForeignKey(c => c.MaNhanVien);
         }
     }
 }

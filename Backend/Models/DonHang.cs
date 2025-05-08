@@ -11,16 +11,22 @@ namespace Backend.Models
 
         [ForeignKey("KhachHang")]
         public int KhachHangID { get; set; }
-        public KhachHang KhachHang { get; set; }
-
-        [ForeignKey("ThucDon")]
-        public int ThucDonID { get; set; }
-        public ThucDon ThucDon { get; set; }
+        public virtual KhachHang KhachHang { get; set; }
 
         [Required]
         public DateTime NgayDat { get; set; }
 
         [Required]
-        public string TrangThai { get; set; } // e.g., "Đang xử lý", "Đã hoàn thành", "Đã hủy"
+        public string TrangThai { get; set; }
+
+        public virtual ICollection<ChiTietDonHang> ChiTietDonHang { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal TongTien { get; set; }
+
+        public DonHang()
+        {
+            ChiTietDonHang = new HashSet<ChiTietDonHang>();
+        }
     }
 }
