@@ -1,0 +1,41 @@
+.header {
+    height: 100vh; /* Full viewport height */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    background: url('/images/header_img.png') no-repeat center center; /* Center the background image */
+    background-size: cover; /* Cover the entire header area */
+    position: relative;
+}
+
+.header-contents {
+    text-align: center; /* Center text inside the header */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5vw;
+    animation: fade-in 2s;
+}
+
+.header-contents h2 {
+    font-size: max(4.5vw, 22px);
+    color: #fff;
+    font-weight: 500;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.header-contents button {
+    border: none;
+    color: #747474;
+    font-weight: 500;
+    padding: 1vw 2.3vw;
+    background-color: white;
+    font-size: max(1vw, 13px);
+    border-radius: 50px;
+    cursor: pointer;
+}
+
+.header-contents button:hover {
+    background-color: #f0f0f0;
+    transition: all 0.3s ease-in-out;
+}

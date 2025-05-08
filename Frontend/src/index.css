@@ -3,282 +3,31 @@
 @import "tailwindcss";
 
 * {
-  font-family: 'Boldonse', sans-serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-/*-----------------------Home page---------------------------*/
-header {
-  text-align: center;
-  width: 100%;
-  background-color: rgb(191 86 18);
-}
 
-header img {
-  width: 7rem;
-  height: 7rem;
-  border-radius: 50%;
-  padding: 1rem;
-  opacity: 0.8;
-}
-
-nav {
-  display: flex;
-  padding: 0 6%;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.nav-links {
-  flex: 1;
-  text-align: right;
-}
-
-.nav-links ul li {
-  list-style: none;
-  display: inline-block;
-  padding: 8px 12px;
-  position: relative;
-}
-
-nav a {
-  margin: 0 15px;
+a{
   text-decoration: none;
-  color: #cececb;
-  font-weight: bold;
-
+  color: inherit;
 }
-
-nav a:hover {
-  color: red;
-}
-
-.text-box {
-  margin-top: 20rem;
-  background-color: rgba(0, 0, 0, 0.5);
-  margin: 100vh 0;
-}
-
-.text-box h1 {
-  font-family: "Sour Gummy", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 600;
-  font-style: normal;
-  font-variation-settings: "wdth" 100;
-  font-size: 70px;
-  color: #fff;
-  text-align: center;
-}
-
-.text-box h2 {
-  font-size: 40px;
-  color: rgb(225, 7, 7);
-  text-align: center;
-}
-
-.text-box p {
-  font-size: 20px;
-  color: #fff;
-  margin: 20px 0;
-  text-align: left;
-  padding: 0 10%;
-
-}
-
-.text-box .btn {
-  text-decoration: none;
-  color: red;
-  font-size: 30px;
-}
-
-.text-box .btn::after {
-  content: '';
-  display: block;
-  width: 0%;
-  height: 5px;
-  background: yellow;
-  transition: width 0.5s;
-}
-
-.text-box .btn:hover::after {
-  width: 100%;
-}
-
 
 body {
-  background-image: url(images/allen-rad-9G_oJBKwi1c-unsplash.jpg);
-  background-size: cover;
-  background-position: center;
+   min-height: 100vh;
 }
 
-footer {
-  background-color: #333;
-  color: white;
-  padding: 20px 0;
-  text-align: center;
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-}
-
-.footer-section {
-  margin: 20px;
-  flex: 1;
-  min-width: 200px;
-}
-
-.footer-section h3 {
-  margin-bottom: 10px;
-}
-
-.social-icons a {
-  margin: 0 10px;
-  color: white;
-  text-decoration: none;
-}
-
-footer {
-  background-color: #333;
-  color: white;
-  padding: 20px 0;
-  text-align: left;
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-}
-
-footer h3 {
-  color: rgb(208, 9, 9);
-}
-
-.footer-section {
-  margin: 20px;
-  flex: 1;
-  min-width: 200px;
-}
-
-.footer-section h3 {
-  margin-bottom: 10px;
-}
-
-.social-icons a {
-  margin: 0 10px;
-  color: white;
-  text-decoration: none;
-}
-
-/*-----------------------Home page-----------------------------*/
-/*-----------------------Signin page---------------------------*/
-.body-signin {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: url(public/images/fastfood_background.jpg) no-repeat;
-  background-size: cover;
-  background-position: center;
-}
-
-.wrapper {
-  width: 420px;
-  background: transparent;
-  border: 2px solid rgba(255, 255, 255, .2);
-  backdrop-filter: blur(9px);
-  color: #fff;
-  border-radius: 12px;
-  padding: 30px 40px;
-}
-
-.wrapper h1 {
-  font-size: 36px;
-  text-align: center;
-}
-
-.wrapper .input-box {
-  position: relative;
+.app{
   width: 100%;
-  height: 50px;
-  margin: 30px 0;
+  max-width: auto;
 }
 
-.input-box input {
-  width: 100%;
-  height: 100%;
-  background: transparent;
-  border: none;
-  outline: none;
-  border: 2px solid rgba(255, 255, 255, .2);
-  border-radius: 40px;
-  font-size: 16px;
-  color: #fff;
-  padding: 20px 45px 20px 20px;
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
-.input-box input::placeholder {
-  color: #fff;
-}
-
-.input-box i {
-  position: absolute;
-  right: 20px;
-  top: 30%;
-  transform: translate(-50%);
-  font-size: 20px;
-
-}
-
-.wrapper .remember-forgot {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14.5px;
-  margin: -15px 0 15px;
-}
-
-.remember-forgot label input {
-  accent-color: #fff;
-  margin-right: 3px;
-
-}
-
-.remember-forgot a {
-  color: #fff;
-  text-decoration: none;
-
-}
-
-.remember-forgot a:hover {
-  text-decoration: underline;
-}
-
-.wrapper .btn {
-  width: 100%;
-  height: 45px;
-  background: #fff;
-  border: none;
-  outline: none;
-  border-radius: 40px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, .1);
-  cursor: pointer;
-  font-size: 16px;
-  color: #333;
-  font-weight: 600;
-}
-
-.wrapper .register-link {
-  font-size: 14.5px;
-  text-align: center;
-  margin: 20px 0 15px;
-
-}
-
-.register-link p a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.register-link p a:hover {
-  text-decoration: underline;
-}
-/*-----------------------Signin page---------------------------*/

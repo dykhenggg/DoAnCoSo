@@ -1,0 +1,56 @@
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: flex-start;
+  background-color: #323232;
+  padding: 20px;
+  color: tomato;
+  text-align: left;
+}
+
+.footer-section {
+  flex: 1;
+  min-width: 250px;
+  margin: 10px;
+}
+
+.footer-logo {
+  width: 70px;
+  border-radius: 50%;
+  margin-bottom: 10px; /* Add spacing between the logo and the heading */
+}
+
+.footer-section h3 {
+  color: rgb(255, 215, 0);
+  margin-bottom: 10px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.footer-section p {
+  margin: 5px 0;
+  font-size: 16px;
+}
+
+.footer-section span {
+  color: tomato;
+  font-weight: bold;
+}
+
+.footer-section a {
+  display: block;
+  color: tomato;
+  text-decoration: none;
+  margin: 5px 0;
+  transition: color 0.3s ease;
+  width: max-content;
+}
+
+.footer-section a:hover {
+  color: rgb(255, 215, 0);
+}
+
+iframe {
+  border-radius: 10px;
+}

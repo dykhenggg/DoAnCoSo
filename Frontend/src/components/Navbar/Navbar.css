@@ -1,0 +1,74 @@
+.logo {
+    height: 100px; 
+    cursor: pointer;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Space between logo and menu */
+    align-items: center; /* Center items vertically */
+    padding: 40px 20px; /* Add some horizontal padding */
+    height: 70px; /* Set a fixed height for the navbar */
+    background-color: #fff; /* Optional: Set a background color */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow */
+}
+
+.navbar-menu {
+    display: flex;
+    justify-content: center; /* Center the menu items horizontally */
+    align-items: center; /* Center the menu items vertically */
+    list-style: none; /* Remove default list styling */
+    gap: 20px; /* Add spacing between menu items */
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+}
+
+.navbar-menu li {
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333; /* Set text color */
+    transition: color 0.3s ease-in-out;
+}
+
+.navbar-menu li.active {
+    color: rgb(255, 191, 0); /* Highlight active menu item */
+}
+
+.navbar-menu li:hover {
+    color: rgb(255, 191, 0); /* Change color on hover */
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center; /* Center items vertically */
+    gap: 25px; /* Add spacing between icons and button */
+}
+
+.navbar-right img {
+    height: 24px; /* Adjust icon size */
+    cursor: pointer;
+}
+
+.navbar-right button {
+    border: none;
+    background-color: transparent;
+    color: black;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+
+.navbar button:hover {
+    background: black;
+    color: rgb(255, 191, 0);
+    transition: all 0.3s ease-in-out;
+}
+
+.navbar .active {
+    border-bottom: 2px solid black;
+    padding-bottom: 2px;
+    font-size: 24px;
+}
