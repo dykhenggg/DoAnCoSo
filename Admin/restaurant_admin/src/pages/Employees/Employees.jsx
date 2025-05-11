@@ -8,7 +8,6 @@ const Employees = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
 
-  // Sample employee data
   const employees = [
     {
       id: 1,
@@ -124,9 +123,6 @@ const Employees = () => {
     <div className="employees-container">
       <div className="employees-header">
         <h2>Employee List</h2>
-        <button className="btn-add" onClick={handleAdd}>
-          Add Employee
-        </button>
       </div>
       <table className="employees-table">
         <thead>
@@ -172,7 +168,13 @@ const Employees = () => {
         </tbody>
       </table>
 
-      {/* Add Modal */}
+      <div className="floating-add-button">
+        <button className="btn-add" onClick={handleAdd}>
+          Add Employee
+        </button>
+      </div>
+
+      {/* Cua so chuc nang add nhan vien */}
       {showAddModal && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -280,15 +282,23 @@ const Employees = () => {
                       value={newEmployee.emergencyContact}
                       onChange={handleInputChange}
                       required
+                      placeholder="Name (Relationship) - Phone"
                     />
                   </div>
                 </div>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn-cancel" onClick={() => setShowAddModal(false)}>
+                <button
+                  type="button"
+                  className="btn-cancel"
+                  onClick={() => setShowAddModal(false)}
+                >
                   Cancel
                 </button>
-                <button type="submit" className="btn-save">
+                <button
+                  type="submit"
+                  className="btn-save"
+                >
                   Add Employee
                 </button>
               </div>
@@ -297,7 +307,7 @@ const Employees = () => {
         </div>
       )}
 
-      {/* Details Modal */}
+      {/* cua so chuc nang xem chi tiet nhan vien */}
       {showDetailsModal && selectedEmployee && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -362,7 +372,7 @@ const Employees = () => {
         </div>
       )}
 
-      {/* Edit Modal */}
+      {/* cua so chuc nang sua thong tin nhan vien */}
       {showEditModal && selectedEmployee && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -487,7 +497,7 @@ const Employees = () => {
         </div>
       )}
 
-      {/* Delete Modal */}
+      {/* cua so chuc nang xoa nhan vien */}
       {showDeleteModal && selectedEmployee && (
         <div className="modal-overlay">
           <div className="modal-content delete-modal">
