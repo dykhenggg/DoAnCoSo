@@ -4,10 +4,14 @@ import { StoreContext } from '../../Context/StoreContext'
 import { food_list } from '../../assets/assets'
 import { useNavigate } from 'react-router-dom'
 
-const Cart = () => {
+const Cart = ({ setShowLogin }) => {
+  const { cartItems, foodlist, removeFromCart, getTotalCartAmount, isLoggedIn } = useContext(StoreContext)
+  const navigate = useNavigate();
 
-  const { cartItems, foodlist, removeFromCart, getTotalCartAmount } = useContext(StoreContext)
-  const navigate = useNavigate(); 
+  if (!isLoggedIn) {
+    setShowLogin(true);
+    return null;
+  }
 
   return (
     <div className='cart'>
@@ -36,7 +40,6 @@ const Cart = () => {
                 </div>
                 <hr />
               </div>
-
             )
           }
         })}

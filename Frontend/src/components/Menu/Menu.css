@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    margin: 0px 40px;
 }
 
 .menu h1{
@@ -15,7 +16,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 30px;
+    gap: 10px;
     text-align: center;
     margin: 20px 30px;
     overflow-x: scroll ;
