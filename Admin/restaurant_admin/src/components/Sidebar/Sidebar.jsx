@@ -1,10 +1,15 @@
 import React from 'react'
 import './Sidebar.css'
 import { assets } from '../../assets/assets'
-import {assets1} from '../../assets/assets1'
+import { assets1 } from '../../assets/assets1'
 import { NavLink } from 'react-router-dom'
 
 const Sidebar = () => {
+  const handleLogout = () => {
+   
+    window.location.reload();
+  };
+
   return (
     <div className="sidebar">
         <div className="sidebar-options">
@@ -26,17 +31,16 @@ const Sidebar = () => {
             </NavLink>
             <NavLink to='/shifts' className="sidebar-option">
                 <img src={assets.order_icon} alt="" />
-                <p>Employees</p>
+                <p>Shifts</p>
             </NavLink>
             <NavLink to='/storage' className="sidebar-option">
                 <img src={assets.order_icon} alt="" />
-                <p>Employees</p>
+                <p>Storage</p>
             </NavLink>
-            <NavLink to='/logout' className="sidebar-option">
+            <div className="sidebar-option" onClick={handleLogout}>
                 <img src={assets1.logout_icon} alt="" />
                 <p>Logout</p>
-            </NavLink>
-
+            </div>
         </div>
     </div>
   )
