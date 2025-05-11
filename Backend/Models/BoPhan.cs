@@ -10,6 +10,6 @@ namespace Backend.Models
 
         [Required]
         [MaxLength(100)]
-        public string TenBoPhan { get; set; }
+        public string TenBoPhan { get; set; } = string.Empty;
     }
 }

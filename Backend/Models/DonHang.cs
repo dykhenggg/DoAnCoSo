@@ -1,28 +1,46 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Backend.Models.Enums;
 
 namespace Backend.Models
 {
-    public class DonHang
+    public enum TrangThaiDonHang
+    {
+        DangChuanBi = 0,
+        DangPhucVu = 1,
+        DaThanhToan = 2,
+        DaHuy = 3
+    }
+
+    public class DonHang : BaseEntity
     {
         [Key]
-        [Required]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int MaDonHang { get; set; }
 
-        [ForeignKey("KhachHang")]
-        public int KhachHangID { get; set; }
-        public virtual KhachHang KhachHang { get; set; }
+        [Required]
+        public int MaKhachHang { get; set; }
 
         [Required]
-        public DateTime NgayDat { get; set; }
+        public DateTime NgayDat { get; set; } = DateTime.Now;
 
-        [Required]
-        public string TrangThai { get; set; }
+        public DateTime? ThoiGianThanhToan { get; set; }
 
-        public virtual ICollection<ChiTietDonHang> ChiTietDonHang { get; set; }
-
-        [Column(TypeName = "decimal(18,2)")]
+        [Range(0, double.MaxValue)]
         public decimal TongTien { get; set; }
+
+        public TrangThaiDonHang TrangThai { get; set; } = TrangThaiDonHang.DangChuanBi;
+
+        [Required]
+        public int MaNV { get; set; }
+
+        public string? GhiChu { get; set; }
+
+        // Navigation properties
+        [ForeignKey("MaKhachHang")]
+        public virtual KhachHang KhachHang { get; set; } = null!;
+        public virtual ICollection<ChiTietDonHang> ChiTietDonHang { get; set; } = new List<ChiTietDonHang>();
+        public virtual ICollection<KhuyenMai_DonHang> KhuyenMai_DonHang { get; set; } = new List<KhuyenMai_DonHang>();
 
         public DonHang()
         {

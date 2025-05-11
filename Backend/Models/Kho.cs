@@ -10,29 +10,16 @@ namespace Backend.Models
 
         [Required]
         [StringLength(100)]
-        public string TenNguyenLieu { get; set; }
-
-        [Required]
-        [StringLength(50)]
-        public string DanhMuc { get; set; }
-
-        [Required]
-        [StringLength(20)]
-        public string DonVi { get; set; }
+        public string TenNguyenLieu { get; set; } = string.Empty;
 
         [Required]
         [Range(0, double.MaxValue)]
-        public decimal SoLuongHienTai { get; set; }
-
-        [Required]
-        [Range(0, double.MaxValue)]
-        public decimal SoLuongToiThieu { get; set; }
-
-        [Required]
-        public DateTime NgayNhap { get; set; }
+        public decimal SoLuongTonKho { get; set; }
 
         [Required]
         [StringLength(20)]
-        public string TrangThai { get; set; }
+        public string DonViTinh { get; set; } = string.Empty;
+
+        public virtual ICollection<GiaoDichKho> GiaoDichKhos { get; set; } = new List<GiaoDichKho>();
     }
 }

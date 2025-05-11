@@ -130,3 +130,6 @@ D:\ĐỒ ÁN CƠ SỞ\DoAnCoSo\Backend\obj\Debug\net9.0\refint\Back-end.dll
 D:\ĐỒ ÁN CƠ SỞ\DoAnCoSo\Backend\obj\Debug\net9.0\Back-end.pdb
 D:\ĐỒ ÁN CƠ SỞ\DoAnCoSo\Backend\obj\Debug\net9.0\Back-end.genruntimeconfig.cache
 D:\ĐỒ ÁN CƠ SỞ\DoAnCoSo\Backend\obj\Debug\net9.0\ref\Back-end.dll
+D:\ĐỒ ÁN CƠ SỞ\DoAnCoSo\Backend\bin\Debug\net9.0\Back-end.staticwebassets.runtime.json
+D:\ĐỒ ÁN CƠ SỞ\DoAnCoSo\Backend\bin\Debug\net9.0\DotNetEnv.dll
+D:\ĐỒ ÁN CƠ SỞ\DoAnCoSo\Backend\bin\Debug\net9.0\Sprache.dll

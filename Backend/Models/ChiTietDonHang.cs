@@ -9,25 +9,24 @@ namespace Backend.Models
         public int MaChiTiet { get; set; }
 
         [Required]
+        [ForeignKey("DonHang")]
         public int MaDonHang { get; set; }
 
         [Required]
+        [ForeignKey("ThucDon")]
         public int MaMon { get; set; }
 
         [Required]
+        [Range(1, int.MaxValue)]
         public int SoLuong { get; set; }
 
         [Required]
-        [Column(TypeName = "decimal(18,2)")]
+        [Range(0, double.MaxValue)]
         public decimal DonGia { get; set; }
 
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal ThanhTien { get; set; }
+        public string GhiChu { get; set; } = string.Empty;
 
-        [ForeignKey("MaDonHang")]
-        public virtual DonHang DonHang { get; set; }
-
-        [ForeignKey("MaMon")]
-        public virtual ThucDon ThucDon { get; set; }
+        public virtual DonHang DonHang { get; set; } = null!;
+        public virtual ThucDon ThucDon { get; set; } = null!;
     }
 }

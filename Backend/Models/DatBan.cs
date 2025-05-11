@@ -17,12 +17,12 @@ namespace Backend.Models
         [Required]
         public DateTime NgayDat { get; set; }
 
-        public string GhiChu { get; set; }
+        public string GhiChu { get; set; } = string.Empty;
 
         [ForeignKey("MaKH")]
-        public virtual KhachHang KhachHang { get; set; }
+        public virtual KhachHang KhachHang { get; set; } = null!;
 
         [ForeignKey("MaBan")]
-        public virtual Ban Ban { get; set; }
+        public virtual Ban Ban { get; set; } = null!;
     }
 }

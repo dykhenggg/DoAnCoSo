@@ -6,18 +6,17 @@ namespace Backend.Models
     public class KhachHang
     {
         [Key]
-        [Required]
-        public int MaKhachHang { get; set; }
+        public int MaKH { get; set; }
 
         [Required]
-        public string HoTen { get; set; } 
+        [StringLength(100)]
+        public string HoTen { get; set; } = string.Empty;
 
-        [Phone]
         [Required]
-        public string SoDienThoai { get; set; } 
+        [StringLength(15)]
+        public string SoDienThoai { get; set; } = string.Empty;
 
-        [EmailAddress]
-        [Required]
-        public string? Email { get; set; }
+        public virtual ICollection<DatBan> DatBan { get; set; } = new List<DatBan>();
+        public virtual ICollection<DonHang> DonHang { get; set; } = new List<DonHang>();
     }
 }

@@ -11,7 +11,7 @@ namespace Backend.Models
         [ForeignKey("NhanVien")]
         public int MaNhanVien { get; set; }
 
-        public NhanVien NhanVien { get; set; }
+        public NhanVien NhanVien { get; set; } = null!;
 
         [Required]
         public DateTime NgayChamCong { get; set; }
@@ -21,6 +21,8 @@ namespace Backend.Models
         public TimeSpan GioRa { get; set; }
 
         [Required]
-        public string TrangThai { get; set; }
+        public string TrangThai { get; set; } = string.Empty;
+
+        public DateTime ThoiGian { get; set; }
     }
 }

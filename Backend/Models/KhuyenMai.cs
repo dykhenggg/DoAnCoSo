@@ -9,10 +9,10 @@ namespace Backend.Models
 
         [Required]
         [StringLength(100)]
-        public string TenKM { get; set; }
+        public string TenKM { get; set; } = string.Empty;
 
         [StringLength(500)]
-        public string MoTa { get; set; }
+        public string MoTa { get; set; } = string.Empty;
 
         [Required]
         public decimal PhanTramGiam { get; set; }
