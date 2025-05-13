@@ -3,7 +3,6 @@ import "./Add.css";
 import { assets } from "../../assets/assets";
 import { toast } from "react-toastify"; // Thêm toast để hiển thị thông báo
 import { useNavigate } from "react-router-dom";
-console.log("sada");
 const Add = () => {
   const url = "http://localhost:5078"; // Use HTTP instead of HTTPS
   const [image, setImage] = useState(null);
