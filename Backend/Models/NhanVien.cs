@@ -9,28 +9,34 @@ namespace Backend.Models
 
         [Required]
         [StringLength(100)]
-        public string HoTen { get; set; }
+        public string HoTen { get; set; } = string.Empty;
 
         [Required]
         [StringLength(50)]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         [Required]
         [StringLength(15)]
-        public string SDT { get; set; }
+        public string SDT { get; set; } = string.Empty;
 
         [StringLength(200)]
-        public string DiaChi { get; set; }
+        public string DiaChi { get; set; } = string.Empty;
 
         [Required]
-        public string ChucVu { get; set; }
+        public string ChucVu { get; set; } = string.Empty;
 
         [Required]
         [StringLength(50)]
-        public string TrangThai { get; set; }
+        public string TrangThai { get; set; } = "Đang làm việc";
+
+        [Required]
+        public string MatKhau { get; set; } = string.Empty;
+
+        public int MaBoPhan { get; set; }
+        public virtual BoPhan BoPhan { get; set; } = null!;
 
         // Collection navigation property
-        public virtual ICollection<CaLamViec> CaLamViec { get; set; }
-        public virtual ICollection<ChamCong> ChamCong { get; set; }
+        public virtual ICollection<CaLamViec> CaLamViec { get; set; } = new List<CaLamViec>();
+        public virtual ICollection<ChamCong> ChamCong { get; set; } = new List<ChamCong>();
     }
 }

@@ -11,13 +11,13 @@ namespace Backend.Models
 
         [ForeignKey("KhachHang")]
         public int KhachHangID { get; set; }
-        public virtual KhachHang KhachHang { get; set; }
+        public virtual KhachHang? KhachHang { get; set; }
 
         [Required]
         public DateTime NgayDat { get; set; }
 
         [Required]
-        public string TrangThai { get; set; }
+        public string TrangThai { get; set; } = "Chờ xác nhận";
 
         public virtual ICollection<ChiTietDonHang> ChiTietDonHang { get; set; }
 

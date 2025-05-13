@@ -10,6 +10,8 @@ namespace Backend.Models
 
         [Required]
         [MaxLength(100)]
-        public string TenBoPhan { get; set; }
+        public string TenBoPhan { get; set; } = string.Empty;
+
+        public virtual ICollection<NhanVien> NhanVien { get; set; } = new List<NhanVien>();
     }
 }

@@ -2,81 +2,60 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
 using Backend.Models;
+using Backend.Services;
+using Backend.DTOs;
+using Backend.Models.Enums;
 
 namespace Backend.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class NhanVienController : ControllerBase
     {
         private readonly RestaurantDbContext _context;
-        public NhanVienController(RestaurantDbContext context) => _context = context;
+        private readonly AuthService _authService;
+
+        public NhanVienController(RestaurantDbContext context, AuthService authService)
+        {
+            _context = context;
+            _authService = authService;
+        }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<NhanVien>>> Get() => 
-            await _context.NhanVien
-                .Include(n => n.CaLamViec)
+        public async Task<ActionResult<IEnumerable<NhanVien>>> GetAll()
+        {
+            return await _context.NhanVien
+                .Include(n => n.BoPhan)
+                .Where(n => n.TrangThai == "Đang làm việc")
                 .ToListAsync();
+        }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<NhanVien>> Get(int id)
+        [HttpPost("login")]
+        public async Task<ActionResult> Login(LoginDTO dto)
         {
             var nhanVien = await _context.NhanVien
-                .Include(n => n.CaLamViec)
-                .FirstOrDefaultAsync(n => n.MaNV == id);
-            return nhanVien == null ? NotFound() : nhanVien;
+                .FirstOrDefaultAsync(n => n.Email == dto.Email);
+
+            if (nhanVien == null || !_authService.VerifyPassword(dto.Password, nhanVien.MatKhau))
+                return Unauthorized("Email hoặc mật khẩu không đúng");
+
+            if (nhanVien.ChucVu == UserRoles.KhachHang)
+                return Unauthorized("Tài khoản không có quyền truy cập");
+
+            var token = _authService.GenerateJwtToken(nhanVien);
+            return Ok(new { token, nhanVien });
         }
 
-        [HttpPost]
-        public async Task<ActionResult<NhanVien>> Post(NhanVien nhanVien)
-        {
-            _context.NhanVien.Add(nhanVien);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = nhanVien.MaNV }, nhanVien);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, NhanVien nhanVien)
-        {
-            if (id != nhanVien.MaNV) return BadRequest();
-            _context.Entry(nhanVien).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpPut("{id}/trangthai")]
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] string trangThai)
         {
             var nhanVien = await _context.NhanVien.FindAsync(id);
             if (nhanVien == null) return NotFound();
-            _context.NhanVien.Remove(nhanVien);
+
+            nhanVien.TrangThai = trangThai;
             await _context.SaveChangesAsync();
+
             return NoContent();
-        }
-
-        [HttpGet("by-role")]
-        public async Task<ActionResult<IEnumerable<NhanVien>>> GetByRole(string role)
-        {
-            return await _context.NhanVien
-                .Where(n => n.ChucVu == role)
-                .ToListAsync();
-        }
-
-        [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<NhanVien>>> Search(string keyword)
-        {
-            return await _context.NhanVien
-                .Where(n => n.HoTen.Contains(keyword) || n.Email.Contains(keyword))
-                .ToListAsync();
-        }
-
-        [HttpGet("available")]
-        public async Task<ActionResult<IEnumerable<NhanVien>>> GetAvailable(DateTime date)
-        {
-            return await _context.NhanVien
-                .Include(n => n.CaLamViec)
-                .Where(n => n.TrangThai == "Đang làm")
-                .ToListAsync();
         }
     }
 }

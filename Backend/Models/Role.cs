@@ -10,6 +10,10 @@ namespace Backend.Models
         public int MaVaiTro { get; set; }
 
         [Required]
-        public string? TenVaiTro { get; set; }
+        [StringLength(50)]
+        public string TenVaiTro { get; set; } = string.Empty;
+
+        [StringLength(200)]
+        public string MoTa { get; set; } = string.Empty;
     }
 }

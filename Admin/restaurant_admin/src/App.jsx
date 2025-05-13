@@ -1,24 +1,24 @@
-import React, {useState} from 'react'
-import Navbar from './components/Navbar/Navbar'
-import Sidebar from './components/Sidebar/Sidebar'
-import { Route, Routes } from 'react-router-dom'
-import Add from './pages/Add/Add'
-import List from './pages/List/List'
-import Order from './pages/Order/Order'
-import Employees from './pages/Employees/Employees'
-import Shifts from './pages/Shifts/Shifts'
-import Storage from './pages/Storage/Storage'
-import Login from './components/Login/Login'
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState } from "react";
+import Navbar from "./components/Navbar/Navbar";
+import Sidebar from "./components/Sidebar/Sidebar";
+import { Route, Routes } from "react-router-dom";
+import Add from "./pages/Add/Add";
+import List from "./pages/List/List";
+import Order from "./pages/Order/Order";
+import Employees from "./pages/Employees/Employees";
+import Shifts from "./pages/Shifts/Shifts";
+import Storage from "./pages/Storage/Storage";
+import Login from "./components/Login/Login";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Menu from "./pages/Menu/Menu";
 
 const App = () => {
-
   const [showLogin, setShowLogin] = useState(true);
   return (
-    <div> 
+    <div>
       <ToastContainer />
-      {showLogin?<Login setShowLogin={setShowLogin} />:<></>}
+      {showLogin ? <Login setShowLogin={setShowLogin} /> : <></>}
       <Navbar />
       <hr />
       <div className="app-content">
@@ -27,13 +27,14 @@ const App = () => {
           <Route path="/add" element={<Add />} />
           <Route path="/foodlist" element={<List />} />
           <Route path="/order" element={<Order />} />
-          <Route path='/employees' element={<Employees />} />
+          <Route path="/employees" element={<Employees />} />
           <Route path="/shifts" element={<Shifts />} />
           <Route path="/storage" element={<Storage />} />
+          <Route path="/menu" element={<Menu />} />
         </Routes>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

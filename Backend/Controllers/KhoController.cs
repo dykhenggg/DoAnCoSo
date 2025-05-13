@@ -2,79 +2,69 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
 using Backend.Models;
+using Backend.DTOs;
 
 namespace Backend.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class KhoController : ControllerBase
     {
         private readonly RestaurantDbContext _context;
-        public KhoController(RestaurantDbContext context) => _context = context;
+
+        public KhoController(RestaurantDbContext context)
+        {
+            _context = context;
+        }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Kho>>> Get() => 
-            await _context.Kho.ToListAsync();
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Kho>> Get(int id)
+        public async Task<ActionResult<IEnumerable<Kho>>> GetAll()
         {
-            var kho = await _context.Kho.FindAsync(id);
-            return kho == null ? NotFound() : kho;
+            return await _context.Kho
+                .OrderBy(k => k.DanhMuc)
+                .ToListAsync();
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Kho>> Post(Kho kho)
-        {
-            _context.Kho.Add(kho);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = kho.MaNguyenLieu }, kho);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, Kho kho)
-        {
-            if (id != kho.MaNguyenLieu) return BadRequest();
-            _context.Entry(kho).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var kho = await _context.Kho.FindAsync(id);
-            if (kho == null) return NotFound();
-            _context.Kho.Remove(kho);
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
-
-        [HttpGet("low-stock")]
-        public async Task<ActionResult<IEnumerable<Kho>>> GetLowStock()
+        [HttpGet("canbaotoncao")]
+        public async Task<ActionResult<IEnumerable<Kho>>> GetSapHet()
         {
             return await _context.Kho
                 .Where(k => k.SoLuongHienTai <= k.SoLuongToiThieu)
+                .OrderBy(k => k.SoLuongHienTai)
                 .ToListAsync();
         }
 
-        [HttpPut("update-stock")]
-        public async Task<IActionResult> UpdateStock(int id, decimal quantity)
+        [HttpPost("nhapkho")]
+        public async Task<ActionResult> NhapKho(GiaoDichKhoDTO dto)
         {
-            var kho = await _context.Kho.FindAsync(id);
-            if (kho == null) return NotFound();
-            
-            kho.SoLuongHienTai = quantity;
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var nguyenLieu = await _context.Kho.FindAsync(dto.MaNguyenLieu);
+                if (nguyenLieu == null) return NotFound();
 
-        [HttpGet("by-category")]
-        public async Task<ActionResult<IEnumerable<Kho>>> GetByCategory(string category)
-        {
-            return await _context.Kho
-                .Where(k => k.DanhMuc == category)
-                .ToListAsync();
+                nguyenLieu.SoLuongHienTai += dto.SoLuong;
+                
+                var giaoDich = new GiaoDichKho
+                {
+                    MaNguyenLieu = dto.MaNguyenLieu,
+                    SoLuong = dto.SoLuong,
+                    Loai = "NhapKho",
+                    NgayGio = DateTime.UtcNow,
+                    LyDo = dto.GhiChu ?? string.Empty
+                };
+
+                _context.GiaoDichKho.Add(giaoDich);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return Ok(giaoDich);
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
     }
 }

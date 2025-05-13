@@ -17,12 +17,22 @@ namespace Backend.Models
         [Required]
         public DateTime NgayDat { get; set; }
 
-        public string GhiChu { get; set; }
+        [Required]
+        public DateTime ThoiGianBatDau { get; set; }
+
+        [Required]
+        public DateTime ThoiGianKetThuc { get; set; }
+
+        [Required]
+        [Range(1, 20)]
+        public int SoNguoi { get; set; }
+
+        public string? GhiChu { get; set; }
 
         [ForeignKey("MaKH")]
-        public virtual KhachHang KhachHang { get; set; }
+        public virtual KhachHang KhachHang { get; set; } = null!;
 
-        [ForeignKey("MaBan")]
-        public virtual Ban Ban { get; set; }
+        [ForeignKey("MaBan")] 
+        public virtual Ban Ban { get; set; } = null!;
     }
 }

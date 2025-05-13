@@ -2,51 +2,101 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
 using Backend.Models;
+using Backend.DTOs;
 
 namespace Backend.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class KhachHangController : ControllerBase
     {
         private readonly RestaurantDbContext _context;
-        public KhachHangController(RestaurantDbContext context) => _context = context;
+
+        public KhachHangController(RestaurantDbContext context)
+        {
+            _context = context;
+        }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<KhachHang>>> Get() => await _context.KhachHang.ToListAsync();
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<KhachHang>> Get(int id)
+        public async Task<ActionResult<IEnumerable<KhachHang>>> GetAll()
         {
-            var item = await _context.KhachHang.FindAsync(id);
-            return item == null ? NotFound() : item;
+            return await _context.KhachHang
+                .Include(k => k.DonHang)
+                .OrderByDescending(k => k.MaKhachHang)
+                .ToListAsync();
+        }
+
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<KhachHang>>> Search([FromQuery] string? keyword)
+        {
+            var query = _context.KhachHang.AsQueryable();
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                query = query.Where(k => k.HoTen.Contains(keyword) || 
+                                       k.SoDienThoai.Contains(keyword) ||
+                                       k.Email.Contains(keyword));
+            }
+
+            return await query
+                .Include(k => k.DonHang)
+                .OrderByDescending(k => k.MaKhachHang)
+                .ToListAsync();
         }
 
         [HttpPost]
-        public async Task<ActionResult<KhachHang>> Post(KhachHang item)
+        public async Task<ActionResult<KhachHang>> Create(KhachHangDTO dto)
         {
-            _context.KhachHang.Add(item);
+            if (await _context.KhachHang.AnyAsync(k => k.SoDienThoai == dto.SoDienThoai))
+                return BadRequest("Số điện thoại đã tồn tại");
+
+            var khachHang = new KhachHang
+            {
+                HoTen = dto.HoTen,
+                SoDienThoai = dto.SoDienThoai,
+                Email = dto.Email
+            };
+
+            _context.KhachHang.Add(khachHang);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = item.MaKhachHang }, item);
+
+            return CreatedAtAction(nameof(GetAll), new { id = khachHang.MaKhachHang }, khachHang);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, KhachHang item)
+        public async Task<IActionResult> Update(int id, KhachHangDTO dto)
         {
-            if (id != item.MaKhachHang) return BadRequest();
-            _context.Entry(item).State = EntityState.Modified;
+            var khachHang = await _context.KhachHang.FindAsync(id);
+            if (khachHang == null) return NotFound();
+
+            // Kiểm tra trùng SĐT khi cập nhật
+            if (await _context.KhachHang.AnyAsync(k => 
+                k.MaKhachHang != id && k.SoDienThoai == dto.SoDienThoai))
+                return BadRequest("Số điện thoại đã tồn tại");
+
+            khachHang.HoTen = dto.HoTen;
+            khachHang.SoDienThoai = dto.SoDienThoai;
+            khachHang.Email = dto.Email;
+
             await _context.SaveChangesAsync();
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpGet("lichsu/{id}")]
+        public async Task<ActionResult<object>> GetLichSu(int id)
         {
-            var item = await _context.KhachHang.FindAsync(id);
-            if (item == null) return NotFound();
-            _context.KhachHang.Remove(item);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            var khachHang = await _context.KhachHang
+                .Include(k => k.DonHang)
+                .FirstOrDefaultAsync(k => k.MaKhachHang == id);
+
+            if (khachHang == null) return NotFound();
+
+            return Ok(new
+            {
+                KhachHang = khachHang,
+                TongChiTieu = khachHang.DonHang?.Sum(d => d.TongTien) ?? 0,
+                SoDonHang = khachHang.DonHang?.Count ?? 0
+            });
         }
     }
 }

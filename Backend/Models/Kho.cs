@@ -10,15 +10,15 @@ namespace Backend.Models
 
         [Required]
         [StringLength(100)]
-        public string TenNguyenLieu { get; set; }
+        public string TenNguyenLieu { get; set; } = string.Empty;
 
         [Required]
         [StringLength(50)]
-        public string DanhMuc { get; set; }
+        public string DanhMuc { get; set; } = string.Empty;
 
         [Required]
         [StringLength(20)]
-        public string DonVi { get; set; }
+        public string DonVi { get; set; } = string.Empty;
 
         [Required]
         [Range(0, double.MaxValue)]
@@ -33,6 +33,6 @@ namespace Backend.Models
 
         [Required]
         [StringLength(20)]
-        public string TrangThai { get; set; }
+        public string TrangThai { get; set; } = "Active";
     }
 }

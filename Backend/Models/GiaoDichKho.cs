@@ -16,7 +16,7 @@ namespace Backend.Models
 
         [Required]
         [StringLength(20)]
-        public string Loai { get; set; } // "NhapKho" | "XuatKho" | "HuyHang"...
+        public string Loai { get; set; } = string.Empty; // "NhapKho" | "XuatKho" | "HuyHang"...
 
         [Required]
         [Range(0, double.MaxValue)]
@@ -26,10 +26,10 @@ namespace Backend.Models
         public DateTime NgayGio { get; set; }
 
         [StringLength(255)]
-        public string LyDo { get; set; }
+        public string LyDo { get; set; } = string.Empty;
 
         // Navigation properties
-        public Kho Kho { get; set; }
-        public DonHang DonHang { get; set; }
+        public virtual Kho? Kho { get; set; }
+        public virtual DonHang? DonHang { get; set; }
     }
 }

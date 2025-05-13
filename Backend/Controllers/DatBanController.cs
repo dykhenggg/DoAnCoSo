@@ -2,78 +2,83 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
 using Backend.Models;
+using Backend.DTOs;
 
 namespace Backend.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class DatBanController : ControllerBase
     {
         private readonly RestaurantDbContext _context;
-        public DatBanController(RestaurantDbContext context) => _context = context;
+
+        public DatBanController(RestaurantDbContext context)
+        {
+            _context = context;
+        }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DatBan>>> Get() => 
-            await _context.DatBan
-                .Include(d => d.KhachHang)
-                .Include(d => d.Ban)
-                .ToListAsync();
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<DatBan>> Get(int id)
+        public async Task<ActionResult<IEnumerable<DatBan>>> GetAll()
         {
-            var datBan = await _context.DatBan
-                .Include(d => d.KhachHang)
+            return await _context.DatBan
                 .Include(d => d.Ban)
-                .FirstOrDefaultAsync(d => d.MaDatBan == id);
-            return datBan == null ? NotFound() : datBan;
+                .Include(d => d.KhachHang)
+                .OrderByDescending(d => d.NgayDat)
+                .ToListAsync();
         }
 
         [HttpPost]
-        public async Task<ActionResult<DatBan>> Post(DatBan datBan)
+        public async Task<ActionResult<DatBan>> Create(DatBanDTO dto)
         {
-            _context.DatBan.Add(datBan);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = datBan.MaDatBan }, datBan);
-        }
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // Kiểm tra trùng lịch
+                var coTrungLich = await _context.DatBan
+                    .AnyAsync(d => d.MaBan == dto.MaBan &&
+                                  d.ThoiGianBatDau < dto.ThoiGianKetThuc &&
+                                  d.ThoiGianKetThuc > dto.ThoiGianBatDau);
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, DatBan datBan)
-        {
-            if (id != datBan.MaDatBan) return BadRequest();
-            _context.Entry(datBan).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return NoContent();
+                if (coTrungLich)
+                    return BadRequest("Bàn đã được đặt trong thời gian này");
+
+                var datBan = new DatBan
+                {
+                    MaBan = dto.MaBan,
+                    MaKH = dto.MaKH,
+                    NgayDat = DateTime.UtcNow,
+                    ThoiGianBatDau = dto.ThoiGianBatDau,
+                    ThoiGianKetThuc = dto.ThoiGianKetThuc,
+                    SoNguoi = dto.SoNguoi,
+                    GhiChu = dto.GhiChu
+                };
+
+                _context.DatBan.Add(datBan);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return CreatedAtAction(nameof(GetAll), new { id = datBan.MaDatBan }, datBan);
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Cancel(int id)
         {
             var datBan = await _context.DatBan.FindAsync(id);
             if (datBan == null) return NotFound();
+
+            if (datBan.ThoiGianBatDau <= DateTime.UtcNow)
+                return BadRequest("Không thể hủy đặt bàn đã bắt đầu");
+
             _context.DatBan.Remove(datBan);
             await _context.SaveChangesAsync();
+
             return NoContent();
-        }
-
-        [HttpGet("by-date")]
-        public async Task<ActionResult<IEnumerable<DatBan>>> GetByDate(DateTime date)
-        {
-            return await _context.DatBan
-                .Include(d => d.KhachHang)
-                .Include(d => d.Ban)
-                .Where(d => d.NgayDat.Date == date.Date)
-                .ToListAsync();
-        }
-
-        [HttpGet("by-customer")]
-        public async Task<ActionResult<IEnumerable<DatBan>>> GetByCustomer(int customerId)
-        {
-            return await _context.DatBan
-                .Include(d => d.KhachHang)
-                .Include(d => d.Ban)
-                .Where(d => d.MaKH == customerId)
-                .ToListAsync();
         }
     }
 }

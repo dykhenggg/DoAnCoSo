@@ -1,15 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Backend.Models.Base;
+using Backend.Models.Enums;
 
 namespace Backend.Models
 {
-    public enum TrangThaiMonAn
-    {
-        Available,
-        OutOfStock
-    }
-
-    public class ThucDon
+    public class ThucDon : BaseEntity
     {
         [Key]
         [Required]
@@ -31,5 +27,17 @@ namespace Backend.Models
 
         [Required]
         public TrangThaiMonAn TrangThai { get; set; } // Sử dụng enum để quản lý trạng thái
+
+        public int SoLuongTon { get; set; }
+
+        [NotMapped]
+        public bool CoTheBan => TrangThai == TrangThaiMonAn.Available &&
+                               SoLuongTon > 0;
+
+        [NotMapped]
+        public decimal GiaSauGiam => Gia * (1 - (KhuyenMai?.PhanTramGiam ?? 0) / 100);
+
+        public virtual KhuyenMai? KhuyenMai { get; set; }
+        public virtual ICollection<ChiTietDonHang> ChiTietDonHang { get; set; } = new List<ChiTietDonHang>();
     }
 }
