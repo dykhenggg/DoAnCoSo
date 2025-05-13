@@ -7,11 +7,11 @@ namespace Backend.Models
     {
         [ForeignKey("DonHang")]
         public int MaDonHang { get; set; }
-        public DonHang DonHang { get; set; }
+        public DonHang? DonHang { get; set; }
 
         [ForeignKey("KhuyenMai")]
         public int MaKhuyenMai { get; set; }
-        public KhuyenMai KhuyenMai { get; set; }
+        public KhuyenMai? KhuyenMai { get; set; }
 
         [Required]
         public decimal SoTienGiam { get; set; }

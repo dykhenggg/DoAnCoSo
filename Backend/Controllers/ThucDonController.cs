@@ -1,78 +1,76 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Backend.Data;
 using Backend.Models;
+using Backend.DTOs;
+using Backend.Data;
 
 namespace Backend.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class ThucDonController : ControllerBase
     {
         private readonly RestaurantDbContext _context;
-        public ThucDonController(RestaurantDbContext context) => _context = context;
+        private readonly IWebHostEnvironment _env;
+
+        public ThucDonController(RestaurantDbContext context, IWebHostEnvironment env)
+        {
+            _context = context;
+            _env = env;
+        }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ThucDon>>> Get() => await _context.ThucDon.ToListAsync();
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ThucDon>> Get(int id)
+        public async Task<ActionResult<IEnumerable<ThucDon>>> GetAll()
         {
-            var item = await _context.ThucDon.FindAsync(id);
-            return item == null ? NotFound() : item;
+            return await _context.ThucDon
+                .OrderBy(t => t.TenMon)
+                .ToListAsync();
         }
 
         [HttpPost]
-        public async Task<ActionResult<ThucDon>> Post(ThucDon item)
+        public async Task<ActionResult<ThucDon>> Create([FromForm] ThucDonDTO dto)
         {
-            _context.ThucDon.Add(item);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = item.MaMon }, item);
+            try 
+            {
+                var fileName = await SaveImage(dto.HinhAnh);
+                
+                var thucDon = new ThucDon
+                {
+                    TenMon = dto.TenMon,
+                    Gia = dto.Gia,
+                    LoaiMon = dto.LoaiMon,
+                    HinhAnh = fileName
+                };
+
+                _context.ThucDon.Add(thucDon);
+                await _context.SaveChangesAsync();
+
+                return Ok(thucDon);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, ThucDon item)
+        private async Task<string> SaveImage(IFormFile file)
         {
-            if (id != item.MaMon) return BadRequest();
-            _context.Entry(item).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
+            if (file == null || file.Length == 0)
+                throw new ArgumentException("No file uploaded");
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var item = await _context.ThucDon.FindAsync(id);
-            if (item == null) return NotFound();
-            _context.ThucDon.Remove(item);
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
+            var uploadsFolder = Path.Combine(_env.WebRootPath, "images");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
 
-        [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<ThucDon>>> Search(string keyword)
-        {
-            return await _context.ThucDon
-                .Where(x => x.TenMon.Contains(keyword))
-                .ToListAsync();
-        }
+            var uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-        [HttpGet("page")]
-        public async Task<ActionResult<IEnumerable<ThucDon>>> Paginate(int page = 1, int pageSize = 10)
-        {
-            return await _context.ThucDon
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-        }
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
 
-        [HttpPost("delete-multiple")]
-        public async Task<IActionResult> DeleteMultiple([FromBody] List<int> ids)
-        {
-            var items = await _context.ThucDon.Where(x => ids.Contains(x.MaMon)).ToListAsync();
-            _context.ThucDon.RemoveRange(items);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            return uniqueFileName;
         }
     }
 }

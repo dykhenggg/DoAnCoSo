@@ -9,7 +9,7 @@ namespace Backend.Models
 
         [Required]
         [StringLength(50)]
-        public string TenBan { get; set; }
+        public string TenBan { get; set; } = string.Empty;
 
         [Required]
         public int SucChua { get; set; }
@@ -18,6 +18,6 @@ namespace Backend.Models
         public bool TrangThai { get; set; }
 
         // Navigation property
-        public virtual ICollection<DatBan> DatBan { get; set; }
+        public virtual ICollection<DatBan> DatBan { get; set; } = new List<DatBan>();
     }
 }

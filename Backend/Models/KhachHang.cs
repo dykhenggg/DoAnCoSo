@@ -10,14 +10,16 @@ namespace Backend.Models
         public int MaKhachHang { get; set; }
 
         [Required]
-        public string HoTen { get; set; } 
+        [StringLength(100)]
+        public string HoTen { get; set; } = string.Empty;
 
         [Phone]
         [Required]
-        public string SoDienThoai { get; set; } 
+        public string SoDienThoai { get; set; } = string.Empty;
 
         [EmailAddress]
-        [Required]
         public string? Email { get; set; }
+
+        public virtual ICollection<DonHang> DonHang { get; set; } = new List<DonHang>();
     }
 }

@@ -5,72 +5,67 @@ using Backend.Models;
 
 namespace Backend.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class ChamCongController : ControllerBase
     {
         private readonly RestaurantDbContext _context;
-        public ChamCongController(RestaurantDbContext context) => _context = context;
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ChamCong>>> Get() => 
-            await _context.ChamCong
-                .Include(c => c.NhanVien)
-                .ToListAsync();
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ChamCong>> Get(int id)
+        public ChamCongController(RestaurantDbContext context)
         {
-            var chamCong = await _context.ChamCong
-                .Include(c => c.NhanVien)
-                .FirstOrDefaultAsync(c => c.MaChamCong == id);
-            return chamCong == null ? NotFound() : chamCong;
+            _context = context;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<ChamCong>> Post(ChamCong chamCong)
+        [HttpGet("nhanvien/{maNV}")]
+        public async Task<ActionResult<IEnumerable<ChamCong>>> GetByNhanVien(
+            int maNV, [FromQuery] DateTime? tuNgay, [FromQuery] DateTime? denNgay)
         {
+            var query = _context.ChamCong.Where(c => c.MaNhanVien == maNV);
+
+            if (tuNgay.HasValue)
+                query = query.Where(c => c.NgayChamCong >= tuNgay);
+            if (denNgay.HasValue)
+                query = query.Where(c => c.NgayChamCong <= denNgay);
+
+            return await query.OrderByDescending(c => c.NgayChamCong).ToListAsync();
+        }
+
+        [HttpPost("checkin")]
+        public async Task<ActionResult<ChamCong>> CheckIn(int maNV)
+        {
+            var today = DateTime.UtcNow.Date;
+            var existingCheckin = await _context.ChamCong
+                .FirstOrDefaultAsync(c => c.MaNhanVien == maNV && 
+                                        c.NgayChamCong.Date == today);
+
+            if (existingCheckin != null)
+                return BadRequest("Đã chấm công ngày hôm nay");
+
+            var chamCong = new ChamCong
+            {
+                MaNhanVien = maNV,
+                NgayChamCong = DateTime.UtcNow,
+                GioVao = DateTime.UtcNow.TimeOfDay,
+                TrangThai = "Đang làm việc"
+            };
+
             _context.ChamCong.Add(chamCong);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = chamCong.MaChamCong }, chamCong);
+
+            return Ok(chamCong);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, ChamCong chamCong)
-        {
-            if (id != chamCong.MaChamCong) return BadRequest();
-            _context.Entry(chamCong).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpPut("checkout/{id}")]
+        public async Task<IActionResult> CheckOut(int id)
         {
             var chamCong = await _context.ChamCong.FindAsync(id);
             if (chamCong == null) return NotFound();
-            _context.ChamCong.Remove(chamCong);
+
+            chamCong.GioRa = DateTime.UtcNow.TimeOfDay;
+            chamCong.TrangThai = "Đã về";
             await _context.SaveChangesAsync();
+
             return NoContent();
-        }
-
-        [HttpGet("by-date-range")]
-        public async Task<ActionResult<IEnumerable<ChamCong>>> GetByDateRange(
-            DateTime startDate, 
-            DateTime endDate)
-        {
-            return await _context.ChamCong
-                .Include(c => c.NhanVien)
-                .Where(c => c.NgayChamCong >= startDate && c.NgayChamCong <= endDate)
-                .ToListAsync();
-        }
-
-        [HttpGet("by-employee")]
-        public async Task<ActionResult<IEnumerable<ChamCong>>> GetByEmployee(int employeeId)
-        {
-            return await _context.ChamCong
-                .Where(c => c.MaNhanVien == employeeId)
-                .ToListAsync();
         }
     }
 }

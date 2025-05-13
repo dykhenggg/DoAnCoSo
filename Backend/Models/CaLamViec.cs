@@ -20,6 +20,6 @@ namespace Backend.Models
         public int MaNhanVien { get; set; } 
 
         [ForeignKey("MaNhanVien")]
-        public NhanVien NhanVien { get; set; } // Navigation Property
+        public virtual NhanVien? NhanVien { get; set; } // Navigation Property
     }
 }

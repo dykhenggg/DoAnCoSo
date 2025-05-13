@@ -2,75 +2,66 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
 using Backend.Models;
+using Backend.DTOs;
 
 namespace Backend.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class BanController : ControllerBase
     {
         private readonly RestaurantDbContext _context;
-        public BanController(RestaurantDbContext context) => _context = context;
+
+        public BanController(RestaurantDbContext context)
+        {
+            _context = context;
+        }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Ban>>> Get() => await _context.Ban.ToListAsync();
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Ban>> Get(int id)
+        public async Task<ActionResult<IEnumerable<Ban>>> GetAll()
         {
-            var item = await _context.Ban.FindAsync(id);
-            return item == null ? NotFound() : item;
+            return await _context.Ban
+                .Include(b => b.DatBan)
+                .ToListAsync();
+        }
+
+        [HttpGet("available")]
+        public async Task<ActionResult<IEnumerable<Ban>>> GetAvailable(
+            [FromQuery] int soNguoi,
+            [FromQuery] DateTime thoiGianBatDau,
+            [FromQuery] DateTime thoiGianKetThuc)
+        {
+            return await _context.Ban
+                .Where(b => b.SucChua >= soNguoi &&
+                           b.TrangThai &&
+                           !b.DatBan.Any(d => d.ThoiGianBatDau < thoiGianKetThuc &&
+                                             d.ThoiGianKetThuc > thoiGianBatDau))
+                .ToListAsync();
         }
 
         [HttpPost]
-        public async Task<ActionResult<Ban>> Post(Ban item)
+        public async Task<ActionResult<Ban>> Create(BanDTO dto)
         {
-            _context.Ban.Add(item);
+            var ban = new Ban
+            {
+                TenBan = dto.TenBan,
+                SucChua = dto.SucChua,
+                TrangThai = true
+            };
+
+            _context.Ban.Add(ban);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = item.MaBan }, item);
+
+            return CreatedAtAction(nameof(GetAll), new { id = ban.MaBan }, ban);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, Ban item)
+        [HttpPut("{id}/trangthai")]
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] bool trangThai)
         {
-            if (id != item.MaBan) return BadRequest();
-            _context.Entry(item).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
+            var ban = await _context.Ban.FindAsync(id);
+            if (ban == null) return NotFound();
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var item = await _context.Ban.FindAsync(id);
-            if (item == null) return NotFound();
-            _context.Ban.Remove(item);
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
-
-        [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<Ban>>> Search(string keyword)
-        {
-            return await _context.Ban
-                .Where(x => x.TenBan.Contains(keyword))
-                .ToListAsync();
-        }
-
-        [HttpGet("page")]
-        public async Task<ActionResult<IEnumerable<Ban>>> Paginate(int page = 1, int pageSize = 10)
-        {
-            return await _context.Ban
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-        }
-
-        [HttpPost("delete-multiple")]
-        public async Task<IActionResult> DeleteMultiple([FromBody] List<int> ids)
-        {
-            var items = await _context.Ban.Where(x => ids.Contains(x.MaBan)).ToListAsync();
-            _context.Ban.RemoveRange(items);
+            ban.TrangThai = trangThai;
             await _context.SaveChangesAsync();
             return NoContent();
         }

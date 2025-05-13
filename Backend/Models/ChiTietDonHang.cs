@@ -25,9 +25,9 @@ namespace Backend.Models
         public decimal ThanhTien { get; set; }
 
         [ForeignKey("MaDonHang")]
-        public virtual DonHang DonHang { get; set; }
+        public virtual DonHang? DonHang { get; set; }
 
         [ForeignKey("MaMon")]
-        public virtual ThucDon ThucDon { get; set; }
+        public virtual ThucDon? ThucDon { get; set; }
     }
 }
