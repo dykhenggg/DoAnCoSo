@@ -1,0 +1,41 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\thinh\\Downloads\\DoAn\\DoAnCoSo\\Backend\\wwwroot\\images\\7af98ccf-657e-4649-ac9d-e814b0761afa.jpg",
+      "PackagePath": "staticwebassets\\images\\7af98ccf-657e-4649-ac9d-e814b0761afa.jpg"
+    },
+    {
+      "Id": "C:\\Users\\thinh\\Downloads\\DoAn\\DoAnCoSo\\Backend\\wwwroot\\images\\a35c4c33-f56f-492c-b4d3-40de7191770d.jpg",
+      "PackagePath": "staticwebassets\\images\\a35c4c33-f56f-492c-b4d3-40de7191770d.jpg"
+    },
+    {
+      "Id": "C:\\Users\\thinh\\Downloads\\DoAn\\DoAnCoSo\\Backend\\wwwroot\\images\\e1855b0b-1786-4625-8bf8-7213c32d393b.jpg",
+      "PackagePath": "staticwebassets\\images\\e1855b0b-1786-4625-8bf8-7213c32d393b.jpg"
+    },
+    {
+      "Id": "C:\\Users\\thinh\\Downloads\\DoAn\\DoAnCoSo\\Backend\\wwwroot\\images\\f799a4a6-4ac3-43d2-80d4-03efd948eec9.jpg",
+      "PackagePath": "staticwebassets\\images\\f799a4a6-4ac3-43d2-80d4-03efd948eec9.jpg"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.Back-end.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.Back-end.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.build.Back-end.props",
+      "PackagePath": "build\\Back-end.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.buildMultiTargeting.Back-end.props",
+      "PackagePath": "buildMultiTargeting\\Back-end.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.buildTransitive.Back-end.props",
+      "PackagePath": "buildTransitive\\Back-end.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

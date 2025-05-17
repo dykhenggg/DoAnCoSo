@@ -3,13 +3,14 @@ import './Navbar.css'
 import {assets} from "../../assets/assets"; 
 import { Link } from "react-router-dom";
 import { StoreContext } from "../../Context/StoreContext";
+import { useAuth } from '../../Context/AuthContext';
 
 const Navbar = ({setShowLogin}) => {
     const [menu, setMenu] = useState("Home");
     const [isFixed, setIsFixed] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const dropdownRef = useRef(null);
-    const {getTotalCartAmount, isLoggedIn, user, logout} = useContext(StoreContext);
+    const {getTotalCartAmount, isLoggedIn, user, logout} = useAuth();
 
     useEffect(() => {
         const handleScroll = () => {
