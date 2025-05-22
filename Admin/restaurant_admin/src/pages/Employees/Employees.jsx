@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import './Employees.css'
+import React, { useState } from "react";
+import "./Employees.css";
 
 const Employees = () => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
@@ -18,7 +18,7 @@ const Employees = () => {
       hireDate: "2023-01-15",
       department: "Kitchen",
       address: "123 Main St, City, State",
-      emergencyContact: "Jane Smith (Spouse) - +1 (555) 987-6543"
+      emergencyContact: "Jane Smith (Spouse) - +1 (555) 987-6543",
     },
     {
       id: 2,
@@ -29,7 +29,7 @@ const Employees = () => {
       hireDate: "2023-02-20",
       department: "Service",
       address: "456 Oak St, City, State",
-      emergencyContact: "Tom Johnson (Spouse) - +1 (555) 876-5432"
+      emergencyContact: "Tom Johnson (Spouse) - +1 (555) 876-5432",
     },
     {
       id: 3,
@@ -40,8 +40,8 @@ const Employees = () => {
       hireDate: "2023-03-10",
       department: "Management",
       address: "789 Pine St, City, State",
-      emergencyContact: "Lisa Brown (Spouse) - +1 (555) 765-4321"
-    }
+      emergencyContact: "Lisa Brown (Spouse) - +1 (555) 765-4321",
+    },
   ];
 
   const [newEmployee, setNewEmployee] = useState({
@@ -52,7 +52,7 @@ const Employees = () => {
     hireDate: "",
     department: "",
     address: "",
-    emergencyContact: ""
+    emergencyContact: "",
   });
 
   const handleDetails = (employee) => {
@@ -79,7 +79,7 @@ const Employees = () => {
       hireDate: "",
       department: "",
       address: "",
-      emergencyContact: ""
+      emergencyContact: "",
     });
     setShowAddModal(true);
   };
@@ -87,21 +87,21 @@ const Employees = () => {
   const handleAddSubmit = (e) => {
     e.preventDefault();
     // Add API call to create new employee
-    console.log('New employee:', newEmployee);
+    console.log("New employee:", newEmployee);
     setShowAddModal(false);
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (selectedEmployee) {
-      setSelectedEmployee(prev => ({
+      setSelectedEmployee((prev) => ({
         ...prev,
-        [name]: value
+        [name]: value,
       }));
     } else {
-      setNewEmployee(prev => ({
+      setNewEmployee((prev) => ({
         ...prev,
-        [name]: value
+        [name]: value,
       }));
     }
   };
@@ -109,13 +109,13 @@ const Employees = () => {
   const handleEditSubmit = (e) => {
     e.preventDefault();
     // Add API call to update employee
-    console.log('Updated employee:', selectedEmployee);
+    console.log("Updated employee:", selectedEmployee);
     setShowEditModal(false);
   };
 
   const handleDeleteConfirm = () => {
     // Add API call to delete employee
-    console.log('Deleting employee:', selectedEmployee.id);
+    console.log("Deleting employee:", selectedEmployee.id);
     setShowDeleteModal(false);
   };
 
@@ -144,19 +144,19 @@ const Employees = () => {
               <td>{employee.email}</td>
               <td>{employee.phone}</td>
               <td className="action-buttons">
-                <button 
+                <button
                   className="btn-details"
                   onClick={() => handleDetails(employee)}
                 >
                   Details
                 </button>
-                <button 
+                <button
                   className="btn-edit"
                   onClick={() => handleEdit(employee)}
                 >
                   Edit
                 </button>
-                <button 
+                <button
                   className="btn-delete"
                   onClick={() => handleDelete(employee)}
                 >
@@ -180,7 +180,12 @@ const Employees = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h3>Add New Employee</h3>
-              <button className="btn-close" onClick={() => setShowAddModal(false)}>×</button>
+              <button
+                className="btn-close"
+                onClick={() => setShowAddModal(false)}
+              >
+                ×
+              </button>
             </div>
             <form onSubmit={handleAddSubmit} className="modal-body">
               <div className="form-section">
@@ -313,7 +318,12 @@ const Employees = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h3>Employee Details</h3>
-              <button className="btn-close" onClick={() => setShowDetailsModal(false)}>×</button>
+              <button
+                className="btn-close"
+                onClick={() => setShowDetailsModal(false)}
+              >
+                ×
+              </button>
             </div>
             <div className="modal-body">
               <div className="details-section">
@@ -378,7 +388,12 @@ const Employees = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h3>Edit Employee</h3>
-              <button className="btn-close" onClick={() => setShowEditModal(false)}>×</button>
+              <button
+                className="btn-close"
+                onClick={() => setShowEditModal(false)}
+              >
+                ×
+              </button>
             </div>
             <form onSubmit={handleEditSubmit} className="modal-body">
               <div className="form-section">
@@ -485,7 +500,11 @@ const Employees = () => {
                 </div>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn-cancel" onClick={() => setShowEditModal(false)}>
+                <button
+                  type="button"
+                  className="btn-cancel"
+                  onClick={() => setShowEditModal(false)}
+                >
                   Cancel
                 </button>
                 <button type="submit" className="btn-save">
@@ -503,14 +522,22 @@ const Employees = () => {
           <div className="modal-content delete-modal">
             <div className="modal-header">
               <h3>Delete Employee</h3>
-              <button className="btn-close" onClick={() => setShowDeleteModal(false)}>×</button>
+              <button
+                className="btn-close"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                ×
+              </button>
             </div>
             <div className="modal-body">
               <p>Are you sure you want to delete {selectedEmployee.name}?</p>
               <p>This action cannot be undone.</p>
             </div>
             <div className="modal-footer">
-              <button className="btn-cancel" onClick={() => setShowDeleteModal(false)}>
+              <button
+                className="btn-cancel"
+                onClick={() => setShowDeleteModal(false)}
+              >
                 Cancel
               </button>
               <button className="btn-delete" onClick={handleDeleteConfirm}>
@@ -521,7 +548,7 @@ const Employees = () => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Employees
+export default Employees;

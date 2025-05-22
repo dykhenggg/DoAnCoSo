@@ -29,6 +29,7 @@ namespace Backend.Data
         public DbSet<GiaoDichKho> GiaoDichKho { get; set; }
         public DbSet<DatBan> DatBan { get; set; }
         public DbSet<BoPhan> BoPhan { get; set; }
+        public DbSet<LoaiMon> LoaiMon { get; set; }
 
         // Tùy chỉnh nếu cần (mapping, relationship...)
         protected override void OnModelCreating(ModelBuilder modelBuilder)

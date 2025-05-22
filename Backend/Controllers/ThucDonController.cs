@@ -27,6 +27,25 @@ namespace Backend.Controllers
                 .ToListAsync();
         }
 
+        [HttpGet("LoaiMon")]
+        public async Task<ActionResult<IEnumerable<dynamic>>> GetLoaiMon()
+        {
+            var loaiMons = await _context.ThucDon
+                .Select(t => t.LoaiMon)
+                .Distinct()
+                .Select(loai => new
+                {
+                    loaiMon = loai,
+                    hinhAnh = _context.ThucDon
+                        .Where(t => t.LoaiMon == loai)
+                        .Select(t => t.HinhAnh)
+                        .FirstOrDefault()
+                })
+                .ToListAsync();
+
+            return Ok(loaiMons);
+        }
+
         [HttpPost]
         public async Task<ActionResult<ThucDon>> Create([FromForm] ThucDonDTO dto)
         {
@@ -38,7 +57,7 @@ namespace Backend.Controllers
                 {
                     TenMon = dto.TenMon,
                     Gia = dto.Gia,
-                    LoaiMon = dto.LoaiMon,
+                    MaLoai = dto.MaLoai,  // Sử dụng MaLoai thay vì LoaiMon
                     HinhAnh = fileName
                 };
 
@@ -51,6 +70,31 @@ namespace Backend.Controllers
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
+        }
+
+        [HttpDelete("{id}")]  
+        public async Task<IActionResult> Delete(int id)
+        {
+            var thucDon = await _context.ThucDon.FindAsync(id);
+            if (thucDon == null)
+            {
+                return NotFound();
+            }
+
+            // Xóa file ảnh cũ nếu tồn tại
+            if (!string.IsNullOrEmpty(thucDon.HinhAnh))
+            {
+                var imagePath = Path.Combine(_env.WebRootPath, "images", thucDon.HinhAnh);
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+            }
+
+            _context.ThucDon.Remove(thucDon);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         private async Task<string> SaveImage(IFormFile file)

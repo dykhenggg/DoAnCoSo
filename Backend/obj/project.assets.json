@@ -43,9 +43,7 @@
             "related": ".xml"
           }
         },
-        "frameworkReferences": [
-          "Microsoft.AspNetCore.App"
-        ]
+        "frameworkReferences": ["Microsoft.AspNetCore.App"]
       },
       "Microsoft.Bcl.AsyncInterfaces/7.0.0": {
         "type": "package",
@@ -3130,9 +3128,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\Back-end.csproj",
-      "projectName": "Back-end",
-      "projectPath": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\Back-end.csproj",
+      "projectUniqueName": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\Backend.csproj",
+      "projectName": "Backend",
+      "projectPath": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\Backend.csproj",
       "packagesPath": "C:\\Users\\fptshop\\.nuget\\packages\\",
       "outputPath": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\obj\\",
       "projectStyle": "PackageReference",
@@ -3144,9 +3142,7 @@
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
-      "originalTargetFrameworks": [
-        "net9.0"
-      ],
+      "originalTargetFrameworks": ["net9.0"],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "C:\\Program Files\\dotnet\\library-packs": {},
@@ -3159,9 +3155,7 @@
         }
       },
       "warningProperties": {
-        "warnAsError": [
-          "NU1605"
-        ]
+        "warnAsError": ["NU1605"]
       },
       "restoreAuditProperties": {
         "enableAudit": "true",
