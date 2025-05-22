@@ -111,7 +111,23 @@ const Foods = () => {
                 </td>
                 <td>{food.tenMon}</td>
                 <td>{food.gia.toLocaleString()} VNĐ</td>
-                <td>{food.loaiMon}</td>
+                // Trong phần hiển thị bảng, thay đổi cột Loại món
+                <td>{food.loaiMon?.tenLoai}</td>
+                // Trong phần modal thêm món ăn, sửa select box như sau:
+                <select
+                  value={newFood.loaiMon}
+                  onChange={(e) =>
+                    setNewFood({ ...newFood, loaiMon: e.target.value })
+                  }
+                  required
+                >
+                  <option value="">Chọn loại món</option>
+                  {categories.map((category) => (
+                    <option key={category.maLoai} value={category.maLoai}>
+                      {category.tenLoai}
+                    </option>
+                  ))}
+                </select>
                 <td>
                   <button
                     className="edit-button"

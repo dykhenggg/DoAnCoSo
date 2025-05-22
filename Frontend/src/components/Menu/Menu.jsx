@@ -8,11 +8,9 @@ const Menu = ({ category, setCategory }) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:5078/api/ThucDon/LoaiMon"
-        );
+        const response = await axios.get("http://localhost:5078/api/LoaiMon");
         const formattedCategories = response.data.map((item) => ({
-          menu_name: item.loaiMon, // Thay đổi từ tenLoai thành loaiMon
+          menu_name: item.tenLoai,
           menu_image: `http://localhost:5078/images/${item.hinhAnh}`,
         }));
         setMenuCategories(formattedCategories);

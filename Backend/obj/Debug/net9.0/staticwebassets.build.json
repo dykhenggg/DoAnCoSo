@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "hKMhCmXOd1TBlGv7UfGTMPHzzGRdZLGtI3BEfbUohtQ=",
+  "Hash": "p7TV1yqH+cPjlGwSqxsODxzWVQlmJgQHVYOkiaJQhvA=",
   "Source": "Backend",
   "BasePath": "_content/Backend",
   "Mode": "Default",
@@ -185,6 +185,27 @@
       "OriginalItemSpec": "wwwroot\\images\\653a181d-3bfa-4a30-b542-4ea5b9f980fd.jpg"
     },
     {
+      "Identity": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\68e4f2d5-dd6f-4d2e-8660-17f132d5bb84.png",
+      "SourceId": "Backend",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\",
+      "BasePath": "_content/Backend",
+      "RelativePath": "images/68e4f2d5-dd6f-4d2e-8660-17f132d5bb84#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "xnr0hg2id1",
+      "Integrity": "8+Jx0a2pT2q6SuvvkDIYsF2Wzc7mLFw8Q7hLKMzvP9E=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\68e4f2d5-dd6f-4d2e-8660-17f132d5bb84.png"
+    },
+    {
       "Identity": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\7af98ccf-657e-4649-ac9d-e814b0761afa.jpg",
       "SourceId": "Backend",
       "SourceType": "Discovered",
@@ -314,7 +335,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 15:59:17 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -359,7 +380,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 15:59:17 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -396,7 +417,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 15:56:59 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -441,7 +462,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 15:56:59 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -478,7 +499,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 20 May 2025 01:21:49 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -523,7 +544,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 20 May 2025 01:21:49 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -560,7 +581,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 10:46:12 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -597,7 +618,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 10:46:12 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -642,7 +663,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 13:34:03 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -687,7 +708,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 13:34:03 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -724,7 +745,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 16 May 2025 09:15:01 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -769,7 +790,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 16 May 2025 09:15:01 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -806,7 +827,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 16 May 2025 09:15:02 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -851,7 +872,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 16 May 2025 09:15:02 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -888,7 +909,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 15:58:25 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -933,7 +954,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 15:58:25 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -944,6 +965,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-fdG9z/oHyTuXLJg+hZ2rKMcRnIVi7dz6t7i56rZ+qH8="
+        }
+      ]
+    },
+    {
+      "Route": "images/68e4f2d5-dd6f-4d2e-8660-17f132d5bb84.png",
+      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\68e4f2d5-dd6f-4d2e-8660-17f132d5bb84.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2657"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"8+Jx0a2pT2q6SuvvkDIYsF2Wzc7mLFw8Q7hLKMzvP9E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-8+Jx0a2pT2q6SuvvkDIYsF2Wzc7mLFw8Q7hLKMzvP9E="
+        }
+      ]
+    },
+    {
+      "Route": "images/68e4f2d5-dd6f-4d2e-8660-17f132d5bb84.xnr0hg2id1.png",
+      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\68e4f2d5-dd6f-4d2e-8660-17f132d5bb84.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2657"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"8+Jx0a2pT2q6SuvvkDIYsF2Wzc7mLFw8Q7hLKMzvP9E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "xnr0hg2id1"
+        },
+        {
+          "Name": "label",
+          "Value": "images/68e4f2d5-dd6f-4d2e-8660-17f132d5bb84.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-8+Jx0a2pT2q6SuvvkDIYsF2Wzc7mLFw8Q7hLKMzvP9E="
         }
       ]
     },
@@ -970,7 +1073,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 13 May 2025 01:22:57 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1015,7 +1118,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 13 May 2025 01:22:57 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1052,7 +1155,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 13 May 2025 01:22:57 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1097,7 +1200,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 13 May 2025 01:22:57 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1134,7 +1237,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 14 May 2025 15:45:37 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1171,7 +1274,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 14 May 2025 15:45:37 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1216,7 +1319,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 15:46:48 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1253,7 +1356,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 15:46:48 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1298,7 +1401,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 13 May 2025 01:22:57 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1343,7 +1446,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 13 May 2025 01:22:57 GMT"
+          "Value": "Thu, 22 May 2025 07:32:54 GMT"
         },
         {
           "Name": "Cache-Control",
