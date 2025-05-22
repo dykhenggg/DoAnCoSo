@@ -68,8 +68,6 @@ const Navbar = ({setShowLogin}) => {
                 >
                     Menu
                 </li>
-                <li onClick={()=>setMenu("Reservation")} className={menu==="Reservation"?"active":""}>Reservation</li>
-                
                 <li 
                     onClick={() => {
                         setMenu("About Us");
@@ -80,9 +78,17 @@ const Navbar = ({setShowLogin}) => {
                 >
                     About Us
                 </li>
+                <li
+                    onClick={() => {
+                        setMenu("Reservation");
+                        handleScroll('reservation-section');
+                    }}
+                    className={menu==="Reservation"?"active":""}
+                >
+                    Reservation
+                </li>
             </ul>
             <div className="navbar-right">
-                <img src={assets.search_icon} alt="search"/>
                 <div className="navbar-search-icon">
                     <Link to='/cart'><img src={assets.basket_icon} alt="cart" /></Link>
                     <div className="dot"></div>
