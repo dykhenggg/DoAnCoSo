@@ -3,7 +3,7 @@ import "./Foods.css";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const Foods = () => {
+function Foods() {
   const [foods, setFoods] = useState([]);
   const [categories, setCategories] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -111,7 +111,7 @@ const Foods = () => {
                 </td>
                 <td>{food.tenMon}</td>
                 <td>{food.gia.toLocaleString()} VNĐ</td>
-                <td>{food.loaiMon}</td>
+                <td>{food.loaiMon?.tenLoai}</td>
                 <td>
                   <button
                     className="edit-button"
@@ -233,6 +233,6 @@ const Foods = () => {
       )}
     </div>
   );
-};
+}
 
 export default Foods;
