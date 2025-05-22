@@ -300,7 +300,10 @@ const Employees = () => {
                 >
                   Cancel
                 </button>
-                <button type="submit" className="btn-save">
+                <button
+                  type="submit"
+                  className="btn-save"
+                >
                   Add Employee
                 </button>
               </div>
