@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "hKMhCmXOd1TBlGv7UfGTMPHzzGRdZLGtI3BEfbUohtQ=",
+  "Hash": "ERlHyInny6vwnCZ2OiZy81jBv3JILrdmJApwPoM+h28=",
   "Source": "Backend",
   "BasePath": "_content/Backend",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "Backend\\wwwroot",
       "Source": "Backend",
-      "ContentRoot": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\",
+      "ContentRoot": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\",
       "BasePath": "_content/Backend",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\0d4589d9-19a0-45dc-87f1-8e56cae50dcf.jpg",
+      "Identity": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\0d4589d9-19a0-45dc-87f1-8e56cae50dcf.jpg",
       "SourceId": "Backend",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\",
+      "ContentRoot": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\",
       "BasePath": "_content/Backend",
       "RelativePath": "images/0d4589d9-19a0-45dc-87f1-8e56cae50dcf#[.{fingerprint}]?.jpg",
       "AssetKind": "All",
@@ -38,10 +38,10 @@
       "OriginalItemSpec": "wwwroot\\images\\0d4589d9-19a0-45dc-87f1-8e56cae50dcf.jpg"
     },
     {
-      "Identity": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\1265bb76-99e4-46cb-a050-cdf05c499dfe.jpg",
+      "Identity": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\1265bb76-99e4-46cb-a050-cdf05c499dfe.jpg",
       "SourceId": "Backend",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\",
+      "ContentRoot": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\",
       "BasePath": "_content/Backend",
       "RelativePath": "images/1265bb76-99e4-46cb-a050-cdf05c499dfe#[.{fingerprint}]?.jpg",
       "AssetKind": "All",
@@ -59,10 +59,10 @@
       "OriginalItemSpec": "wwwroot\\images\\1265bb76-99e4-46cb-a050-cdf05c499dfe.jpg"
     },
     {
-      "Identity": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\300b95f8-6277-435e-a855-751d5e16417a.jpg",
+      "Identity": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\300b95f8-6277-435e-a855-751d5e16417a.jpg",
       "SourceId": "Backend",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\",
+      "ContentRoot": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\",
       "BasePath": "_content/Backend",
       "RelativePath": "images/300b95f8-6277-435e-a855-751d5e16417a#[.{fingerprint}]?.jpg",
       "AssetKind": "All",
@@ -80,10 +80,10 @@
       "OriginalItemSpec": "wwwroot\\images\\300b95f8-6277-435e-a855-751d5e16417a.jpg"
     },
     {
-      "Identity": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\358ee22c-7137-433e-aacf-5d92a423de87.jpg",
+      "Identity": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\358ee22c-7137-433e-aacf-5d92a423de87.jpg",
       "SourceId": "Backend",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\",
+      "ContentRoot": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\",
       "BasePath": "_content/Backend",
       "RelativePath": "images/358ee22c-7137-433e-aacf-5d92a423de87#[.{fingerprint}]?.jpg",
       "AssetKind": "All",
@@ -101,10 +101,10 @@
       "OriginalItemSpec": "wwwroot\\images\\358ee22c-7137-433e-aacf-5d92a423de87.jpg"
     },
     {
-      "Identity": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\381c2035-7ee7-47a1-8b4e-ad0ca3f091d9.jpg",
+      "Identity": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\381c2035-7ee7-47a1-8b4e-ad0ca3f091d9.jpg",
       "SourceId": "Backend",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\",
+      "ContentRoot": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\",
       "BasePath": "_content/Backend",
       "RelativePath": "images/381c2035-7ee7-47a1-8b4e-ad0ca3f091d9#[.{fingerprint}]?.jpg",
       "AssetKind": "All",
@@ -122,10 +122,10 @@
       "OriginalItemSpec": "wwwroot\\images\\381c2035-7ee7-47a1-8b4e-ad0ca3f091d9.jpg"
     },
     {
-      "Identity": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\3858db84-3b2f-41ad-b6e5-e2c5604fb822.png",
+      "Identity": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\3858db84-3b2f-41ad-b6e5-e2c5604fb822.png",
       "SourceId": "Backend",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\",
+      "ContentRoot": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\",
       "BasePath": "_content/Backend",
       "RelativePath": "images/3858db84-3b2f-41ad-b6e5-e2c5604fb822#[.{fingerprint}]?.png",
       "AssetKind": "All",
@@ -143,10 +143,10 @@
       "OriginalItemSpec": "wwwroot\\images\\3858db84-3b2f-41ad-b6e5-e2c5604fb822.png"
     },
     {
-      "Identity": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\3b7f1201-a0ce-4864-88ec-75b35020c29f.png",
+      "Identity": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\3b7f1201-a0ce-4864-88ec-75b35020c29f.png",
       "SourceId": "Backend",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\",
+      "ContentRoot": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\",
       "BasePath": "_content/Backend",
       "RelativePath": "images/3b7f1201-a0ce-4864-88ec-75b35020c29f#[.{fingerprint}]?.png",
       "AssetKind": "All",
@@ -164,10 +164,10 @@
       "OriginalItemSpec": "wwwroot\\images\\3b7f1201-a0ce-4864-88ec-75b35020c29f.png"
     },
     {
-      "Identity": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\653a181d-3bfa-4a30-b542-4ea5b9f980fd.jpg",
+      "Identity": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\653a181d-3bfa-4a30-b542-4ea5b9f980fd.jpg",
       "SourceId": "Backend",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\",
+      "ContentRoot": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\",
       "BasePath": "_content/Backend",
       "RelativePath": "images/653a181d-3bfa-4a30-b542-4ea5b9f980fd#[.{fingerprint}]?.jpg",
       "AssetKind": "All",
@@ -185,10 +185,31 @@
       "OriginalItemSpec": "wwwroot\\images\\653a181d-3bfa-4a30-b542-4ea5b9f980fd.jpg"
     },
     {
-      "Identity": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\7af98ccf-657e-4649-ac9d-e814b0761afa.jpg",
+      "Identity": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\68e4f2d5-dd6f-4d2e-8660-17f132d5bb84.png",
       "SourceId": "Backend",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\",
+      "ContentRoot": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\",
+      "BasePath": "_content/Backend",
+      "RelativePath": "images/68e4f2d5-dd6f-4d2e-8660-17f132d5bb84#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "xnr0hg2id1",
+      "Integrity": "8+Jx0a2pT2q6SuvvkDIYsF2Wzc7mLFw8Q7hLKMzvP9E=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\68e4f2d5-dd6f-4d2e-8660-17f132d5bb84.png"
+    },
+    {
+      "Identity": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\7af98ccf-657e-4649-ac9d-e814b0761afa.jpg",
+      "SourceId": "Backend",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\",
       "BasePath": "_content/Backend",
       "RelativePath": "images/7af98ccf-657e-4649-ac9d-e814b0761afa#[.{fingerprint}]?.jpg",
       "AssetKind": "All",
@@ -206,10 +227,10 @@
       "OriginalItemSpec": "wwwroot\\images\\7af98ccf-657e-4649-ac9d-e814b0761afa.jpg"
     },
     {
-      "Identity": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\a35c4c33-f56f-492c-b4d3-40de7191770d.jpg",
+      "Identity": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\a35c4c33-f56f-492c-b4d3-40de7191770d.jpg",
       "SourceId": "Backend",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\",
+      "ContentRoot": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\",
       "BasePath": "_content/Backend",
       "RelativePath": "images/a35c4c33-f56f-492c-b4d3-40de7191770d#[.{fingerprint}]?.jpg",
       "AssetKind": "All",
@@ -227,10 +248,10 @@
       "OriginalItemSpec": "wwwroot\\images\\a35c4c33-f56f-492c-b4d3-40de7191770d.jpg"
     },
     {
-      "Identity": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\ae91ea51-cc8f-4e90-9317-79c6b853f741.jpg",
+      "Identity": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\ae91ea51-cc8f-4e90-9317-79c6b853f741.jpg",
       "SourceId": "Backend",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\",
+      "ContentRoot": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\",
       "BasePath": "_content/Backend",
       "RelativePath": "images/ae91ea51-cc8f-4e90-9317-79c6b853f741#[.{fingerprint}]?.jpg",
       "AssetKind": "All",
@@ -248,10 +269,10 @@
       "OriginalItemSpec": "wwwroot\\images\\ae91ea51-cc8f-4e90-9317-79c6b853f741.jpg"
     },
     {
-      "Identity": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\e805ddf3-600f-46af-8ecf-4118426d34d8.jpg",
+      "Identity": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\e805ddf3-600f-46af-8ecf-4118426d34d8.jpg",
       "SourceId": "Backend",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\",
+      "ContentRoot": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\",
       "BasePath": "_content/Backend",
       "RelativePath": "images/e805ddf3-600f-46af-8ecf-4118426d34d8#[.{fingerprint}]?.jpg",
       "AssetKind": "All",
@@ -269,10 +290,10 @@
       "OriginalItemSpec": "wwwroot\\images\\e805ddf3-600f-46af-8ecf-4118426d34d8.jpg"
     },
     {
-      "Identity": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\f799a4a6-4ac3-43d2-80d4-03efd948eec9.jpg",
+      "Identity": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\f799a4a6-4ac3-43d2-80d4-03efd948eec9.jpg",
       "SourceId": "Backend",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\",
+      "ContentRoot": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\",
       "BasePath": "_content/Backend",
       "RelativePath": "images/f799a4a6-4ac3-43d2-80d4-03efd948eec9#[.{fingerprint}]?.jpg",
       "AssetKind": "All",
@@ -293,7 +314,7 @@
   "Endpoints": [
     {
       "Route": "images/0d4589d9-19a0-45dc-87f1-8e56cae50dcf.c5hwalilbm.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\0d4589d9-19a0-45dc-87f1-8e56cae50dcf.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\0d4589d9-19a0-45dc-87f1-8e56cae50dcf.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -314,7 +335,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 15:59:17 GMT"
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -338,7 +359,7 @@
     },
     {
       "Route": "images/0d4589d9-19a0-45dc-87f1-8e56cae50dcf.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\0d4589d9-19a0-45dc-87f1-8e56cae50dcf.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\0d4589d9-19a0-45dc-87f1-8e56cae50dcf.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -359,7 +380,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 15:59:17 GMT"
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -375,7 +396,7 @@
     },
     {
       "Route": "images/1265bb76-99e4-46cb-a050-cdf05c499dfe.089813qsh9.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\1265bb76-99e4-46cb-a050-cdf05c499dfe.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\1265bb76-99e4-46cb-a050-cdf05c499dfe.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -396,7 +417,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 15:56:59 GMT"
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -420,7 +441,7 @@
     },
     {
       "Route": "images/1265bb76-99e4-46cb-a050-cdf05c499dfe.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\1265bb76-99e4-46cb-a050-cdf05c499dfe.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\1265bb76-99e4-46cb-a050-cdf05c499dfe.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -441,7 +462,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 15:56:59 GMT"
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -457,7 +478,7 @@
     },
     {
       "Route": "images/300b95f8-6277-435e-a855-751d5e16417a.b416jg37uo.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\300b95f8-6277-435e-a855-751d5e16417a.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\300b95f8-6277-435e-a855-751d5e16417a.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -478,7 +499,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 20 May 2025 01:21:49 GMT"
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -502,7 +523,7 @@
     },
     {
       "Route": "images/300b95f8-6277-435e-a855-751d5e16417a.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\300b95f8-6277-435e-a855-751d5e16417a.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\300b95f8-6277-435e-a855-751d5e16417a.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -523,7 +544,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 20 May 2025 01:21:49 GMT"
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -539,7 +560,7 @@
     },
     {
       "Route": "images/358ee22c-7137-433e-aacf-5d92a423de87.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\358ee22c-7137-433e-aacf-5d92a423de87.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\358ee22c-7137-433e-aacf-5d92a423de87.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -560,7 +581,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 10:46:12 GMT"
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -576,7 +597,7 @@
     },
     {
       "Route": "images/358ee22c-7137-433e-aacf-5d92a423de87.qlntxy9qa0.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\358ee22c-7137-433e-aacf-5d92a423de87.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\358ee22c-7137-433e-aacf-5d92a423de87.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -597,7 +618,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 10:46:12 GMT"
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -621,7 +642,7 @@
     },
     {
       "Route": "images/381c2035-7ee7-47a1-8b4e-ad0ca3f091d9.bw4pfageko.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\381c2035-7ee7-47a1-8b4e-ad0ca3f091d9.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\381c2035-7ee7-47a1-8b4e-ad0ca3f091d9.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -642,7 +663,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 13:34:03 GMT"
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -666,7 +687,7 @@
     },
     {
       "Route": "images/381c2035-7ee7-47a1-8b4e-ad0ca3f091d9.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\381c2035-7ee7-47a1-8b4e-ad0ca3f091d9.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\381c2035-7ee7-47a1-8b4e-ad0ca3f091d9.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -687,7 +708,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 13:34:03 GMT"
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -703,7 +724,7 @@
     },
     {
       "Route": "images/3858db84-3b2f-41ad-b6e5-e2c5604fb822.1016r3q85s.png",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\3858db84-3b2f-41ad-b6e5-e2c5604fb822.png",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\3858db84-3b2f-41ad-b6e5-e2c5604fb822.png",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -724,7 +745,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 16 May 2025 09:15:01 GMT"
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -748,7 +769,7 @@
     },
     {
       "Route": "images/3858db84-3b2f-41ad-b6e5-e2c5604fb822.png",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\3858db84-3b2f-41ad-b6e5-e2c5604fb822.png",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\3858db84-3b2f-41ad-b6e5-e2c5604fb822.png",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -769,7 +790,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 16 May 2025 09:15:01 GMT"
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -785,7 +806,7 @@
     },
     {
       "Route": "images/3b7f1201-a0ce-4864-88ec-75b35020c29f.1016r3q85s.png",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\3b7f1201-a0ce-4864-88ec-75b35020c29f.png",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\3b7f1201-a0ce-4864-88ec-75b35020c29f.png",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -806,7 +827,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 16 May 2025 09:15:02 GMT"
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -830,7 +851,7 @@
     },
     {
       "Route": "images/3b7f1201-a0ce-4864-88ec-75b35020c29f.png",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\3b7f1201-a0ce-4864-88ec-75b35020c29f.png",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\3b7f1201-a0ce-4864-88ec-75b35020c29f.png",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -851,7 +872,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 16 May 2025 09:15:02 GMT"
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -867,7 +888,7 @@
     },
     {
       "Route": "images/653a181d-3bfa-4a30-b542-4ea5b9f980fd.7r3a5msgvm.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\653a181d-3bfa-4a30-b542-4ea5b9f980fd.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\653a181d-3bfa-4a30-b542-4ea5b9f980fd.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -888,7 +909,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 15:58:25 GMT"
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -912,7 +933,7 @@
     },
     {
       "Route": "images/653a181d-3bfa-4a30-b542-4ea5b9f980fd.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\653a181d-3bfa-4a30-b542-4ea5b9f980fd.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\653a181d-3bfa-4a30-b542-4ea5b9f980fd.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -933,7 +954,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 15:58:25 GMT"
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -948,8 +969,90 @@
       ]
     },
     {
+      "Route": "images/68e4f2d5-dd6f-4d2e-8660-17f132d5bb84.png",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\68e4f2d5-dd6f-4d2e-8660-17f132d5bb84.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2657"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"8+Jx0a2pT2q6SuvvkDIYsF2Wzc7mLFw8Q7hLKMzvP9E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-8+Jx0a2pT2q6SuvvkDIYsF2Wzc7mLFw8Q7hLKMzvP9E="
+        }
+      ]
+    },
+    {
+      "Route": "images/68e4f2d5-dd6f-4d2e-8660-17f132d5bb84.xnr0hg2id1.png",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\68e4f2d5-dd6f-4d2e-8660-17f132d5bb84.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2657"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"8+Jx0a2pT2q6SuvvkDIYsF2Wzc7mLFw8Q7hLKMzvP9E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "xnr0hg2id1"
+        },
+        {
+          "Name": "label",
+          "Value": "images/68e4f2d5-dd6f-4d2e-8660-17f132d5bb84.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-8+Jx0a2pT2q6SuvvkDIYsF2Wzc7mLFw8Q7hLKMzvP9E="
+        }
+      ]
+    },
+    {
       "Route": "images/7af98ccf-657e-4649-ac9d-e814b0761afa.3ll1xlifz4.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\7af98ccf-657e-4649-ac9d-e814b0761afa.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\7af98ccf-657e-4649-ac9d-e814b0761afa.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -970,7 +1073,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 13 May 2025 01:22:57 GMT"
+          "Value": "Thu, 22 May 2025 02:58:23 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -994,7 +1097,7 @@
     },
     {
       "Route": "images/7af98ccf-657e-4649-ac9d-e814b0761afa.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\7af98ccf-657e-4649-ac9d-e814b0761afa.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\7af98ccf-657e-4649-ac9d-e814b0761afa.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -1015,7 +1118,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 13 May 2025 01:22:57 GMT"
+          "Value": "Thu, 22 May 2025 02:58:23 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1031,7 +1134,7 @@
     },
     {
       "Route": "images/a35c4c33-f56f-492c-b4d3-40de7191770d.b416jg37uo.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\a35c4c33-f56f-492c-b4d3-40de7191770d.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\a35c4c33-f56f-492c-b4d3-40de7191770d.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -1052,7 +1155,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 13 May 2025 01:22:57 GMT"
+          "Value": "Thu, 22 May 2025 02:58:23 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1076,7 +1179,7 @@
     },
     {
       "Route": "images/a35c4c33-f56f-492c-b4d3-40de7191770d.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\a35c4c33-f56f-492c-b4d3-40de7191770d.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\a35c4c33-f56f-492c-b4d3-40de7191770d.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -1097,7 +1200,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 13 May 2025 01:22:57 GMT"
+          "Value": "Thu, 22 May 2025 02:58:23 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1113,7 +1216,7 @@
     },
     {
       "Route": "images/ae91ea51-cc8f-4e90-9317-79c6b853f741.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\ae91ea51-cc8f-4e90-9317-79c6b853f741.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\ae91ea51-cc8f-4e90-9317-79c6b853f741.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -1134,7 +1237,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 14 May 2025 15:45:37 GMT"
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1150,7 +1253,7 @@
     },
     {
       "Route": "images/ae91ea51-cc8f-4e90-9317-79c6b853f741.s2q5rhcd8h.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\ae91ea51-cc8f-4e90-9317-79c6b853f741.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\ae91ea51-cc8f-4e90-9317-79c6b853f741.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -1171,7 +1274,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 14 May 2025 15:45:37 GMT"
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1195,7 +1298,7 @@
     },
     {
       "Route": "images/e805ddf3-600f-46af-8ecf-4118426d34d8.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\e805ddf3-600f-46af-8ecf-4118426d34d8.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\e805ddf3-600f-46af-8ecf-4118426d34d8.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -1216,7 +1319,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 15:46:48 GMT"
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1232,7 +1335,7 @@
     },
     {
       "Route": "images/e805ddf3-600f-46af-8ecf-4118426d34d8.n3uao9q459.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\e805ddf3-600f-46af-8ecf-4118426d34d8.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\e805ddf3-600f-46af-8ecf-4118426d34d8.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -1253,7 +1356,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 17 May 2025 15:46:48 GMT"
+          "Value": "Thu, 22 May 2025 03:01:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1277,7 +1380,7 @@
     },
     {
       "Route": "images/f799a4a6-4ac3-43d2-80d4-03efd948eec9.9lnlo03ymp.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\f799a4a6-4ac3-43d2-80d4-03efd948eec9.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\f799a4a6-4ac3-43d2-80d4-03efd948eec9.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -1298,7 +1401,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 13 May 2025 01:22:57 GMT"
+          "Value": "Thu, 22 May 2025 02:58:23 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1322,7 +1425,7 @@
     },
     {
       "Route": "images/f799a4a6-4ac3-43d2-80d4-03efd948eec9.jpg",
-      "AssetFile": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\wwwroot\\images\\f799a4a6-4ac3-43d2-80d4-03efd948eec9.jpg",
+      "AssetFile": "D:\\Test_react_app\\DoAnCoSo\\Backend\\wwwroot\\images\\f799a4a6-4ac3-43d2-80d4-03efd948eec9.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -1343,7 +1446,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 13 May 2025 01:22:57 GMT"
+          "Value": "Thu, 22 May 2025 02:58:23 GMT"
         },
         {
           "Name": "Cache-Control",

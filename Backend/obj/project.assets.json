@@ -43,7 +43,9 @@
             "related": ".xml"
           }
         },
-        "frameworkReferences": ["Microsoft.AspNetCore.App"]
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
       },
       "Microsoft.Bcl.AsyncInterfaces/7.0.0": {
         "type": "package",
@@ -3122,30 +3124,31 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\fptshop\\.nuget\\packages\\": {},
+    "C:\\Users\\MY DELL\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\Backend.csproj",
+      "projectUniqueName": "D:\\Test_react_app\\DoAnCoSo\\Backend\\Backend.csproj",
       "projectName": "Backend",
-      "projectPath": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\Backend.csproj",
-      "packagesPath": "C:\\Users\\fptshop\\.nuget\\packages\\",
-      "outputPath": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\obj\\",
+      "projectPath": "D:\\Test_react_app\\DoAnCoSo\\Backend\\Backend.csproj",
+      "packagesPath": "C:\\Users\\MY DELL\\.nuget\\packages\\",
+      "outputPath": "D:\\Test_react_app\\DoAnCoSo\\Backend\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\fptshop\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\MY DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
-      "originalTargetFrameworks": ["net9.0"],
+      "originalTargetFrameworks": [
+        "net9.0"
+      ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3155,7 +3158,9 @@
         }
       },
       "warningProperties": {
-        "warnAsError": ["NU1605"]
+        "warnAsError": [
+          "NU1605"
+        ]
       },
       "restoreAuditProperties": {
         "enableAudit": "true",
@@ -3220,7 +3225,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
