@@ -20,7 +20,9 @@ namespace Backend.Models
         public decimal Gia { get; set; }
 
         [Required]
-        public string? LoaiMon { get; set; } // Loại món có thể là không null
+        [ForeignKey("LoaiMon")]
+        public int MaLoai { get; set; }
+        public LoaiMon LoaiMon { get; set; }
 
         [Required]
         public string? HinhAnh { get; set; } // Hình ảnh không cần nullable nếu bắt buộc

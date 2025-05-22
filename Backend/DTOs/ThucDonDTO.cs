@@ -12,7 +12,7 @@ namespace Backend.DTOs
         public decimal Gia { get; set; }
 
         [Required]
-        public string LoaiMon { get; set; } = string.Empty;
+        public int MaLoai { get; set; }  // Thay đổi từ string LoaiMon sang int MaLoai
 
         public string? MoTa { get; set; }
 

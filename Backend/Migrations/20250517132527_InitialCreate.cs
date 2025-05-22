@@ -94,6 +94,24 @@ namespace Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "LoaiMon",
+                columns: table => new
+                {
+                    MaLoai = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TenLoai = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    HinhAnh = table.Column<string>(type: "text", nullable: false),
+                    NgayTao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    NgayCapNhat = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    NguoiTao = table.Column<string>(type: "text", nullable: true),
+                    NguoiCapNhat = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LoaiMon", x => x.MaLoai);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Role",
                 columns: table => new
                 {
@@ -194,7 +212,7 @@ namespace Backend.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     TenMon = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Gia = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
-                    LoaiMon = table.Column<string>(type: "text", nullable: false),
+                    MaLoai = table.Column<int>(type: "integer", nullable: false),
                     HinhAnh = table.Column<string>(type: "text", nullable: false),
                     TrangThai = table.Column<string>(type: "text", nullable: false),
                     SoLuongTon = table.Column<int>(type: "integer", nullable: false),
@@ -212,6 +230,12 @@ namespace Backend.Migrations
                         column: x => x.KhuyenMaiMaKM,
                         principalTable: "KhuyenMai",
                         principalColumn: "MaKM");
+                    table.ForeignKey(
+                        name: "FK_ThucDon_LoaiMon_MaLoai",
+                        column: x => x.MaLoai,
+                        principalTable: "LoaiMon",
+                        principalColumn: "MaLoai",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -483,6 +507,11 @@ namespace Backend.Migrations
                 column: "KhuyenMaiMaKM");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ThucDon_MaLoai",
+                table: "ThucDon",
+                column: "MaLoai");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ThucDon_TenMon",
                 table: "ThucDon",
                 column: "TenMon");
@@ -529,6 +558,9 @@ namespace Backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "KhuyenMai");
+
+            migrationBuilder.DropTable(
+                name: "LoaiMon");
 
             migrationBuilder.DropTable(
                 name: "KhachHang");

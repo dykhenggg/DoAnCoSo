@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "xwHqQhupA2k=",
+  "dgSpecHash": "xBIcB0nMlSA=",
   "success": true,
-  "projectFilePath": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\Back-end.csproj",
+  "projectFilePath": "D:\\ĐỒ ÁN CƠ SỞ\\DoAnCoSo\\Backend\\Backend.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\fptshop\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\fptshop\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

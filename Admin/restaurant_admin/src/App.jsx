@@ -1,17 +1,22 @@
 import React, { useState } from "react";
-import Navbar from "./components/Navbar/Navbar";
-import Sidebar from "./components/Sidebar/Sidebar";
 import { Route, Routes } from "react-router-dom";
-import Add from "./pages/Add/Add";
-import List from "./pages/List/List";
-import Order from "./pages/Order/Order";
-import Employees from "./pages/Employees/Employees";
-import Shifts from "./pages/Shifts/Shifts";
-import Storage from "./pages/Storage/Storage";
-import Login from "./components/Login/Login";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Menu from "./pages/Menu/Menu";
+
+// Components
+import Navbar from "./components/Navbar/Navbar";
+import Sidebar from "./components/Sidebar/Sidebar";
+import Login from "./components/Login/Login";
+
+// Pages
+import Dashboard from "./pages/Dashboard/Dashboard";
+import Foods from "./pages/Foods/Foods";
+import Categories from "./pages/Categories/Categories";
+import Order from "./pages/Order/Order";
+import Departments from "./pages/Departments/Departments";
+import Shifts from "./pages/Shifts/Shifts";
+import Storage from "./pages/Storage/Storage";
+// import Employees from "./pages/Employees/Employees";
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(true);
@@ -24,13 +29,14 @@ const App = () => {
       <div className="app-content">
         <Sidebar />
         <Routes>
-          <Route path="/add" element={<Add />} />
-          <Route path="/foodlist" element={<List />} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/foods" element={<Foods />} />
+          <Route path="/categories" element={<Categories />} />
           <Route path="/order" element={<Order />} />
-          <Route path="/employees" element={<Employees />} />
+          <Route path="/departments" element={<Departments />} />
           <Route path="/shifts" element={<Shifts />} />
           <Route path="/storage" element={<Storage />} />
-          <Route path="/menu" element={<Menu />} />
+          {/* <Route path="/employees" element={<Employees />} /> */}
         </Routes>
       </div>
     </div>
