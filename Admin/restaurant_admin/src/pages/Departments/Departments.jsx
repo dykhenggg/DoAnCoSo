@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import "./Departments.css";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Departments = () => {
+  const navigate = useNavigate();
   const [departments, setDepartments] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -168,6 +170,13 @@ const Departments = () => {
     <div className="departments-container">
       <div className="departments-header">
         <div className="header-left">
+          <button
+            className="back-button"
+            onClick={() => navigate("/human-resources")}
+          >
+            <i className="fas fa-arrow-left"></i>
+            Quay về
+          </button>
           <h2>Quản lý bộ phận</h2>
           <span className="total-count">{departments.length} bộ phận</span>
         </div>
@@ -345,9 +354,6 @@ const Departments = () => {
                         <td>{emp.email}</td>
                         <td>{emp.soDienThoai}</td>
                         <td>{emp.diaChi}</td>
-                        <td>
-                          {emp.trangThai ? "Đang làm việc" : "Đã nghỉ việc"}
-                        </td>
                       </tr>
                     ))
                   )}

@@ -4,6 +4,5 @@ namespace Backend.Models.Enums
     {
         public const string QuanLy = "QuanLy";
         public const string NhanVien = "NhanVien";
-        public const string KhachHang = "KhachHang";
     }
 }

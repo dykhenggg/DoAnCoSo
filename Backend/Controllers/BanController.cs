@@ -46,7 +46,7 @@ namespace Backend.Controllers
             {
                 TenBan = dto.TenBan,
                 SucChua = dto.SucChua,
-                TrangThai = true
+                TrangThai = false
             };
 
             _context.Ban.Add(ban);
@@ -102,10 +102,33 @@ namespace Backend.Controllers
             if (coLichDat)
                 return BadRequest("Không thể xóa bàn đang được đặt");
 
-            _context.Ban.Remove(ban);
-            await _context.SaveChangesAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                _context.Ban.Remove(ban);
+                await _context.SaveChangesAsync();
 
-            return NoContent();
+                // Lấy danh sách các bàn còn lại và sắp xếp theo mã bàn
+                var remainingTables = await _context.Ban
+                    .OrderBy(b => b.MaBan)
+                    .ToListAsync();
+
+                // Cập nhật lại mã bàn
+                for (int i = 0; i < remainingTables.Count; i++)
+                {
+                    remainingTables[i].MaBan = i + 1;
+                }
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
     }
 }

@@ -1,63 +1,96 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Employees.css";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const Employees = () => {
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [employees, setEmployees] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showAddModal, setShowAddModal] = useState(false);
-
-  const employees = [
-    {
-      id: 1,
-      name: "John Smith",
-      position: "Chef",
-      email: "john.smith@restaurant.com",
-      phone: "+1 (555) 123-4567",
-      hireDate: "2023-01-15",
-      department: "Kitchen",
-      address: "123 Main St, City, State",
-      emergencyContact: "Jane Smith (Spouse) - +1 (555) 987-6543",
-    },
-    {
-      id: 2,
-      name: "Sarah Johnson",
-      position: "Server",
-      email: "sarah.j@restaurant.com",
-      phone: "+1 (555) 234-5678",
-      hireDate: "2023-02-20",
-      department: "Service",
-      address: "456 Oak St, City, State",
-      emergencyContact: "Tom Johnson (Spouse) - +1 (555) 876-5432",
-    },
-    {
-      id: 3,
-      name: "Michael Brown",
-      position: "Manager",
-      email: "michael.b@restaurant.com",
-      phone: "+1 (555) 345-6789",
-      hireDate: "2023-03-10",
-      department: "Management",
-      address: "789 Pine St, City, State",
-      emergencyContact: "Lisa Brown (Spouse) - +1 (555) 765-4321",
-    },
-  ];
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
 
   const [newEmployee, setNewEmployee] = useState({
-    name: "",
-    position: "",
+    hoTen: "",
     email: "",
-    phone: "",
-    hireDate: "",
-    department: "",
-    address: "",
-    emergencyContact: "",
+    SDT: "",
+    diaChi: "",
+    maBoPhan: "",
+    chucVu: "",
+    matKhau: "",
   });
 
-  const handleDetails = (employee) => {
-    setSelectedEmployee(employee);
-    setShowDetailsModal(true);
+  const handleAddEmployee = async (e) => {
+    e.preventDefault();
+
+    // Validation đầy đủ
+    if (!newEmployee.hoTen.trim()) {
+      toast.error("Vui lòng nhập họ tên");
+      return;
+    }
+    if (!newEmployee.email.trim()) {
+      toast.error("Vui lòng nhập email");
+      return;
+    }
+    if (!newEmployee.soDienThoai.trim()) {
+      toast.error("Vui lòng nhập số điện thoại");
+      return;
+    }
+    if (!newEmployee.maBoPhan) {
+      toast.error("Vui lòng chọn bộ phận");
+      return;
+    }
+    if (!newEmployee.chucVu.trim()) {
+      toast.error("Vui lòng nhập chức vụ");
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newEmployee.email.trim())) {
+      toast.error("Email không hợp lệ");
+      return;
+    }
+
+    // Validate phone number format (10 digits)
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(newEmployee.soDienThoai.trim())) {
+      toast.error("Số điện thoại phải có 10 chữ số");
+      return;
+    }
+
+    try {
+      const employeeData = {
+        HoTen: newEmployee.hoTen.trim(),
+        Email: newEmployee.email.trim().toLowerCase(),
+        SDT: newEmployee.soDienThoai.trim(),
+        DiaChi: newEmployee.diaChi.trim(),
+        MaBoPhan: parseInt(newEmployee.maBoPhan),
+        ChucVu: newEmployee.chucVu.trim(),
+        MatKhau: newEmployee.matKhau,
+      };
+
+      const response = await axios.post(
+        "http://localhost:5078/api/NhanVien",
+        employeeData
+      );
+
+      if (response.status === 201) {
+        toast.success("Thêm nhân viên thành công");
+        await fetchEmployees();
+        handleCloseModal();
+      }
+    } catch (error) {
+      if (error.response?.data) {
+        toast.error(error.response.data);
+      } else {
+        toast.error("Lỗi khi thêm nhân viên");
+      }
+    }
   };
 
   const handleEdit = (employee) => {
@@ -65,35 +98,27 @@ const Employees = () => {
     setShowEditModal(true);
   };
 
-  const handleDelete = (employee) => {
-    setSelectedEmployee(employee);
-    setShowDeleteModal(true);
-  };
-
-  const handleAdd = () => {
-    setNewEmployee({
-      name: "",
-      position: "",
-      email: "",
-      phone: "",
-      hireDate: "",
-      department: "",
-      address: "",
-      emergencyContact: "",
-    });
-    setShowAddModal(true);
-  };
-
-  const handleAddSubmit = (e) => {
-    e.preventDefault();
-    // Add API call to create new employee
-    console.log("New employee:", newEmployee);
+  const handleCloseModal = () => {
     setShowAddModal(false);
+    setShowEditModal(false);
+    setShowDeleteModal(false);
+    setSelectedEmployee(null);
+    setNewEmployee({
+      hoTen: "",
+      email: "",
+      soDienThoai: "",
+      diaChi: "",
+      ngaySinh: "",
+      gioiTinh: true,
+      maBoPhan: "",
+      chucVu: "",
+      matKhau: "123456",
+    });
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (selectedEmployee) {
+    if (showEditModal) {
       setSelectedEmployee((prev) => ({
         ...prev,
         [name]: value,
@@ -106,205 +131,244 @@ const Employees = () => {
     }
   };
 
-  const handleEditSubmit = (e) => {
-    e.preventDefault();
-    // Add API call to update employee
-    console.log("Updated employee:", selectedEmployee);
-    setShowEditModal(false);
+  const fetchEmployees = async () => {
+    try {
+      const response = await axios.get("http://localhost:5078/api/NhanVien");
+      if (response.data) {
+        setEmployees(response.data);
+      }
+    } catch (error) {
+      toast.error("Lỗi khi tải danh sách nhân viên");
+    }
   };
 
-  const handleDeleteConfirm = () => {
-    // Add API call to delete employee
-    console.log("Deleting employee:", selectedEmployee.id);
-    setShowDeleteModal(false);
+  const fetchDepartments = async () => {
+    try {
+      const response = await axios.get("http://localhost:5078/api/BoPhan");
+      if (response.data) {
+        setDepartments(response.data);
+      }
+    } catch (error) {
+      toast.error("Lỗi khi tải danh sách bộ phận");
+    }
   };
+
+  useEffect(() => {
+    fetchEmployees();
+    fetchDepartments();
+  }, []);
+
+  const handleEditEmployee = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(
+        `http://localhost:5078/api/NhanVien/${selectedEmployee.maNhanVien}`,
+        selectedEmployee
+      );
+      toast.success("Cập nhật nhân viên thành công");
+      fetchEmployees();
+      handleCloseModal();
+    } catch (error) {
+      toast.error("Lỗi khi cập nhật nhân viên");
+    }
+  };
+
+  const handleDeleteEmployee = async () => {
+    try {
+      await axios.delete(
+        `http://localhost:5078/api/NhanVien/${selectedEmployee.maNhanVien}`
+      );
+      toast.success("Xóa nhân viên thành công");
+      fetchEmployees();
+      handleCloseModal();
+    } catch (error) {
+      toast.error("Lỗi khi xóa nhân viên");
+    }
+  };
+
+  // Tìm kiếm và phân trang
+  const filteredEmployees = employees.filter(
+    (employee) =>
+      employee.hoTen.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      employee.soDienThoai.includes(searchTerm) ||
+      employee.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredEmployees.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const totalPages = Math.ceil(filteredEmployees.length / itemsPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="employees-container">
       <div className="employees-header">
-        <h2>Employee List</h2>
+        <div className="header-left">
+          <h2>Quản lý nhân viên</h2>
+          <span className="total-count">{employees.length} nhân viên</span>
+        </div>
+        <div className="header-right">
+          <input
+            type="text"
+            placeholder="Tìm kiếm..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          <button className="add-button" onClick={() => setShowAddModal(true)}>
+            <i className="fas fa-plus"></i> Thêm nhân viên
+          </button>
+        </div>
       </div>
-      <table className="employees-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Position</th>
-            <th>Email</th>
-            <th>Phone Number</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {employees.map((employee) => (
-            <tr key={employee.id}>
-              <td>{employee.id}</td>
-              <td>{employee.name}</td>
-              <td>{employee.position}</td>
-              <td>{employee.email}</td>
-              <td>{employee.phone}</td>
-              <td className="action-buttons">
-                <button
-                  className="btn-details"
-                  onClick={() => handleDetails(employee)}
-                >
-                  Details
-                </button>
-                <button
-                  className="btn-edit"
-                  onClick={() => handleEdit(employee)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="btn-delete"
-                  onClick={() => handleDelete(employee)}
-                >
-                  Delete
-                </button>
-              </td>
+
+      <div className="employees-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Họ tên</th>
+              <th>Số điện thoại</th>
+              <th>Email</th>
+              <th>Bộ phận</th>
+              <th>Chức vụ</th>
+              <th>Thao tác</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div className="floating-add-button">
-        <button className="btn-add" onClick={handleAdd}>
-          Add Employee
-        </button>
+          </thead>
+          <tbody>
+            {currentItems.map((employee) => (
+              <tr key={employee.maNhanVien}>
+                <td>{employee.hoTen}</td>
+                <td>{employee.soDienThoai}</td>
+                <td>{employee.email}</td>
+                <td>
+                  {
+                    departments.find((d) => d.maBoPhan === employee.maBoPhan)
+                      ?.tenBoPhan
+                  }
+                </td>
+                <td>{employee.chucVu}</td>
+                <td>
+                  <button
+                    className="edit-button"
+                    onClick={() => handleEdit(employee)}
+                  >
+                    <i className="fas fa-edit"></i>
+                  </button>
+                  <button
+                    className="delete-button"
+                    onClick={() => {
+                      setSelectedEmployee(employee);
+                      setShowDeleteModal(true);
+                    }}
+                  >
+                    <i className="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      {/* Cua so chuc nang add nhan vien */}
+      <div className="pagination">
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i + 1}
+            onClick={() => paginate(i + 1)}
+            className={currentPage === i + 1 ? "active" : ""}
+          >
+            {i + 1}
+          </button>
+        ))}
+      </div>
+
+      {/* Add Modal */}
       {showAddModal && (
-        <div className="modal-overlay">
+        <div className="modal">
           <div className="modal-content">
-            <div className="modal-header">
-              <h3>Add New Employee</h3>
-              <button
-                className="btn-close"
-                onClick={() => setShowAddModal(false)}
-              >
-                ×
-              </button>
-            </div>
-            <form onSubmit={handleAddSubmit} className="modal-body">
-              <div className="form-section">
-                <h4>Personal Information</h4>
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="name">Name</label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={newEmployee.name}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="position">Position</label>
-                    <input
-                      type="text"
-                      id="position"
-                      name="position"
-                      value={newEmployee.position}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="department">Department</label>
-                    <input
-                      type="text"
-                      id="department"
-                      name="department"
-                      value={newEmployee.department}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                </div>
+            <h2>Thêm nhân viên mới</h2>
+            <form onSubmit={handleAddEmployee}>
+              <div className="form-group">
+                <label>Họ tên:</label>
+                <input
+                  type="text"
+                  name="hoTen"
+                  value={newEmployee.hoTen}
+                  onChange={handleInputChange}
+                  required
+                />
               </div>
-              <div className="form-section">
-                <h4>Contact Information</h4>
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="email">Email</label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={newEmployee.email}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="phone">Phone</label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={newEmployee.phone}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="address">Address</label>
-                    <input
-                      type="text"
-                      id="address"
-                      name="address"
-                      value={newEmployee.address}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                </div>
+              <div className="form-group">
+                <label>Email:</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={newEmployee.email}
+                  onChange={handleInputChange}
+                  required
+                />
               </div>
-              <div className="form-section">
-                <h4>Additional Information</h4>
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="hireDate">Hire Date</label>
-                    <input
-                      type="date"
-                      id="hireDate"
-                      name="hireDate"
-                      value={newEmployee.hireDate}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="emergencyContact">Emergency Contact</label>
-                    <input
-                      type="text"
-                      id="emergencyContact"
-                      name="emergencyContact"
-                      value={newEmployee.emergencyContact}
-                      onChange={handleInputChange}
-                      required
-                      placeholder="Name (Relationship) - Phone"
-                    />
-                  </div>
-                </div>
+              <div className="form-group">
+                <label>Số điện thoại:</label>
+                <input
+                  type="tel"
+                  name="soDienThoai"
+                  value={newEmployee.soDienThoai}
+                  onChange={handleInputChange}
+                  required
+                />
               </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn-cancel"
-                  onClick={() => setShowAddModal(false)}
+              <div className="form-group">
+                <label>Địa chỉ:</label>
+                <input
+                  type="text"
+                  name="diaChi"
+                  value={newEmployee.diaChi}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="form-group">
+                <label>Bộ phận:</label>
+                <select
+                  name="maBoPhan"
+                  value={newEmployee.maBoPhan}
+                  onChange={handleInputChange}
+                  required
                 >
-                  Cancel
+                  <option value="">Chọn bộ phận</option>
+                  {departments.map((department) => (
+                    <option
+                      key={department.maBoPhan}
+                      value={department.maBoPhan}
+                    >
+                      {department.tenBoPhan}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Chức vụ:</label>
+                <input
+                  type="text"
+                  name="chucVu"
+                  value={newEmployee.chucVu}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="modal-actions">
+                <button type="submit" className="submit-button">
+                  Thêm
                 </button>
                 <button
-                  type="submit"
-                  className="btn-save"
+                  type="button"
+                  className="cancel-button"
+                  onClick={handleCloseModal}
                 >
-                  Add Employee
+                  Hủy
                 </button>
               </div>
             </form>
@@ -312,203 +376,113 @@ const Employees = () => {
         </div>
       )}
 
-      {/* cua so chuc nang xem chi tiet nhan vien */}
-      {showDetailsModal && selectedEmployee && (
-        <div className="modal-overlay">
+      {/* Edit Modal */}
+      {showEditModal && (
+        <div className="modal">
           <div className="modal-content">
-            <div className="modal-header">
-              <h3>Employee Details</h3>
-              <button
-                className="btn-close"
-                onClick={() => setShowDetailsModal(false)}
-              >
-                ×
-              </button>
-            </div>
-            <div className="modal-body">
-              <div className="details-section">
-                <h4>Personal Information</h4>
-                <div className="info-grid">
-                  <div className="info-item">
-                    <label>ID:</label>
-                    <span>{selectedEmployee.id}</span>
-                  </div>
-                  <div className="info-item">
-                    <label>Name:</label>
-                    <span>{selectedEmployee.name}</span>
-                  </div>
-                  <div className="info-item">
-                    <label>Position:</label>
-                    <span>{selectedEmployee.position}</span>
-                  </div>
-                  <div className="info-item">
-                    <label>Department:</label>
-                    <span>{selectedEmployee.department}</span>
-                  </div>
-                </div>
+            <h2>Chỉnh sửa nhân viên</h2>
+            <form onSubmit={handleEditEmployee}>
+              <div className="form-group">
+                <label>Họ tên:</label>
+                <input
+                  type="text"
+                  name="hoTen"
+                  value={selectedEmployee.hoTen}
+                  onChange={handleInputChange}
+                  required
+                />
               </div>
-              <div className="details-section">
-                <h4>Contact Information</h4>
-                <div className="info-grid">
-                  <div className="info-item">
-                    <label>Email:</label>
-                    <span>{selectedEmployee.email}</span>
-                  </div>
-                  <div className="info-item">
-                    <label>Phone:</label>
-                    <span>{selectedEmployee.phone}</span>
-                  </div>
-                  <div className="info-item">
-                    <label>Address:</label>
-                    <span>{selectedEmployee.address}</span>
-                  </div>
-                </div>
+              <div className="form-group">
+                <label>Số điện thoại:</label>
+                <input
+                  type="tel"
+                  name="soDienThoai"
+                  value={selectedEmployee.soDienThoai}
+                  onChange={handleInputChange}
+                  required
+                />
               </div>
-              <div className="details-section">
-                <h4>Additional Information</h4>
-                <div className="info-grid">
-                  <div className="info-item">
-                    <label>Hire Date:</label>
-                    <span>{selectedEmployee.hireDate}</span>
-                  </div>
-                  <div className="info-item">
-                    <label>Emergency Contact:</label>
-                    <span>{selectedEmployee.emergencyContact}</span>
-                  </div>
-                </div>
+              <div className="form-group">
+                <label>Email:</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={selectedEmployee.email}
+                  onChange={handleInputChange}
+                  required
+                />
               </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* cua so chuc nang sua thong tin nhan vien */}
-      {showEditModal && selectedEmployee && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h3>Edit Employee</h3>
-              <button
-                className="btn-close"
-                onClick={() => setShowEditModal(false)}
-              >
-                ×
-              </button>
-            </div>
-            <form onSubmit={handleEditSubmit} className="modal-body">
-              <div className="form-section">
-                <h4>Personal Information</h4>
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="name">Name</label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={selectedEmployee.name}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="position">Position</label>
-                    <input
-                      type="text"
-                      id="position"
-                      name="position"
-                      value={selectedEmployee.position}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="department">Department</label>
-                    <input
-                      type="text"
-                      id="department"
-                      name="department"
-                      value={selectedEmployee.department}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                </div>
+              <div className="form-group">
+                <label>Địa chỉ:</label>
+                <input
+                  type="text"
+                  name="diaChi"
+                  value={selectedEmployee.diaChi}
+                  onChange={handleInputChange}
+                  required
+                />
               </div>
-              <div className="form-section">
-                <h4>Contact Information</h4>
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="email">Email</label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={selectedEmployee.email}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="phone">Phone</label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={selectedEmployee.phone}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="address">Address</label>
-                    <input
-                      type="text"
-                      id="address"
-                      name="address"
-                      value={selectedEmployee.address}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                </div>
+              <div className="form-group">
+                <label>Ngày sinh:</label>
+                <input
+                  type="date"
+                  name="ngaySinh"
+                  value={selectedEmployee.ngaySinh}
+                  onChange={handleInputChange}
+                  required
+                />
               </div>
-              <div className="form-section">
-                <h4>Additional Information</h4>
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="hireDate">Hire Date</label>
-                    <input
-                      type="date"
-                      id="hireDate"
-                      name="hireDate"
-                      value={selectedEmployee.hireDate}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="emergencyContact">Emergency Contact</label>
-                    <input
-                      type="text"
-                      id="emergencyContact"
-                      name="emergencyContact"
-                      value={selectedEmployee.emergencyContact}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                </div>
+              <div className="form-group">
+                <label>Giới tính:</label>
+                <select
+                  name="gioiTinh"
+                  value={selectedEmployee.gioiTinh}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value={true}>Nam</option>
+                  <option value={false}>Nữ</option>
+                </select>
               </div>
-              <div className="modal-footer">
+              <div className="form-group">
+                <label>Bộ phận:</label>
+                <select
+                  name="maBoPhan"
+                  value={selectedEmployee.maBoPhan}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">Chọn bộ phận</option>
+                  {departments.map((department) => (
+                    <option
+                      key={department.maBoPhan}
+                      value={department.maBoPhan}
+                    >
+                      {department.tenBoPhan}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Chức vụ:</label>
+                <input
+                  type="text"
+                  name="chucVu"
+                  value={selectedEmployee.chucVu}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="modal-actions">
+                <button type="submit" className="submit-button">
+                  Lưu
+                </button>
                 <button
                   type="button"
-                  className="btn-cancel"
-                  onClick={() => setShowEditModal(false)}
+                  className="cancel-button"
+                  onClick={handleCloseModal}
                 >
-                  Cancel
-                </button>
-                <button type="submit" className="btn-save">
-                  Save Changes
+                  Hủy
                 </button>
               </div>
             </form>
@@ -516,32 +490,18 @@ const Employees = () => {
         </div>
       )}
 
-      {/* cua so chuc nang xoa nhan vien */}
-      {showDeleteModal && selectedEmployee && (
-        <div className="modal-overlay">
-          <div className="modal-content delete-modal">
-            <div className="modal-header">
-              <h3>Delete Employee</h3>
-              <button
-                className="btn-close"
-                onClick={() => setShowDeleteModal(false)}
-              >
-                ×
+      {/* Delete Modal */}
+      {showDeleteModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Xác nhận xóa</h2>
+            <p>Bạn có chắc chắn muốn xóa nhân viên này?</p>
+            <div className="modal-actions">
+              <button className="delete-button" onClick={handleDeleteEmployee}>
+                Xóa
               </button>
-            </div>
-            <div className="modal-body">
-              <p>Are you sure you want to delete {selectedEmployee.name}?</p>
-              <p>This action cannot be undone.</p>
-            </div>
-            <div className="modal-footer">
-              <button
-                className="btn-cancel"
-                onClick={() => setShowDeleteModal(false)}
-              >
-                Cancel
-              </button>
-              <button className="btn-delete" onClick={handleDeleteConfirm}>
-                Delete
+              <button className="cancel-button" onClick={handleCloseModal}>
+                Hủy
               </button>
             </div>
           </div>

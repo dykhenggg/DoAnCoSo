@@ -9,13 +9,84 @@ const Storage = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(8);
+  const [sortField, setSortField] = useState(null);
+  const [sortDirection, setSortDirection] = useState("asc");
+  const [suppliers, setSuppliers] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [showTransactionModal, setShowTransactionModal] = useState(false);
   const [newItem, setNewItem] = useState({
     tenNguyenLieu: "",
     soLuong: 0,
     donVi: "",
     giaNhap: 0,
     nhaCungCap: "",
+    dinhMuc: 0,
+    ghiChu: "",
   });
+
+  const [newTransaction, setNewTransaction] = useState({
+    maNguyenLieu: "",
+    loaiGiaoDich: "nhap", // "nhap" hoặc "xuat"
+    soLuong: 0,
+    ngayGiaoDich: new Date().toISOString().split("T")[0],
+    ghiChu: "",
+  });
+
+  // Lọc và sắp xếp dữ liệu
+  const filteredItems = storage.filter(
+    (item) =>
+      item.tenNguyenLieu.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.nhaCungCap.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const sortedItems = sortField
+    ? [...filteredItems].sort((a, b) => {
+        if (sortDirection === "asc") {
+          return a[sortField] > b[sortField] ? 1 : -1;
+        }
+        return a[sortField] < b[sortField] ? 1 : -1;
+      })
+    : filteredItems;
+
+  // Phân trang
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = sortedItems.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(sortedItems.length / itemsPerPage);
+
+  // Xử lý giao dịch kho
+  const handleTransaction = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:5078/api/Kho/giaodich",
+        newTransaction
+      );
+      if (response.status === 200) {
+        toast.success("Giao dịch thành công");
+        fetchStorage();
+        setShowTransactionModal(false);
+      }
+    } catch (error) {
+      toast.error("Lỗi khi thực hiện giao dịch");
+    }
+  };
+
+  // Kiểm kê kho
+  const handleInventoryCheck = async () => {
+    try {
+      const response = await axios.get("http://localhost:5078/api/Kho/kiemke");
+      if (response.status === 200) {
+        toast.success("Kiểm kê kho thành công");
+        setStorage(response.data);
+      }
+    } catch (error) {
+      toast.error("Lỗi khi kiểm kê kho");
+    }
+  };
 
   // Khởi tạo selectedItem khi mở modal chỉnh sửa
   const handleEdit = (item) => {
@@ -165,102 +236,176 @@ const Storage = () => {
           <h2>Quản lý kho</h2>
           <span className="total-count">{storage.length} nguyên liệu</span>
         </div>
-        <button className="add-button" onClick={() => setShowAddModal(true)}>
-          <i className="fas fa-plus"></i> Thêm nguyên liệu
+        <div className="header-right">
+          <div className="search-box">
+            <input
+              type="text"
+              placeholder="Tìm kiếm nguyên liệu..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <button
+            className="transaction-button"
+            onClick={() => setShowTransactionModal(true)}
+          >
+            <i className="fas fa-exchange-alt"></i> Giao dịch kho
+          </button>
+          <button className="inventory-button" onClick={handleInventoryCheck}>
+            <i className="fas fa-clipboard-check"></i> Kiểm kê
+          </button>
+          <button className="add-button" onClick={() => setShowAddModal(true)}>
+            <i className="fas fa-plus"></i> Thêm nguyên liệu
+          </button>
+        </div>
+      </div>
+
+      <div className="storage-table">
+        <table>
+          <thead>
+            <tr>
+              <th onClick={() => handleSort("tenNguyenLieu")}>
+                Tên nguyên liệu
+              </th>
+              <th onClick={() => handleSort("soLuong")}>Số lượng</th>
+              <th onClick={() => handleSort("donVi")}>Đơn vị</th>
+              <th onClick={() => handleSort("dinhMuc")}>Định mức</th>
+              <th onClick={() => handleSort("giaNhap")}>Giá nhập</th>
+              <th onClick={() => handleSort("nhaCungCap")}>Nhà cung cấp</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentItems.map((item) => (
+              <tr key={item.maNguyenLieu}>
+                <td>{item.tenNguyenLieu}</td>
+                <td className={item.soLuong < item.dinhMuc ? "low-stock" : ""}>
+                  {item.soLuong} {item.donVi}
+                </td>
+                <td>{item.donVi}</td>
+                <td>{item.dinhMuc}</td>
+                <td>{item.giaNhap.toLocaleString("vi-VN")} VNĐ</td>
+                <td>{item.nhaCungCap}</td>
+                <td>
+                  <button
+                    className="edit-button"
+                    onClick={() => handleEdit(item)}
+                  >
+                    <i className="fas fa-edit"></i>
+                  </button>
+                  <button
+                    className="delete-button"
+                    onClick={() => {
+                      setSelectedItem(item);
+                      setShowDeleteModal(true);
+                    }}
+                  >
+                    <i className="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="pagination">
+        <button
+          onClick={() => setCurrentPage(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          <i className="fas fa-chevron-left"></i> Trước
+        </button>
+        <span>
+          {currentPage} / {totalPages}
+        </span>
+        <button
+          onClick={() => setCurrentPage(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          Sau <i className="fas fa-chevron-right"></i>
         </button>
       </div>
 
-      <div className="storage-grid">
-        {storage.map((item) => (
-          <div key={item.maNguyenLieu} className="storage-card">
-            <div className="storage-header">
-              <h3>{item.tenNguyenLieu}</h3>
-              <div className="storage-actions">
-                <button
-                  className="edit-button"
-                  onClick={() => handleEdit(item)}
-                >
-                  <i className="fas fa-edit"></i>
-                </button>
-                <button
-                  className="delete-button"
-                  onClick={() => {
-                    setSelectedItem(item);
-                    setShowDeleteModal(true);
-                  }}
-                >
-                  <i className="fas fa-trash"></i>
-                </button>
-              </div>
-            </div>
-            <div className="storage-details">
-              <p><strong>Số lượng:</strong> {item.soLuong} {item.donVi}</p>
-              <p><strong>Giá nhập:</strong> {item.giaNhap.toLocaleString('vi-VN')} VNĐ</p>
-              <p><strong>Nhà cung cấp:</strong> {item.nhaCungCap}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Add Modal */}
-      {showAddModal && (
+      {/* Giữ nguyên các modal hiện có và thêm modal giao dịch kho */}
+      {showTransactionModal && (
         <div className="modal">
           <div className="modal-content">
-            <h3>Thêm nguyên liệu mới</h3>
-            <form onSubmit={handleAddItem}>
+            <h3>Giao dịch kho</h3>
+            <form onSubmit={handleTransaction}>
               <div className="form-group">
-                <label>Tên nguyên liệu:</label>
-                <input
-                  type="text"
-                  name="tenNguyenLieu"
-                  value={newItem.tenNguyenLieu}
-                  onChange={handleInputChange}
-                  required
-                />
+                <label>Loại giao dịch:</label>
+                <select
+                  name="loaiGiaoDich"
+                  value={newTransaction.loaiGiaoDich}
+                  onChange={(e) =>
+                    setNewTransaction({
+                      ...newTransaction,
+                      loaiGiaoDich: e.target.value,
+                    })
+                  }
+                >
+                  <option value="nhap">Nhập kho</option>
+                  <option value="xuat">Xuất kho</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Nguyên liệu:</label>
+                <select
+                  name="maNguyenLieu"
+                  value={newTransaction.maNguyenLieu}
+                  onChange={(e) =>
+                    setNewTransaction({
+                      ...newTransaction,
+                      maNguyenLieu: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">Chọn nguyên liệu</option>
+                  {storage.map((item) => (
+                    <option key={item.maNguyenLieu} value={item.maNguyenLieu}>
+                      {item.tenNguyenLieu}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="form-group">
                 <label>Số lượng:</label>
                 <input
                   type="number"
                   name="soLuong"
-                  value={newItem.soLuong}
-                  onChange={handleInputChange}
+                  value={newTransaction.soLuong}
+                  onChange={(e) =>
+                    setNewTransaction({
+                      ...newTransaction,
+                      soLuong: parseFloat(e.target.value),
+                    })
+                  }
                   required
                 />
               </div>
               <div className="form-group">
-                <label>Đơn vị:</label>
-                <input
-                  type="text"
-                  name="donVi"
-                  value={newItem.donVi}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Giá nhập:</label>
-                <input
-                  type="number"
-                  name="giaNhap"
-                  value={newItem.giaNhap}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Nhà cung cấp:</label>
-                <input
-                  type="text"
-                  name="nhaCungCap"
-                  value={newItem.nhaCungCap}
-                  onChange={handleInputChange}
-                  required
-                />
+                <label>Ghi chú:</label>
+                <textarea
+                  name="ghiChu"
+                  value={newTransaction.ghiChu}
+                  onChange={(e) =>
+                    setNewTransaction({
+                      ...newTransaction,
+                      ghiChu: e.target.value,
+                    })
+                  }
+                ></textarea>
               </div>
               <div className="modal-actions">
-                <button type="submit" className="save-button">Lưu</button>
-                <button type="button" className="cancel-button" onClick={handleCloseModal}>
+                <button type="submit" className="save-button">
+                  Thực hiện
+                </button>
+                <button
+                  type="button"
+                  className="cancel-button"
+                  onClick={() => setShowTransactionModal(false)}
+                >
                   Hủy
                 </button>
               </div>
@@ -268,80 +413,15 @@ const Storage = () => {
           </div>
         </div>
       )}
-
-      {/* Edit Modal */}
-      {showEditModal && selectedItem && (
-        <div className="modal">
-          <div className="modal-content">
-            <h3>Chỉnh sửa nguyên liệu</h3>
-            <form onSubmit={handleEditItem}>
-              <div className="form-group">
-                <label>Tên nguyên liệu:</label>
-                <input
-                  type="text"
-                  name="tenNguyenLieu"
-                  value={selectedItem.tenNguyenLieu}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Số lượng:</label>
-                <input
-                  type="number"
-                  name="soLuong"
-                  value={selectedItem.soLuong}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Đơn vị:</label>
-                <input
-                  type="text"
-                  name="donVi"
-                  value={selectedItem.donVi}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Giá nhập:</label>
-                <input
-                  type="number"
-                  name="giaNhap"
-                  value={selectedItem.giaNhap}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Nhà cung cấp:</label>
-                <input
-                  type="text"
-                  name="nhaCungCap"
-                  value={selectedItem.nhaCungCap}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="modal-actions">
-                <button type="submit" className="save-button">Lưu</button>
-                <button type="button" className="cancel-button" onClick={handleCloseModal}>
-                  Hủy
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
       {/* Delete Modal */}
       {showDeleteModal && selectedItem && (
         <div className="modal">
           <div className="modal-content">
             <h3>Xác nhận xóa</h3>
-            <p>Bạn có chắc chắn muốn xóa nguyên liệu "{selectedItem.tenNguyenLieu}"?</p>
+            <p>
+              Bạn có chắc chắn muốn xóa nguyên liệu "
+              {selectedItem.tenNguyenLieu}"?
+            </p>
             <div className="modal-actions">
               <button className="delete-button" onClick={handleDeleteItem}>
                 Xóa

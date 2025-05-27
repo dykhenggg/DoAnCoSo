@@ -24,7 +24,7 @@ const Menu = ({ category, setCategory }) => {
 
   return (
     <div className="menu" id="menu">
-      <h1>Explore our Menu</h1>
+      <h1>Thực đơn của chúng tôi</h1>
       <div className="menu-list">
         {menuCategories.map((item, index) => {
           return (

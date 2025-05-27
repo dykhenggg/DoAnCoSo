@@ -34,16 +34,16 @@ public class DonHangController : ControllerBase
             decimal tongTien = 0;
             foreach (var item in dto.ChiTietList)
             {
-                var thucDon = await _context.ThucDon.FindAsync(item.MaMon);
-                if (thucDon == null) continue;
+                var monAn = await _context.MonAn.FindAsync(item.MaMon);
+                if (monAn == null) continue;
 
                 var chiTiet = new ChiTietDonHang
                 {
                     MaDonHang = donHang.MaDonHang,
                     MaMon = item.MaMon,
                     SoLuong = item.SoLuong,
-                    DonGia = thucDon.Gia,
-                    ThanhTien = thucDon.Gia * item.SoLuong
+                    DonGia = monAn.Gia,
+                    ThanhTien = monAn.Gia * item.SoLuong
                 };
                 tongTien += chiTiet.ThanhTien;
                 _context.ChiTietDonHang.Add(chiTiet);
@@ -68,7 +68,7 @@ public class DonHangController : ControllerBase
         var donHang = await _context.DonHang
             .Include(d => d.KhachHang)
             .Include(d => d.ChiTietDonHang)
-                .ThenInclude(c => c.ThucDon)
+                .ThenInclude(c => c.MonAn)
             .FirstOrDefaultAsync(d => d.MaDonHang == id);
 
         return donHang == null ? NotFound() : donHang;
@@ -84,5 +84,29 @@ public class DonHangController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    [HttpGet("today")]
+    public async Task<ActionResult<int>> GetTodayOrderCount()
+    {
+        var today = DateTime.Today;
+        var tomorrow = today.AddDays(1);
+        
+        return await _context.DonHang
+            .Where(d => d.NgayDat >= today && d.NgayDat < tomorrow)
+            .CountAsync();
+    }
+
+    [HttpGet("revenue/today")]
+    public async Task<ActionResult<decimal>> GetTodayRevenue()
+    {
+        var today = DateTime.Today;
+        var tomorrow = today.AddDays(1);
+        
+        return await _context.DonHang
+            .Where(d => d.NgayDat >= today && d.NgayDat < tomorrow)
+            .Include(d => d.ChiTietDonHang)
+            .SelectMany(d => d.ChiTietDonHang)
+            .SumAsync(c => c.DonGia * c.SoLuong);
     }
 }

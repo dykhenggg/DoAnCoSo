@@ -20,6 +20,10 @@ namespace Backend.Models
         [EmailAddress]
         public string? Email { get; set; }
 
+        [StringLength(200)]
+        public string DiaChi { get; set; } = string.Empty;
+
         public virtual ICollection<DonHang> DonHang { get; set; } = new List<DonHang>();
+
     }
 }

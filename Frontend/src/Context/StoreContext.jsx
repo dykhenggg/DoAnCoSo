@@ -14,12 +14,12 @@ const StoreContextProvider = (props) => {
   useEffect(() => {
     const fetchFoods = async () => {
       try {
-        const response = await axios.get("http://localhost:5078/api/ThucDon");
+        const response = await axios.get("http://localhost:5078/api/MonAn");
         const formattedFoods = response.data.map((item) => ({
           _id: item.maMon,
           name: item.tenMon,
           price: item.gia,
-          category: item.loaiMon,
+          category: item.loaiMon.tenLoai, // Sửa để lấy tenLoai từ object loaiMon
           image: `http://localhost:5078/images/${item.hinhAnh}`,
         }));
         setFoodList(formattedFoods);

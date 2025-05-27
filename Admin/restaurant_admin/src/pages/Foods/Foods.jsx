@@ -20,7 +20,7 @@ function Foods() {
   // Fetch foods
   const fetchFoods = async () => {
     try {
-      const response = await axios.get("http://localhost:5078/api/ThucDon");
+      const response = await axios.get("http://localhost:5078/api/MonAn");
       setFoods(response.data);
     } catch (error) {
       toast.error("Lỗi khi tải danh sách món ăn");
@@ -56,17 +56,23 @@ function Foods() {
     const formData = new FormData();
     formData.append("tenMon", newFood.tenMon);
     formData.append("gia", newFood.gia);
-    formData.append("maLoai", newFood.loaiMon); // Changed from loaiMon to maLoai
+    formData.append("maLoai", newFood.loaiMon);
     formData.append("hinhAnh", newFood.hinhAnh);
 
     try {
-      await axios.post("http://localhost:5078/api/ThucDon", formData);
+      await axios.post("http://localhost:5078/api/MonAn", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       toast.success("Thêm món ăn thành công");
       fetchFoods();
       setShowAddModal(false);
       setNewFood({ tenMon: "", gia: "", loaiMon: "", hinhAnh: null });
     } catch (error) {
-      toast.error("Lỗi khi thêm món ăn");
+      toast.error(
+        "Lỗi khi thêm món ăn: " + error.response?.data || error.message
+      );
     }
   };
 
@@ -74,13 +80,48 @@ function Foods() {
   const handleDeleteFood = async () => {
     try {
       await axios.delete(
-        `http://localhost:5078/api/ThucDon/${selectedFood.maMon}`
+        `http://localhost:5078/api/MonAn/${selectedFood.maMon}`
       );
       toast.success("Xóa món ăn thành công");
       fetchFoods();
       setShowDeleteModal(false);
     } catch (error) {
       toast.error("Lỗi khi xóa món ăn");
+    }
+  };
+
+  // Edit food
+  const handleEditFood = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("tenMon", selectedFood.tenMon);
+    formData.append("gia", selectedFood.gia);
+    formData.append(
+      "maLoai",
+      selectedFood.loaiMon?.maLoai || selectedFood.maLoai
+    );
+
+    if (selectedFood.hinhAnh instanceof File) {
+      formData.append("hinhAnh", selectedFood.hinhAnh);
+    }
+
+    try {
+      const response = await axios({
+        method: "put",
+        url: `http://localhost:5078/api/MonAn/${selectedFood.maMon}`,
+        data: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      toast.success("Cập nhật món ăn thành công");
+      fetchFoods();
+      setShowEditModal(false);
+    } catch (error) {
+      toast.error(
+        "Lỗi khi cập nhật món ăn: " + error.response?.data || error.message
+      );
     }
   };
 
@@ -228,6 +269,86 @@ function Foods() {
               <button onClick={handleDeleteFood}>Xóa</button>
               <button onClick={() => setShowDeleteModal(false)}>Hủy</button>
             </div>
+          </div>
+        </div>
+      )}
+      {/* Edit Modal */}
+      {showEditModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h3>Sửa món ăn</h3>
+            <form onSubmit={handleEditFood}>
+              <div className="form-group">
+                <label>Tên món:</label>
+                <input
+                  type="text"
+                  value={selectedFood.tenMon}
+                  onChange={(e) =>
+                    setSelectedFood({ ...selectedFood, tenMon: e.target.value })
+                  }
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Giá:</label>
+                <input
+                  type="number"
+                  value={selectedFood.gia}
+                  onChange={(e) =>
+                    setSelectedFood({ ...selectedFood, gia: e.target.value })
+                  }
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Loại món:</label>
+                <select
+                  value={selectedFood.loaiMon?.maLoai || selectedFood.maLoai}
+                  onChange={(e) =>
+                    setSelectedFood({
+                      ...selectedFood,
+                      maLoai: e.target.value,
+                      loaiMon: categories.find(
+                        (c) => c.maLoai === parseInt(e.target.value)
+                      ),
+                    })
+                  }
+                  required
+                >
+                  <option value="">Chọn loại món</option>
+                  {categories.map((category) => (
+                    <option key={category.maLoai} value={category.maLoai}>
+                      {category.tenLoai}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Hình ảnh:</label>
+                <input
+                  type="file"
+                  onChange={(e) =>
+                    setSelectedFood({
+                      ...selectedFood,
+                      hinhAnh: e.target.files[0],
+                    })
+                  }
+                  accept="image/*"
+                />
+              </div>
+              <div className="modal-actions">
+                <button type="submit">Lưu</button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowEditModal(false);
+                    setSelectedFood(null);
+                  }}
+                >
+                  Hủy
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

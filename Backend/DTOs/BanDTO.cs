@@ -9,7 +9,7 @@ namespace Backend.DTOs
         public string TenBan { get; set; } = string.Empty;
 
         [Required]
-        [Range(1, 20)]
+        [Range(1, 50)]
         public int SucChua { get; set; }
     }
 }

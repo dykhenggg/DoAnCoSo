@@ -9,44 +9,80 @@ const Sidebar = () => {
     window.location.reload();
   };
 
+  const menuItems = [
+    {
+      section: "",
+      items: [
+        { to: "/dashboard", label: "Tổng quan", icon: assets.order_icon },
+      ],
+    },
+    {
+      section: "Quản lý nhà hàng",
+      items: [
+        { to: "/categories", label: "Loại món", icon: assets.order_icon },
+        { to: "/foods", label: "Món ăn", icon: assets.order_icon },
+        { to: "/tables", label: "Bàn ăn", icon: assets.order_icon },
+        { to: "/reservations", label: "Đặt bàn", icon: assets.order_icon },
+      ],
+    },
+    {
+      section: "Quản lý hệ thống",
+      items: [
+        {
+          to: "/accounts",
+          label: "Quản lý tài khoản",
+          icon: assets.order_icon,
+        },
+      ],
+    },
+    {
+      section: "Quản lý nhân sự",
+      items: [
+        {
+          to: "/human-resources",
+          label: "Tổng quan nhân sự",
+          icon: assets.order_icon,
+        },
+      ],
+    },
+    {
+      section: "Quản lý kho",
+      items: [
+        { to: "/storage", label: "Kho", icon: assets.order_icon },
+        { to: "/suppliers", label: "Nhà cung cấp", icon: assets.order_icon },
+      ],
+    },
+    {
+      section: "Khách hàng & Khuyến mãi",
+      items: [
+        { to: "/customers", label: "Khách hàng", icon: assets.order_icon },
+        { to: "/promotions", label: "Khuyến mãi", icon: assets.order_icon },
+      ],
+    },
+  ];
+
   return (
     <div className="sidebar">
       <div className="sidebar-options">
-        <NavLink to="/" className="sidebar-option">
-          <img src={assets.order_icon} alt="" />
-          <p>Dashboard</p>
-        </NavLink>
-        <NavLink to="/categories" className="sidebar-option">
-          <img src={assets.order_icon} alt="" />
-          <p>Loại món</p>
-        </NavLink>
-        <NavLink to="/foods" className="sidebar-option">
-          <img src={assets.order_icon} alt="" />
-          <p>Món ăn</p>
-        </NavLink>
-        <NavLink to="/order" className="sidebar-option">
-          <img src={assets.order_icon} alt="" />
-          <p>Đặt bàn</p>
-        </NavLink>
-        <NavLink to="/departments" className="sidebar-option">
-          <img src={assets.order_icon} alt="" />
-          <p>Các bộ phận</p>
-        </NavLink>
-        <NavLink to="/employees" className="sidebar-option">
-          <img src={assets.order_icon} alt="" />
-          <p>Nhân viên</p>
-        </NavLink>
-        <NavLink to="/shifts" className="sidebar-option">
-          <img src={assets.order_icon} alt="" />
-          <p>Ca làm việc</p>
-        </NavLink>
-        <NavLink to="/storage" className="sidebar-option">
-          <img src={assets.order_icon} alt="" />
-          <p>Kho</p>
-        </NavLink>
-        <div className="sidebar-option" onClick={handleLogout}>
-          <img src={assets1.logout_icon} alt="" />
-          <p>Logout</p>
+        {menuItems.map((menu, idx) => (
+          <div key={idx}>
+            {menu.section && (
+              <div className="sidebar-section">{menu.section}</div>
+            )}
+            {menu.items.map((item, i) => (
+              <NavLink to={item.to} key={i} className="sidebar-option" end>
+                <img src={item.icon} alt={item.label} />
+                <p>{item.label}</p>
+              </NavLink>
+            ))}
+          </div>
+        ))}
+
+        <div className="logout-option">
+          <div className="sidebar-option" onClick={handleLogout}>
+            <img src={assets1.logout_icon} alt="logout" />
+            <p>Đăng xuất</p>
+          </div>
         </div>
       </div>
     </div>

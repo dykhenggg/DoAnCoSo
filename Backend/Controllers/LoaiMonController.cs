@@ -45,8 +45,12 @@ namespace Backend.Controllers
         {
             try
             {
+                if (dto.HinhAnh == null)
+                {
+                    return BadRequest("Vui lòng chọn hình ảnh");
+                }
+
                 var fileName = await SaveImage(dto.HinhAnh);
-                
                 var loaiMon = new LoaiMon
                 {
                     TenLoai = dto.TenLoai,
@@ -60,7 +64,7 @@ namespace Backend.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, $"Lỗi khi tạo loại món: {ex.Message}");
             }
         }
 

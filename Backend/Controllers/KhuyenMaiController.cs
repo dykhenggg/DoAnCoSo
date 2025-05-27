@@ -17,6 +17,14 @@ namespace Backend.Controllers
             _context = context;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<KhuyenMai>>> GetAll()
+        {
+            return await _context.KhuyenMai
+                .OrderByDescending(k => k.NgayBatDau)
+                .ToListAsync();
+        }
+
         [HttpGet("active")]
         public async Task<ActionResult<IEnumerable<KhuyenMai>>> GetActive()
         {

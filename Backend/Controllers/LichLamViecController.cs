@@ -30,6 +30,17 @@ namespace Backend.Controllers
                 .ToListAsync();
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<LichLamViec>>> GetAll()
+        {
+            return await _context.LichLamViec
+                .Include(l => l.NhanVien)
+                .Include(l => l.CaLamViec)
+                .OrderBy(l => l.NgayLamViec)
+                .ThenBy(l => l.CaLamViec.GioBatDau)
+                .ToListAsync();
+        }
+
         [HttpPost]
         public async Task<ActionResult<LichLamViec>> Create(LichLamViecDTO dto)
         {

@@ -17,20 +17,20 @@ namespace Backend.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Kho>>> GetAll()
-        {
-            return await _context.Kho
-                .OrderBy(k => k.DanhMuc)
-                .ToListAsync();
-        }
-
         [HttpGet("canbaotoncao")]
         public async Task<ActionResult<IEnumerable<Kho>>> GetSapHet()
         {
             return await _context.Kho
                 .Where(k => k.SoLuongHienTai <= k.SoLuongToiThieu)
                 .OrderBy(k => k.SoLuongHienTai)
+                .ToListAsync();
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Kho>>> GetAll()
+        {
+            return await _context.Kho
+                .OrderBy(k => k.TenNguyenLieu)
                 .ToListAsync();
         }
 

@@ -13,7 +13,7 @@ namespace Backend.Data
         }
 
         // DbSet cho từng bảng
-        public DbSet<ThucDon> ThucDon { get; set; }
+        public DbSet<MonAn> MonAn { get; set; }
         public DbSet<Ban> Ban { get; set; }
         public DbSet<KhachHang> KhachHang { get; set; }
         public DbSet<VaiTro> Role { get; set; }
@@ -21,7 +21,6 @@ namespace Backend.Data
         public DbSet<DonHang> DonHang { get; set; }
         public DbSet<ChiTietDonHang> ChiTietDonHang { get; set; }
         public DbSet<KhuyenMai> KhuyenMai { get; set; }
-        public DbSet<KhuyenMai_DonHang> KhuyenMai_DonHang { get; set; }
         public DbSet<CaLamViec> CaLamViec { get; set; }
         public DbSet<LichLamViec> LichLamViec { get; set; }
         public DbSet<ChamCong> ChamCong { get; set; }
@@ -30,16 +29,36 @@ namespace Backend.Data
         public DbSet<DatBan> DatBan { get; set; }
         public DbSet<BoPhan> BoPhan { get; set; }
         public DbSet<LoaiMon> LoaiMon { get; set; }
+        public DbSet<NhaCungCap> NhaCungCap { get; set; }
+        public DbSet<TaiKhoan> TaiKhoan { get; set; }
+        public DbSet<HoaDon> HoaDon { get; set; }
+        public DbSet<NguyenLieu> NguyenLieu { get; set; } 
 
-        // Tùy chỉnh nếu cần (mapping, relationship...)
+        // Override OnModelCreating để cấu hình các quan hệ và khóa chính
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // ThucDon configurations
-            modelBuilder.Entity<ThucDon>()
+            // Thêm dữ liệu mặc định cho vai trò
+            modelBuilder.Entity<VaiTro>().HasData(
+                new VaiTro
+                {
+                    MaVaiTro = 1,
+                    TenVaiTro = "Quản lý",
+                    MoTa = "Quản lý hệ thống với toàn quyền truy cập"
+                },
+                new VaiTro
+                {
+                    MaVaiTro = 2,
+                    TenVaiTro = "Nhân viên",
+                    MoTa = "Nhân viên với quyền truy cập hạn chế"
+                }
+            );
+
+            // MonAn configurations
+            modelBuilder.Entity<MonAn>()
                 .Property(t => t.Gia)
                 .HasColumnType("decimal(18,2)");
 
-            modelBuilder.Entity<ThucDon>()
+            modelBuilder.Entity<MonAn>()
                 .HasIndex(t => t.TenMon);
 
             // DonHang configurations
@@ -63,9 +82,24 @@ namespace Backend.Data
                 .HasIndex(n => n.SDT)
                 .IsUnique();
 
+            // // User configurations
+            // modelBuilder.Entity<User>()
+            //     .HasIndex(u => u.Email)
+            //     .IsUnique();
+
+            // modelBuilder.Entity<User>()
+            //     .HasIndex(u => u.SDT)
+            //     .IsUnique();
+
+            // modelBuilder.Entity<User>()
+            //     .HasOne(u => u.VaiTro)
+            //     .WithMany(r => r.Users)
+            //     .HasForeignKey(u => u.MaVaiTro)
+            //     .OnDelete(DeleteBehavior.Restrict);
+
             // Relationship configurations
-            modelBuilder.Entity<KhuyenMai_DonHang>()
-                .HasKey(k => new { k.MaDonHang, k.MaKhuyenMai });
+            // modelBuilder.Entity<KhuyenMai_DonHang>()
+            //     .HasKey(k => new { k.MaDonHang, k.MaKhuyenMai });
 
             modelBuilder.Entity<ChiTietDonHang>()
                 .HasOne(c => c.DonHang)
@@ -78,92 +112,11 @@ namespace Backend.Data
                 .WithMany(b => b.DatBan)
                 .HasForeignKey(d => d.MaBan)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<CaLamViec>()
-                .HasOne(c => c.NhanVien)
-                .WithMany(n => n.CaLamViec)
-                .HasForeignKey(c => c.MaNhanVien)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<LichLamViec>()
-                .HasOne(l => l.NhanVien)
-                .WithMany()
-                .HasForeignKey(l => l.MaNhanVien)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<ChamCong>()
-                .HasOne(c => c.NhanVien)
-                .WithMany(n => n.ChamCong)
-                .HasForeignKey(c => c.MaNhanVien)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Value conversions for enums
-            modelBuilder.Entity<DonHang>()
-                .Property(d => d.TrangThai)
-                .HasConversion<string>();
-
-            modelBuilder.Entity<ThucDon>()
-                .Property(t => t.TrangThai)
-                .HasConversion<string>();
-
-            modelBuilder.Entity<LichLamViec>()
-                .HasIndex(l => new { l.MaNhanVien, l.NgayLamViec, l.MaCa })
-                .IsUnique();
-
-            // Seed BoPhan first
-            modelBuilder.Entity<BoPhan>().HasData(
-                new BoPhan
-                {
-                    MaBoPhan = 1,
-                    TenBoPhan = "Ban Quản Lý"
-                }
-            );
-
-            // Seed roles
-            modelBuilder.Entity<VaiTro>().HasData(
-                new VaiTro 
-                { 
-                    MaVaiTro = 1, 
-                    TenVaiTro = UserRoles.QuanLy, 
-                    MoTa = "Quản lý hệ thống" 
-                },
-                new VaiTro 
-                { 
-                    MaVaiTro = 2, 
-                    TenVaiTro = UserRoles.NhanVien, 
-                    MoTa = "Nhân viên" 
-                },
-                new VaiTro 
-                { 
-                    MaVaiTro = 3, 
-                    TenVaiTro = UserRoles.KhachHang, 
-                    MoTa = "Khách hàng" 
-                }
-            );
-
-            // Update admin user seed with static hashed password
-            modelBuilder.Entity<NhanVien>().HasData(
-                new NhanVien
-                {
-                    MaNV = 1,
-                    HoTen = "Admin",
-                    Email = "admin@gmail.com",
-                    // Pre-hashed value of "admin123"
-                    MatKhau = "$2a$11$AHzAlAtAtx.m0g8q0x5nj.LB42KsSQx3hlzv7yE3UQGnn6oNhxIqm",
-                    ChucVu = UserRoles.QuanLy,
-                    SDT = "0123456789",
-                    TrangThai = "Đang làm việc",
-                    MaBoPhan = 1, // Link to Ban Quản Lý
-                    DiaChi = "Admin Address"
-                }
-            );
-
-            // Add BoPhan-NhanVien relationship configuration
-            modelBuilder.Entity<NhanVien>()
-                .HasOne(n => n.BoPhan)
-                .WithMany(b => b.NhanVien)
-                .HasForeignKey(n => n.MaBoPhan)
-                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
+// Xóa các dòng sau:
+// public DbSet<User> Users { get; set; }
+// public DbSet<KhuyenMai_DonHang> KhuyenMai_DonHangs { get; set; }
+
+// Và xóa tất cả các đoạn code khởi tạo dữ liệu liên quan đến User trong OnModelCreating
