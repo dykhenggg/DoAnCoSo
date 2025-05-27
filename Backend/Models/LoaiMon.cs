@@ -12,11 +12,12 @@ namespace Backend.Models
 
         [Required]
         [StringLength(50)]
-        public string TenLoai { get; set; }
+        public required string TenLoai { get; set; }
 
-        public string HinhAnh { get; set; }
+        [Required]
+        public required string HinhAnh { get; set; }
 
         // Navigation property
-        public virtual ICollection<ThucDon> ThucDons { get; set; } = new List<ThucDon>();
+        public virtual ICollection<MonAn> MonAns { get; set; } = new List<MonAn>();
     }
 }

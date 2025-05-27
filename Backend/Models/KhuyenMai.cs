@@ -22,5 +22,6 @@ namespace Backend.Models
 
         [Required]
         public DateTime NgayKetThuc { get; set; }
+
     }
 }

@@ -1,19 +1,48 @@
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
-using Backend.Models;
-using Microsoft.Extensions.FileProviders;
-using System.IO;
 using Backend.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
 builder.Services.AddDbContext<RestaurantDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddAuthorization();
+
+// Cấu hình JWT
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrEmpty(jwtKey))
+    throw new InvalidOperationException("JWT Key is not configured");
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtKey)),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy =>
+        policy.RequireRole("QuanLy"));
+    options.AddPolicy("EmployeeAndAdmin", policy =>
+        policy.RequireRole("QuanLy", "NhanVien"));
+});
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -29,13 +58,6 @@ builder.Services.AddScoped<AuthService>();
 
 var app = builder.Build();
 
-// Ensure wwwroot/images directory exists
-var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
-if (!Directory.Exists(uploadsFolder))
-{
-    Directory.CreateDirectory(uploadsFolder);
-}
-
 app.UseStaticFiles();
 app.UseCors("AllowAll");
 
@@ -43,6 +65,9 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 app.Run();

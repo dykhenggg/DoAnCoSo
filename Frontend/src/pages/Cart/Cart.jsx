@@ -1,106 +1,71 @@
-import React, { useContext } from "react";
+import React, { useState, useEffect } from "react";
 import "./Cart.css";
-import { StoreContext } from "../../Context/StoreContext";
-import { food_list } from "../../assets/assets";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const Cart = ({ setShowLogin }) => {
-  const {
-    cartItems,
-    foodlist,
-    removeFromCart,
-    getTotalCartAmount,
-    isLoggedIn,
-  } = useContext(StoreContext);
-  const navigate = useNavigate();
+const Cart = () => {
+  const [reservations, setReservations] = useState([]);
 
-  if (!isLoggedIn) {
-    setShowLogin(true);
-    return null;
-  }
+  useEffect(() => {
+    const fetchReservations = async () => {
+      try {
+        const response = await axios.get("http://localhost:5078/api/DatBan");
+        setReservations(response.data);
+      } catch (error) {
+        console.error("Lỗi khi lấy thông tin đặt bàn:", error);
+      }
+    };
+
+    fetchReservations();
+  }, []);
 
   return (
     <div className="cart">
-      <div className="cart-items">
-        <div className="cart-items-title">
-          <p>Items</p>
-          <p>Title</p>
-          <p>Price</p>
-          <p>Quantity</p>
-          <p>Total</p>
-          <p>Remove</p>
+      <div className="cart-items-container">
+        <div className="cart-items-header">
+          <h2>Thông tin bàn đã đặt</h2>
         </div>
-        <br />
-        <hr />
-        {food_list.map((item, index) => {
-          if (cartItems[item.maMon] > 0) {
-            return (
-              <div key={item.maMon}>
-                {" "}
-                // Thay key={index} bằng key={item.maMon}
-                <div className="cart-items-title cart-items-item">
-                  <img
-                    src={`http://localhost:5078/images/${item.hinhAnh}`}
-                    alt=""
-                  />{" "}
-                  {/* Thay đổi từ image */}
-                  <p>{item.tenMon}</p> {/* Thay đổi từ name thành tenMon */}
-                  <p>{item.gia}VND</p> {/* Thay đổi từ price thành gia */}
-                  <p>{cartItems[item.maMon]}</p>
-                  <p>{item.gia * cartItems[item.maMon]}VND</p>
-                  <p
-                    onClick={() => removeFromCart(item.maMon)}
-                    className="cross"
-                  >
-                    x
+        {reservations.length === 0 ? (
+          <p className="empty-message">Bạn chưa có bàn nào được đặt</p>
+        ) : (
+          <div className="reservation-list">
+            {reservations.map((reservation) => (
+              <div key={reservation.maDatBan} className="reservation-item">
+                <div className="reservation-details">
+                  <h3>Thông tin đặt bàn #{reservation.maDatBan}</h3>
+                  <p>
+                    <strong>Họ tên:</strong> {reservation.hoTen}
+                  </p>
+                  <p>
+                    <strong>Số điện thoại:</strong> {reservation.soDienThoai}
+                  </p>
+                  <p>
+                    <strong>Địa chỉ:</strong> {reservation.diaChi}
+                  </p>
+                  <p>
+                    <strong>Ngày đặt:</strong>{" "}
+                    {new Date(reservation.ngayDat).toLocaleDateString("vi-VN")}
+                  </p>
+                  <p>
+                    <strong>Giờ bắt đầu:</strong> {reservation.gioBatDau}
+                  </p>
+                  <p>
+                    <strong>Giờ kết thúc:</strong> {reservation.gioKetThuc}
+                  </p>
+                  <p>
+                    <strong>Số người:</strong> {reservation.soNguoi}
+                  </p>
+                  <p>
+                    <strong>Tiền cọc:</strong>{" "}
+                    {reservation.tienCoc.toLocaleString()}đ
+                  </p>
+                  <p>
+                    <strong>Trạng thái:</strong> {reservation.trangThai}
                   </p>
                 </div>
-                <hr />
               </div>
-            );
-          }
-          return null;
-        })}
-      </div>
-      <div className="cart-bottom">
-        <div className="cart-total">
-          <h2>Cart Total</h2>
-          <div>
-            <div className="cart-total-detail">
-              <p>Subtotal</p>
-              <p>{getTotalCartAmount()}VND</p>
-            </div>
-            <hr />
-            <div className="cart-total-detail">
-              <p>Delivery Free</p>
-              <p>
-                {getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() * 0.1}VND
-              </p>
-            </div>
-            <hr />
-            <div className="cart-total-detail">
-              <p>Total</p>
-              <p>
-                {getTotalCartAmount() === 0
-                  ? 0
-                  : getTotalCartAmount() + getTotalCartAmount() * 0.1}
-                VND
-              </p>
-            </div>
+            ))}
           </div>
-          <button onClick={() => navigate("/order")}>
-            PROCEED TO CHECKOUT
-          </button>
-        </div>
-        <div className="cart-promocode">
-          <div>
-            <p>Add your promocode here</p>
-            <div className="cart-promocode-input">
-              <input type="text" placeholder="promocode" />
-              <button>Apply</button>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

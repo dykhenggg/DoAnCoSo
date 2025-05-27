@@ -17,12 +17,16 @@ namespace Backend.Models
         public DateTime NgayDat { get; set; }
 
         [Required]
-        public string TrangThai { get; set; } = "Chờ xác nhận";
+        [StringLength(20)]
+        public string TrangThai { get; set; } = "ChoXacNhan"; // ChoXacNhan, DangChuanBi, HoanThanh, DaThanhToan, DaHuy
 
         public virtual ICollection<ChiTietDonHang> ChiTietDonHang { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal TongTien { get; set; }
+
+        // Navigation property to HoaDon
+        public virtual HoaDon? HoaDon { get; set; }
 
         public DonHang()
         {

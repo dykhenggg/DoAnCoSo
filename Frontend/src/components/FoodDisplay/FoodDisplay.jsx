@@ -8,13 +8,13 @@ const FoodDisplay = ({ category }) => {
 
   return (
     <div className="food-display" id="food-display">
-      <h2>Top dishes </h2>
+      <h2>Thực đơn</h2>
       <div className="food-display-list">
-        {foodList.map((item, index) => {
+        {foodList.map((item) => {
           if (category === "All" || category === item.category) {
             return (
               <FoodItem
-                key={item._id}  // Thay key={index} bằng key={item._id}
+                key={item._id}
                 id={item._id}
                 name={item.name}
                 description={item.description}

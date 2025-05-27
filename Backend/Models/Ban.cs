@@ -19,5 +19,8 @@ namespace Backend.Models
 
         // Navigation property
         public virtual ICollection<DatBan> DatBan { get; set; } = new List<DatBan>();
+
+        // Thêm trường theo dõi số lượng chỗ đã đặt
+        public int SoLuongDatCho { get; set; } = 0;
     }
 }

@@ -8,19 +8,19 @@ import Footer from "../../components/Footer/Footer";
 import Reservation from "../../components/Reservation/Reservation";
 
 const Home = () => {
-    const [category, setCategory] = useState("All");
+  const [category, setCategory] = useState("All");
 
-    return (
-        <div className="home">
-            <Header />
-            <Menu category={category} setCategory={setCategory} />
-            <FoodDisplay category={category} />
-            <AboutUs />
-            <div id="reservation-section">
-                <Reservation />
-            </div>
-        </div>
-    );
-}
+  return (
+    <div className="home">
+      <Header />
+      <Menu category={category} setCategory={setCategory} />
+      <FoodDisplay category={category} />
+      <div id="reservation-section">
+        <Reservation />
+      </div>
+      <AboutUs />
+    </div>
+  );
+};
 
 export default Home;

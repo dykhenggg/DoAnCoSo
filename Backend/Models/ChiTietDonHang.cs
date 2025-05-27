@@ -28,6 +28,6 @@ namespace Backend.Models
         public virtual DonHang? DonHang { get; set; }
 
         [ForeignKey("MaMon")]
-        public virtual ThucDon? ThucDon { get; set; }
+        public virtual MonAn? MonAn { get; set; }
     }
 }

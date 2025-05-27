@@ -2,16 +2,13 @@ import React, { useState, useEffect } from "react";
 import "./Shifts.css";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Shifts = () => {
+  const navigate = useNavigate();
   const [shifts, setShifts] = useState([]);
-  const [employees, setEmployees] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedShift, setSelectedShift] = useState(null);
   const [newShift, setNewShift] = useState({
-    maNhanVien: "",
     gioBatDau: "",
     gioKetThuc: "",
   });
@@ -26,19 +23,8 @@ const Shifts = () => {
     }
   };
 
-  // Fetch employees
-  const fetchEmployees = async () => {
-    try {
-      const response = await axios.get("http://localhost:5078/api/NhanVien");
-      setEmployees(response.data);
-    } catch (error) {
-      toast.error("Lỗi khi tải danh sách nhân viên");
-    }
-  };
-
   useEffect(() => {
     fetchShifts();
-    fetchEmployees();
   }, []);
 
   // Add new shift
@@ -50,7 +36,6 @@ const Shifts = () => {
       fetchShifts();
       setShowAddModal(false);
       setNewShift({
-        maNhanVien: "",
         gioBatDau: "",
         gioKetThuc: "",
       });
@@ -59,60 +44,34 @@ const Shifts = () => {
     }
   };
 
-  // Delete shift
-  const handleDeleteShift = async () => {
-    try {
-      await axios.delete(
-        `http://localhost:5078/api/CaLamViec/${selectedShift.maCa}`
-      );
-      toast.success("Xóa ca làm việc thành công");
-      fetchShifts();
-      setShowDeleteModal(false);
-    } catch (error) {
-      toast.error("Lỗi khi xóa ca làm việc");
-    }
-  };
-
   return (
     <div className="shifts-container">
-      <h2>Quản lý ca làm việc</h2>
-
+      <div className="shifts-header">
+        <div className="header-left">
+          <button
+            className="back-button"
+            onClick={() => navigate("/human-resources")}
+          >
+            <i className="fas fa-arrow-left"></i>
+            Quay về
+          </button>
+          <h2>Quản lý ca làm việc</h2>
+          <span className="total-count">{shifts.length} ca làm việc</span>
+        </div>
+      </div>
       <div className="shifts-table-container">
         <table className="shifts-table">
           <thead>
             <tr>
-              <th>Nhân viên</th>
               <th>Giờ bắt đầu</th>
               <th>Giờ kết thúc</th>
-              <th>Thao tác</th>
             </tr>
           </thead>
           <tbody>
             {shifts.map((shift) => (
               <tr key={shift.maCa}>
-                <td>{shift.nhanVien?.hoTen}</td>
                 <td>{shift.gioBatDau}</td>
                 <td>{shift.gioKetThuc}</td>
-                <td>
-                  <button
-                    className="edit-button"
-                    onClick={() => {
-                      setSelectedShift(shift);
-                      setShowEditModal(true);
-                    }}
-                  >
-                    Sửa
-                  </button>
-                  <button
-                    className="delete-button"
-                    onClick={() => {
-                      setSelectedShift(shift);
-                      setShowDeleteModal(true);
-                    }}
-                  >
-                    Xóa
-                  </button>
-                </td>
               </tr>
             ))}
           </tbody>
@@ -129,23 +88,6 @@ const Shifts = () => {
           <div className="modal-content">
             <h3>Thêm ca làm việc mới</h3>
             <form onSubmit={handleAddShift}>
-              <div className="form-group">
-                <label>Nhân viên:</label>
-                <select
-                  value={newShift.maNhanVien}
-                  onChange={(e) =>
-                    setNewShift({ ...newShift, maNhanVien: e.target.value })
-                  }
-                  required
-                >
-                  <option value="">Chọn nhân viên</option>
-                  {employees.map((employee) => (
-                    <option key={employee.maNV} value={employee.maNV}>
-                      {employee.hoTen}
-                    </option>
-                  ))}
-                </select>
-              </div>
               <div className="form-group">
                 <label>Giờ bắt đầu:</label>
                 <input
@@ -175,23 +117,6 @@ const Shifts = () => {
                 </button>
               </div>
             </form>
-          </div>
-        </div>
-      )}
-
-      {/* Delete Modal */}
-      {showDeleteModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <h3>Xác nhận xóa</h3>
-            <p>
-              Bạn có chắc chắn muốn xóa ca làm việc của nhân viên{" "}
-              {selectedShift.nhanVien?.hoTen} không?
-            </p>
-            <div className="modal-actions">
-              <button onClick={handleDeleteShift}>Xóa</button>
-              <button onClick={() => setShowDeleteModal(false)}>Hủy</button>
-            </div>
           </div>
         </div>
       )}

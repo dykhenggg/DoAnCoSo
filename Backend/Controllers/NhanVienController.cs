@@ -28,7 +28,6 @@ namespace Backend.Controllers
             {
                 var nhanVien = await _context.NhanVien
                     .Include(n => n.BoPhan)
-                    .Where(n => n.TrangThai == "Đang làm việc")
                     .Select(n => new
                     {
                         n.MaNV,
@@ -37,7 +36,6 @@ namespace Backend.Controllers
                         n.SDT,
                         n.DiaChi,
                         n.ChucVu,
-                        n.TrangThai,
                         BoPhan = n.BoPhan != null ? new
                         {
                             n.BoPhan.MaBoPhan,
@@ -58,12 +56,12 @@ namespace Backend.Controllers
         public async Task<ActionResult> Login(LoginDTO dto)
         {
             var nhanVien = await _context.NhanVien
-                .FirstOrDefaultAsync(n => n.Email == dto.Email);
+                .FirstOrDefaultAsync(n => n.Email == dto.TenDangNhap);
 
-            if (nhanVien == null || !_authService.VerifyPassword(dto.Password, nhanVien.MatKhau))
+            if (nhanVien == null || !_authService.VerifyPassword(dto.MatKhau, nhanVien.MatKhau))
                 return Unauthorized("Email hoặc mật khẩu không đúng");
 
-            if (nhanVien.ChucVu == UserRoles.KhachHang)
+            if (nhanVien.ChucVu == UserRoles.NhanVien)
                 return Unauthorized("Tài khoản không có quyền truy cập");
 
             var token = _authService.GenerateJwtToken(nhanVien);
@@ -71,39 +69,48 @@ namespace Backend.Controllers
         }
 
         [HttpPut("{id}/trangthai")]
-        public async Task<IActionResult> UpdateStatus(int id, [FromBody] string trangThai)
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] bool trangThai)
         {
             var nhanVien = await _context.NhanVien.FindAsync(id);
             if (nhanVien == null) return NotFound();
-
-            nhanVien.TrangThai = trangThai;
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
         [HttpPost]
-        public async Task<ActionResult<NhanVien>> Create(NhanVien nhanVien)
+        public async Task<ActionResult<NhanVien>> Create(NhanVienDTO dto)
         {
             try
             {
                 // Kiểm tra email đã tồn tại
                 var emailExists = await _context.NhanVien
-                    .AnyAsync(n => n.Email.ToLower() == nhanVien.Email.ToLower());
+                    .AnyAsync(n => n.Email.ToLower() == dto.Email.ToLower());
                 if (emailExists)
                     return BadRequest("Email đã được sử dụng");
 
                 // Kiểm tra số điện thoại đã tồn tại
                 var sdtExists = await _context.NhanVien
-                    .AnyAsync(n => n.SDT == nhanVien.SDT);
+                    .AnyAsync(n => n.SDT == dto.SDT);
                 if (sdtExists)
                     return BadRequest("Số điện thoại đã được sử dụng");
 
                 // Kiểm tra bộ phận tồn tại
                 var boPhanExists = await _context.BoPhan
-                    .AnyAsync(b => b.MaBoPhan == nhanVien.MaBoPhan);
+                    .AnyAsync(b => b.MaBoPhan == dto.MaBoPhan);
                 if (!boPhanExists)
                     return BadRequest("Bộ phận không tồn tại");
+
+                var nhanVien = new NhanVien
+                {
+                    HoTen = dto.HoTen,
+                    Email = dto.Email,
+                    SDT = dto.SDT,
+                    DiaChi = dto.DiaChi,
+                    ChucVu = dto.ChucVu,
+                    MatKhau = _authService.HashPassword(dto.MatKhau),
+                    MaBoPhan = dto.MaBoPhan
+                };
 
                 _context.NhanVien.Add(nhanVien);
                 await _context.SaveChangesAsync();
@@ -204,24 +211,29 @@ namespace Backend.Controllers
             try
             {
                 var nhanVien = await _context.NhanVien
-                    .Where(nv => nv.MaBoPhan == departmentId)
-                    .Select(nv => new
+                    .Include(n => n.BoPhan)
+                    .Select(n => new
                     {
-                        nv.MaNV,
-                        nv.HoTen,
-                        nv.Email,
-                        nv.SDT,
-                        nv.DiaChi,
-                        nv.TrangThai
+                        n.MaNV,
+                        n.HoTen,
+                        n.Email,
+                        n.SDT,
+                        n.DiaChi
                     })
                     .ToListAsync();
 
-                return Ok(nhanVien); // Trả về danh sách trống nếu không có nhân viên
+                return Ok(nhanVien);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Lỗi khi lấy danh sách nhân viên: {ex.Message}");
             }
+        }
+
+        [HttpGet("count")]
+        public async Task<ActionResult<int>> GetEmployeeCount()
+        {
+            return await _context.NhanVien.CountAsync();
         }
     }
 }

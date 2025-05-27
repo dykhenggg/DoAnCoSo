@@ -30,6 +30,9 @@ namespace Backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MaBan"));
 
+                    b.Property<int>("SoLuongDatCho")
+                        .HasColumnType("integer");
+
                     b.Property<int>("SucChua")
                         .HasColumnType("integer");
 
@@ -66,13 +69,6 @@ namespace Backend.Migrations
                     b.HasKey("MaBoPhan");
 
                     b.ToTable("BoPhan");
-
-                    b.HasData(
-                        new
-                        {
-                            MaBoPhan = 1,
-                            TenBoPhan = "Ban Quản Lý"
-                        });
                 });
 
             modelBuilder.Entity("Backend.Models.CaLamViec", b =>
@@ -219,7 +215,8 @@ namespace Backend.Migrations
 
                     b.Property<string>("TrangThai")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.HasKey("MaDonHang");
 
@@ -269,6 +266,51 @@ namespace Backend.Migrations
                     b.ToTable("GiaoDichKho");
                 });
 
+            modelBuilder.Entity("Backend.Models.HoaDon", b =>
+                {
+                    b.Property<int>("MaHoaDon")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MaHoaDon"));
+
+                    b.Property<string>("GhiChu")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<decimal>("GiamGia")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("MaDonHang")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MaNhanVien")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PhuongThucThanhToan")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("ThoiGianThanhToan")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("TongThanhToan")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TongTienHang")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("MaHoaDon");
+
+                    b.HasIndex("MaDonHang")
+                        .IsUnique();
+
+                    b.HasIndex("MaNhanVien");
+
+                    b.ToTable("HoaDon");
+                });
+
             modelBuilder.Entity("Backend.Models.KhachHang", b =>
                 {
                     b.Property<int>("MaKhachHang")
@@ -276,6 +318,11 @@ namespace Backend.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MaKhachHang"));
+
+                    b.Property<string>("DiaChi")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("Email")
                         .HasColumnType("text");
@@ -302,15 +349,13 @@ namespace Backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MaNguyenLieu"));
 
-                    b.Property<string>("DanhMuc")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
                     b.Property<string>("DonVi")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
+
+                    b.Property<int>("MaNCC")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("NgayNhap")
                         .HasColumnType("timestamp with time zone");
@@ -332,6 +377,8 @@ namespace Backend.Migrations
                         .HasColumnType("character varying(20)");
 
                     b.HasKey("MaNguyenLieu");
+
+                    b.HasIndex("MaNCC");
 
                     b.ToTable("Kho");
                 });
@@ -370,24 +417,6 @@ namespace Backend.Migrations
                     b.ToTable("KhuyenMai");
                 });
 
-            modelBuilder.Entity("Backend.Models.KhuyenMai_DonHang", b =>
-                {
-                    b.Property<int>("MaDonHang")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("MaKhuyenMai")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("SoTienGiam")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("MaDonHang", "MaKhuyenMai");
-
-                    b.HasIndex("MaKhuyenMai");
-
-                    b.ToTable("KhuyenMai_DonHang");
-                });
-
             modelBuilder.Entity("Backend.Models.LichLamViec", b =>
                 {
                     b.Property<int>("MaLichLamViec")
@@ -413,8 +442,7 @@ namespace Backend.Migrations
 
                     b.HasIndex("MaCa");
 
-                    b.HasIndex("MaNhanVien", "NgayLamViec", "MaCa")
-                        .IsUnique();
+                    b.HasIndex("MaNhanVien");
 
                     b.ToTable("LichLamViec");
                 });
@@ -453,6 +481,127 @@ namespace Backend.Migrations
                     b.ToTable("LoaiMon");
                 });
 
+            modelBuilder.Entity("Backend.Models.MonAn", b =>
+                {
+                    b.Property<int>("MaMon")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MaMon"));
+
+                    b.Property<decimal>("Gia")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("HinhAnh")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("KhuyenMaiMaKM")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("MaKM")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MaLoai")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("NgayCapNhat")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("NgayTao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("NguoiCapNhat")
+                        .HasColumnType("text");
+
+                    b.Property<string>("NguoiTao")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TenMon")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("MaMon");
+
+                    b.HasIndex("KhuyenMaiMaKM");
+
+                    b.HasIndex("MaLoai");
+
+                    b.HasIndex("TenMon");
+
+                    b.ToTable("MonAn");
+                });
+
+            modelBuilder.Entity("Backend.Models.NguyenLieu", b =>
+                {
+                    b.Property<int>("MaNguyenLieu")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MaNguyenLieu"));
+
+                    b.Property<string>("DonVi")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<int>("MaMon")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MaNL")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("SoLuong")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("MaNguyenLieu");
+
+                    b.HasIndex("MaMon");
+
+                    b.HasIndex("MaNL");
+
+                    b.ToTable("NguyenLieu");
+                });
+
+            modelBuilder.Entity("Backend.Models.NhaCungCap", b =>
+                {
+                    b.Property<int>("MaNCC")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MaNCC"));
+
+                    b.Property<string>("DiaChi")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("SDT")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)");
+
+                    b.Property<string>("TenNCC")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("TrangThai")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("MaNCC");
+
+                    b.ToTable("NhaCungCap");
+                });
+
             modelBuilder.Entity("Backend.Models.NhanVien", b =>
                 {
                     b.Property<int>("MaNV")
@@ -461,9 +610,13 @@ namespace Backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MaNV"));
 
+                    b.Property<int>("BoPhanMaBoPhan")
+                        .HasColumnType("integer");
+
                     b.Property<string>("ChucVu")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("DiaChi")
                         .IsRequired()
@@ -485,70 +638,71 @@ namespace Backend.Migrations
 
                     b.Property<string>("MatKhau")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("SDT")
                         .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("character varying(15)");
 
-                    b.Property<string>("TrangThai")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
                     b.HasKey("MaNV");
+
+                    b.HasIndex("BoPhanMaBoPhan");
 
                     b.HasIndex("Email")
                         .IsUnique();
-
-                    b.HasIndex("MaBoPhan");
 
                     b.HasIndex("SDT")
                         .IsUnique();
 
                     b.ToTable("NhanVien");
-
-                    b.HasData(
-                        new
-                        {
-                            MaNV = 1,
-                            ChucVu = "QuanLy",
-                            DiaChi = "Admin Address",
-                            Email = "admin@gmail.com",
-                            HoTen = "Admin",
-                            MaBoPhan = 1,
-                            MatKhau = "$2a$11$AHzAlAtAtx.m0g8q0x5nj.LB42KsSQx3hlzv7yE3UQGnn6oNhxIqm",
-                            SDT = "0123456789",
-                            TrangThai = "Đang làm việc"
-                        });
                 });
 
-            modelBuilder.Entity("Backend.Models.ThucDon", b =>
+            modelBuilder.Entity("Backend.Models.TaiKhoan", b =>
                 {
-                    b.Property<int>("MaMon")
+                    b.Property<int>("MaTaiKhoan")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MaMon"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MaTaiKhoan"));
 
-                    b.Property<decimal>("Gia")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
-                    b.Property<string>("HinhAnh")
+                    b.Property<string>("HoTen")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime?>("LastLogin")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("LockoutEnd")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("LoginAttempts")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("MaNhanVien")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MaVaiTro")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("MatKhauHash")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int?>("KhuyenMaiMaKM")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("MaLoai")
-                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("NgayCapNhat")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("NgayTao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("NgayThamGia")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("NguoiCapNhat")
@@ -557,27 +711,28 @@ namespace Backend.Migrations
                     b.Property<string>("NguoiTao")
                         .HasColumnType("text");
 
-                    b.Property<int>("SoLuongTon")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("TenMon")
+                    b.Property<string>("SDT")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)");
+
+                    b.Property<string>("TenDangNhap")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("TrangThai")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
-                    b.HasKey("MaMon");
+                    b.HasKey("MaTaiKhoan");
 
-                    b.HasIndex("KhuyenMaiMaKM");
+                    b.HasIndex("MaNhanVien");
 
-                    b.HasIndex("MaLoai");
+                    b.HasIndex("MaVaiTro");
 
-                    b.HasIndex("TenMon");
-
-                    b.ToTable("ThucDon");
+                    b.ToTable("TaiKhoan");
                 });
 
             modelBuilder.Entity("Backend.Models.VaiTro", b =>
@@ -606,20 +761,14 @@ namespace Backend.Migrations
                         new
                         {
                             MaVaiTro = 1,
-                            MoTa = "Quản lý hệ thống",
-                            TenVaiTro = "QuanLy"
+                            MoTa = "Quản lý hệ thống với toàn quyền truy cập",
+                            TenVaiTro = "Quản lý"
                         },
                         new
                         {
                             MaVaiTro = 2,
-                            MoTa = "Nhân viên",
-                            TenVaiTro = "NhanVien"
-                        },
-                        new
-                        {
-                            MaVaiTro = 3,
-                            MoTa = "Khách hàng",
-                            TenVaiTro = "KhachHang"
+                            MoTa = "Nhân viên với quyền truy cập hạn chế",
+                            TenVaiTro = "Nhân viên"
                         });
                 });
 
@@ -628,7 +777,7 @@ namespace Backend.Migrations
                     b.HasOne("Backend.Models.NhanVien", "NhanVien")
                         .WithMany("CaLamViec")
                         .HasForeignKey("MaNhanVien")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("NhanVien");
@@ -639,7 +788,7 @@ namespace Backend.Migrations
                     b.HasOne("Backend.Models.NhanVien", "NhanVien")
                         .WithMany("ChamCong")
                         .HasForeignKey("MaNhanVien")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("NhanVien");
@@ -653,7 +802,7 @@ namespace Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Backend.Models.ThucDon", "ThucDon")
+                    b.HasOne("Backend.Models.MonAn", "MonAn")
                         .WithMany("ChiTietDonHang")
                         .HasForeignKey("MaMon")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -661,7 +810,7 @@ namespace Backend.Migrations
 
                     b.Navigation("DonHang");
 
-                    b.Navigation("ThucDon");
+                    b.Navigation("MonAn");
                 });
 
             modelBuilder.Entity("Backend.Models.DatBan", b =>
@@ -711,23 +860,34 @@ namespace Backend.Migrations
                     b.Navigation("Kho");
                 });
 
-            modelBuilder.Entity("Backend.Models.KhuyenMai_DonHang", b =>
+            modelBuilder.Entity("Backend.Models.HoaDon", b =>
                 {
                     b.HasOne("Backend.Models.DonHang", "DonHang")
-                        .WithMany()
-                        .HasForeignKey("MaDonHang")
+                        .WithOne("HoaDon")
+                        .HasForeignKey("Backend.Models.HoaDon", "MaDonHang")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Backend.Models.KhuyenMai", "KhuyenMai")
+                    b.HasOne("Backend.Models.NhanVien", "NhanVien")
                         .WithMany()
-                        .HasForeignKey("MaKhuyenMai")
+                        .HasForeignKey("MaNhanVien")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("DonHang");
 
-                    b.Navigation("KhuyenMai");
+                    b.Navigation("NhanVien");
+                });
+
+            modelBuilder.Entity("Backend.Models.Kho", b =>
+                {
+                    b.HasOne("Backend.Models.NhaCungCap", "NhaCungCap")
+                        .WithMany("NguyenLieu")
+                        .HasForeignKey("MaNCC")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NhaCungCap");
                 });
 
             modelBuilder.Entity("Backend.Models.LichLamViec", b =>
@@ -741,7 +901,7 @@ namespace Backend.Migrations
                     b.HasOne("Backend.Models.NhanVien", "NhanVien")
                         .WithMany()
                         .HasForeignKey("MaNhanVien")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CaLamViec");
@@ -749,25 +909,14 @@ namespace Backend.Migrations
                     b.Navigation("NhanVien");
                 });
 
-            modelBuilder.Entity("Backend.Models.NhanVien", b =>
-                {
-                    b.HasOne("Backend.Models.BoPhan", "BoPhan")
-                        .WithMany("NhanVien")
-                        .HasForeignKey("MaBoPhan")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("BoPhan");
-                });
-
-            modelBuilder.Entity("Backend.Models.ThucDon", b =>
+            modelBuilder.Entity("Backend.Models.MonAn", b =>
                 {
                     b.HasOne("Backend.Models.KhuyenMai", "KhuyenMai")
                         .WithMany()
                         .HasForeignKey("KhuyenMaiMaKM");
 
                     b.HasOne("Backend.Models.LoaiMon", "LoaiMon")
-                        .WithMany("ThucDons")
+                        .WithMany("MonAns")
                         .HasForeignKey("MaLoai")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -775,6 +924,53 @@ namespace Backend.Migrations
                     b.Navigation("KhuyenMai");
 
                     b.Navigation("LoaiMon");
+                });
+
+            modelBuilder.Entity("Backend.Models.NguyenLieu", b =>
+                {
+                    b.HasOne("Backend.Models.MonAn", "MonAn")
+                        .WithMany("NguyenLieu")
+                        .HasForeignKey("MaMon")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.Kho", "KhoNguyenLieu")
+                        .WithMany("NguyenLieu")
+                        .HasForeignKey("MaNL")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("KhoNguyenLieu");
+
+                    b.Navigation("MonAn");
+                });
+
+            modelBuilder.Entity("Backend.Models.NhanVien", b =>
+                {
+                    b.HasOne("Backend.Models.BoPhan", "BoPhan")
+                        .WithMany("NhanVien")
+                        .HasForeignKey("BoPhanMaBoPhan")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BoPhan");
+                });
+
+            modelBuilder.Entity("Backend.Models.TaiKhoan", b =>
+                {
+                    b.HasOne("Backend.Models.NhanVien", "NhanVien")
+                        .WithMany()
+                        .HasForeignKey("MaNhanVien");
+
+                    b.HasOne("Backend.Models.VaiTro", "VaiTro")
+                        .WithMany("TaiKhoans")
+                        .HasForeignKey("MaVaiTro")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NhanVien");
+
+                    b.Navigation("VaiTro");
                 });
 
             modelBuilder.Entity("Backend.Models.Ban", b =>
@@ -790,6 +986,8 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.DonHang", b =>
                 {
                     b.Navigation("ChiTietDonHang");
+
+                    b.Navigation("HoaDon");
                 });
 
             modelBuilder.Entity("Backend.Models.KhachHang", b =>
@@ -797,9 +995,26 @@ namespace Backend.Migrations
                     b.Navigation("DonHang");
                 });
 
+            modelBuilder.Entity("Backend.Models.Kho", b =>
+                {
+                    b.Navigation("NguyenLieu");
+                });
+
             modelBuilder.Entity("Backend.Models.LoaiMon", b =>
                 {
-                    b.Navigation("ThucDons");
+                    b.Navigation("MonAns");
+                });
+
+            modelBuilder.Entity("Backend.Models.MonAn", b =>
+                {
+                    b.Navigation("ChiTietDonHang");
+
+                    b.Navigation("NguyenLieu");
+                });
+
+            modelBuilder.Entity("Backend.Models.NhaCungCap", b =>
+                {
+                    b.Navigation("NguyenLieu");
                 });
 
             modelBuilder.Entity("Backend.Models.NhanVien", b =>
@@ -809,9 +1024,9 @@ namespace Backend.Migrations
                     b.Navigation("ChamCong");
                 });
 
-            modelBuilder.Entity("Backend.Models.ThucDon", b =>
+            modelBuilder.Entity("Backend.Models.VaiTro", b =>
                 {
-                    b.Navigation("ChiTietDonHang");
+                    b.Navigation("TaiKhoans");
                 });
 #pragma warning restore 612, 618
         }

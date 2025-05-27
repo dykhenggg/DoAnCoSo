@@ -33,9 +33,9 @@ namespace Backend.Controllers
 
             if (!string.IsNullOrEmpty(keyword))
             {
-                query = query.Where(k => k.HoTen.Contains(keyword) || 
-                                       k.SoDienThoai.Contains(keyword) ||
-                                       k.Email.Contains(keyword));
+                query = query.Where(k => (k.HoTen != null && k.HoTen.Contains(keyword)) || 
+                                       (k.SoDienThoai != null && k.SoDienThoai.Contains(keyword)) ||
+                                       (k.Email != null && k.Email.Contains(keyword)));
             }
 
             return await query

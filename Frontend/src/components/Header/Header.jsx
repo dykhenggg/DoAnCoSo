@@ -6,40 +6,38 @@ const Header = () => {
 
   const slides = [
     {
-      image: "/images/allen-rad-9G_oJBKwi1c-unsplash.jpg",
-      title: "Gourmet Burgers",
+      image: "/images/salad4.webp",
+      title: "Lựa chọn tốt cho sức khỏe",
       description:
-        "Savor our handcrafted burgers made with premium ingredients",
-      buttonText: "View Menu",
+        "Lựa chọn hoàn hảo cho vóc dáng cân đối và lối sống lành mạnh, với nguyên liệu tươi sạch, ít dầu mỡ nhưng đầy đủ dinh dưỡng!",
+      buttonText: "Xem thực đơn",
       buttonLink: "food-display",
     },
     {
-      image: "/images/fastfood_background.jpg",
-      title: "Fast & Fresh",
-      description: "Quick service without compromising on quality",
-      buttonText: "Order Now",
-      buttonLink: "/order",
+      image: "/images/mochi.jpg",
+      title: "Nơi vị ngọt là nguồn cảm hứng bất tận",
+      description: "Ngọt ngào từng chiếc, yêu ngay từ miếng đầu tiên!",
+      buttonText: "Đặt bàn ngay",
+      buttonLink: "reservation-section",
     },
     {
-      image: "/images/header_img.png",
-      title: "Healthy Choices",
-      description: "Delicious and nutritious meals prepared with care",
-      buttonText: "Explore Healthy Options",
-      buttonLink: "/healthy-menu",
+      image: "/images/buncha.jpg",
+      title: "Đậm Đà, Hấp Dẫn, Không Thể Bỏ Lỡ!",
+      description:
+        "Những bữa ăn hấp dẫn, bổ dưỡng, được chế biến tỉ mỉ và chu đáo.",
     },
   ];
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
-    }, 7000); // Change slide every 5 seconds
+    }, 7000);
 
     return () => clearInterval(timer);
   }, []);
 
   const handleScroll = (elementId) => {
-    // Check if the link is for internal navigation
-    if (!elementId.startsWith("/")) {
+    if (!elementId?.startsWith("/")) {
       const element = document.getElementById(elementId);
       if (element) {
         element.scrollIntoView({
@@ -65,12 +63,14 @@ const Header = () => {
         <div className="slide-content">
           <h2>{slides[currentSlide].title}</h2>
           <p>{slides[currentSlide].description}</p>
-          <button
-            className="cta-button"
-            onClick={() => handleScroll(slides[currentSlide].buttonLink)}
-          >
-            {slides[currentSlide].buttonText}
-          </button>
+          {slides[currentSlide].buttonText && (
+            <button
+              className="cta-button"
+              onClick={() => handleScroll(slides[currentSlide].buttonLink)}
+            >
+              {slides[currentSlide].buttonText}
+            </button>
+          )}
         </div>
         <div className="slide-indicators">
           {slides.map((_, index) => (

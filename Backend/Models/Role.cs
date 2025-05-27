@@ -15,5 +15,8 @@ namespace Backend.Models
 
         [StringLength(200)]
         public string MoTa { get; set; } = string.Empty;
+
+        // Navigation property
+        public virtual ICollection<TaiKhoan> TaiKhoans { get; set; } = new List<TaiKhoan>();
     }
 }
