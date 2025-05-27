@@ -17,7 +17,6 @@ const Storage = () => {
   const [suppliers, setSuppliers] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [showTransactionModal, setShowTransactionModal] = useState(false);
-
   const [newItem, setNewItem] = useState({
     tenNguyenLieu: "",
     soLuong: 0,
@@ -411,6 +410,26 @@ const Storage = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Delete Modal */}
+      {showDeleteModal && selectedItem && (
+        <div className="modal">
+          <div className="modal-content">
+            <h3>Xác nhận xóa</h3>
+            <p>
+              Bạn có chắc chắn muốn xóa nguyên liệu "
+              {selectedItem.tenNguyenLieu}"?
+            </p>
+            <div className="modal-actions">
+              <button className="delete-button" onClick={handleDeleteItem}>
+                Xóa
+              </button>
+              <button className="cancel-button" onClick={handleCloseModal}>
+                Hủy
+              </button>
+            </div>
           </div>
         </div>
       )}
