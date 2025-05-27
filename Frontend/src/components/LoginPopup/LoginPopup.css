@@ -164,6 +164,17 @@
     font-size: 18px;
 }
 
+.error-message {
+    color: #ff4d4d;
+    background-color: #fff2f2;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ffcccc;
+    margin-bottom: 15px;
+    font-size: 14px;
+    text-align: center;
+}
+
 
 
 
