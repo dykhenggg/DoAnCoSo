@@ -41,17 +41,10 @@ const Login = ({ setShowLogin }) => {
     setShowPassword(!showPassword);
   };
 
-  const handleOverlayClick = () => {
-    setShowLogin(false);
-  };
-
   return (
-    <div className="login-popup" onClick={(e) => e.stopPropagation()}>
-      <div className="login-popup-overlay" onClick={handleOverlayClick}></div>
-      <div
-        className="login-popup-container"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="login-popup">
+      <div className="login-popup-overlay"></div>
+      <div className="login-popup-container">
         <div className="login-popup-title">
           <h2>Đăng nhập</h2>
           <img src={assets1.logo} alt="Logo" className="login-logo" />
@@ -67,7 +60,6 @@ const Login = ({ setShowLogin }) => {
               onChange={handleChange}
               required
               className="modern-input"
-              onClick={(e) => e.stopPropagation()}
             />
           </div>
 
@@ -81,7 +73,6 @@ const Login = ({ setShowLogin }) => {
                 onChange={handleChange}
                 required
                 className="modern-input"
-                onClick={(e) => e.stopPropagation()}
               />
               <i
                 className={`password-toggle fas ${
@@ -93,11 +84,10 @@ const Login = ({ setShowLogin }) => {
           </div>
 
           <div className="login-popup-options">
-            <label className="remember-me" onClick={(e) => e.stopPropagation()}>
+            <label className="remember-me">
               <input
                 type="checkbox"
                 className="modern-checkbox"
-                onClick={(e) => e.stopPropagation()}
               />
               Ghi nhớ tôi
             </label>

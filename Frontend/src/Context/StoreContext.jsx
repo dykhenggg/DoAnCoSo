@@ -5,11 +5,21 @@ export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-
   const [foodList, setFoodList] = useState([]);
+
+  // Check for existing token on mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    if (token && userData) {
+      setIsLoggedIn(true);
+      setUser(JSON.parse(userData));
+      // Set default authorization header
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+  }, []);
 
   useEffect(() => {
     const fetchFoods = async () => {
@@ -19,7 +29,7 @@ const StoreContextProvider = (props) => {
           _id: item.maMon,
           name: item.tenMon,
           price: item.gia,
-          category: item.loaiMon.tenLoai, // Sửa để lấy tenLoai từ object loaiMon
+          category: item.loaiMon.tenLoai,
           image: `http://localhost:5078/images/${item.hinhAnh}`,
         }));
         setFoodList(formattedFoods);
@@ -34,10 +44,15 @@ const StoreContextProvider = (props) => {
   const login = (userData) => {
     setIsLoggedIn(true);
     setUser(userData);
+    localStorage.setItem('user', JSON.stringify(userData));
   };
+
   const logout = () => {
     setIsLoggedIn(false);
     setUser(null);
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    delete axios.defaults.headers.common['Authorization'];
   };
 
   const addToCart = (itemId) => {
@@ -72,12 +87,12 @@ const StoreContextProvider = (props) => {
     addToCart,
     removeFromCart,
     getTotalCartAmount,
-    // Auth
     isLoggedIn,
     user,
     login,
     logout,
   };
+
   return (
     <StoreContext.Provider value={contextValue}>
       {props.children}

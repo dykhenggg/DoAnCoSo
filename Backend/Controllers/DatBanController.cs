@@ -23,17 +23,6 @@ namespace Backend.Controllers
             return await _context.DatBan
                 .Include(d => d.Ban)
                 .Include(d => d.KhachHang)
-                .Select(d => new {
-                    d.MaDatBan,
-                    d.NgayDat,
-                    d.ThoiGianBatDau,
-                    d.ThoiGianKetThuc,
-                    d.SoNguoi,
-                    d.GhiChu,
-                    TenKhachHang = d.KhachHang.HoTen,
-                    SoDienThoai = d.KhachHang.SoDienThoai,
-                    TenBan = d.Ban.TenBan
-                })
                 .OrderByDescending(d => d.NgayDat)
                 .ToListAsync();
         }
