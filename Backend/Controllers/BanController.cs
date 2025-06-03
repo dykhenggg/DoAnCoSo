@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Backend.Data;
 using Backend.Models;
 using Backend.DTOs;
+using System.Linq;
+using System.Globalization;
 
 namespace Backend.Controllers
 {
@@ -18,11 +20,31 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Ban>>> GetAll()
+        public async Task<ActionResult<IEnumerable<object>>> GetAll()
         {
-            return await _context.Ban
+            var tz = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+            var now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, tz);
+
+            var tables = await _context.Ban
                 .Include(b => b.DatBan)
                 .ToListAsync();
+
+            var result = tables.Select(b => new {
+                b.MaBan,
+                b.TenBan,
+                b.SucChua,
+                TrangThai = !b.DatBan.Any(d => {
+                    try {
+                        if (d.ThoiGianBatDau == null || d.ThoiGianKetThuc == null) return false;
+                        var start = TimeZoneInfo.ConvertTimeFromUtc(d.ThoiGianBatDau, tz);
+                        var end = TimeZoneInfo.ConvertTimeFromUtc(d.ThoiGianKetThuc, tz);
+                        return start <= now && end > now;
+                    } catch { return false; }
+                }),
+                b.DatBan
+            }).ToList();
+
+            return Ok(result);
         }
 
         [HttpGet("available")]
@@ -33,7 +55,6 @@ namespace Backend.Controllers
         {
             return await _context.Ban
                 .Where(b => b.SucChua >= soNguoi &&
-                           b.TrangThai &&
                            !b.DatBan.Any(d => d.ThoiGianBatDau < thoiGianKetThuc &&
                                              d.ThoiGianKetThuc > thoiGianBatDau))
                 .ToListAsync();
@@ -46,7 +67,7 @@ namespace Backend.Controllers
             {
                 TenBan = dto.TenBan,
                 SucChua = dto.SucChua,
-                TrangThai = false
+                TrangThai = true
             };
 
             _context.Ban.Add(ban);
@@ -81,6 +102,18 @@ namespace Backend.Controllers
             if (ban == null) return NotFound();
 
             ban.TrangThai = trangThai;
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpPut("update-all-status")]
+        public async Task<IActionResult> UpdateAllStatus([FromBody] bool trangThai)
+        {
+            var allTables = await _context.Ban.ToListAsync();
+            foreach (var ban in allTables)
+            {
+                ban.TrangThai = trangThai;
+            }
             await _context.SaveChangesAsync();
             return NoContent();
         }

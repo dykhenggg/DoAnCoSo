@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/axios";
 
 export const StoreContext = createContext(null);
 
@@ -9,22 +9,60 @@ const StoreContextProvider = (props) => {
   const [user, setUser] = useState(null);
   const [foodList, setFoodList] = useState([]);
 
+  // Safe localStorage access
+  const safeLocalStorage = {
+    getItem: (key) => {
+      try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+          const value = window.localStorage.getItem(key);
+          return value ? JSON.parse(value) : null;
+        }
+        return null;
+      } catch (error) {
+        console.error(`Error reading ${key} from localStorage:`, error);
+        return null;
+      }
+    },
+    setItem: (key, value) => {
+      try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+          window.localStorage.setItem(key, JSON.stringify(value));
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.error(`Error writing ${key} to localStorage:`, error);
+        return false;
+      }
+    },
+    removeItem: (key) => {
+      try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+          window.localStorage.removeItem(key);
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.error(`Error removing ${key} from localStorage:`, error);
+        return false;
+      }
+    }
+  };
+
   // Check for existing token on mount
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
+    const token = safeLocalStorage.getItem('token');
+    const userData = safeLocalStorage.getItem('user');
     if (token && userData) {
       setIsLoggedIn(true);
-      setUser(JSON.parse(userData));
-      // Set default authorization header
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      setUser(userData);
     }
   }, []);
 
   useEffect(() => {
     const fetchFoods = async () => {
       try {
-        const response = await axios.get("http://localhost:5078/api/MonAn");
+        const response = await api.get("/MonAn");
         const formattedFoods = response.data.map((item) => ({
           _id: item.maMon,
           name: item.tenMon,
@@ -44,15 +82,14 @@ const StoreContextProvider = (props) => {
   const login = (userData) => {
     setIsLoggedIn(true);
     setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+    safeLocalStorage.setItem('user', userData);
   };
 
   const logout = () => {
     setIsLoggedIn(false);
     setUser(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    delete axios.defaults.headers.common['Authorization'];
+    safeLocalStorage.removeItem('token');
+    safeLocalStorage.removeItem('user');
   };
 
   const addToCart = (itemId) => {

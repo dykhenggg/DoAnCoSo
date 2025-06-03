@@ -385,11 +385,15 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.KhuyenMai", b =>
                 {
-                    b.Property<int>("MaKM")
+                    b.Property<int>("MaKhuyenMai")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MaKM"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MaKhuyenMai"));
+
+                    b.Property<string>("DieuKien")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("MoTa")
                         .IsRequired()
@@ -405,16 +409,34 @@ namespace Backend.Migrations
                     b.Property<decimal>("PhanTramGiam")
                         .HasColumnType("numeric");
 
-                    b.Property<string>("TenKM")
+                    b.Property<string>("TenKhuyenMai")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.HasKey("MaKM");
+                    b.Property<bool>("TrangThai")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("MaKhuyenMai");
 
                     b.HasIndex("NgayBatDau", "NgayKetThuc");
 
                     b.ToTable("KhuyenMai");
+                });
+
+            modelBuilder.Entity("Backend.Models.KhuyenMai_MonAn", b =>
+                {
+                    b.Property<int>("MaKhuyenMai")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MaMon")
+                        .HasColumnType("integer");
+
+                    b.HasKey("MaKhuyenMai", "MaMon");
+
+                    b.HasIndex("MaMon");
+
+                    b.ToTable("KhuyenMai_MonAn");
                 });
 
             modelBuilder.Entity("Backend.Models.LichLamViec", b =>
@@ -445,6 +467,35 @@ namespace Backend.Migrations
                     b.HasIndex("MaNhanVien");
 
                     b.ToTable("LichLamViec");
+                });
+
+            modelBuilder.Entity("Backend.Models.LichSuKhuyenMai", b =>
+                {
+                    b.Property<int>("MaLichSu")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MaLichSu"));
+
+                    b.Property<int>("MaDonHang")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MaKhuyenMai")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("NgayApDung")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("SoTienGiam")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("MaLichSu");
+
+                    b.HasIndex("MaDonHang");
+
+                    b.HasIndex("MaKhuyenMai");
+
+                    b.ToTable("LichSuKhuyenMai");
                 });
 
             modelBuilder.Entity("Backend.Models.LoaiMon", b =>
@@ -496,7 +547,7 @@ namespace Backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("KhuyenMaiMaKM")
+                    b.Property<int?>("KhuyenMaiMaKhuyenMai")
                         .HasColumnType("integer");
 
                     b.Property<int?>("MaKM")
@@ -524,7 +575,7 @@ namespace Backend.Migrations
 
                     b.HasKey("MaMon");
 
-                    b.HasIndex("KhuyenMaiMaKM");
+                    b.HasIndex("KhuyenMaiMaKhuyenMai");
 
                     b.HasIndex("MaLoai");
 
@@ -890,6 +941,25 @@ namespace Backend.Migrations
                     b.Navigation("NhaCungCap");
                 });
 
+            modelBuilder.Entity("Backend.Models.KhuyenMai_MonAn", b =>
+                {
+                    b.HasOne("Backend.Models.KhuyenMai", "KhuyenMai")
+                        .WithMany("KhuyenMai_MonAn")
+                        .HasForeignKey("MaKhuyenMai")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.MonAn", "MonAn")
+                        .WithMany()
+                        .HasForeignKey("MaMon")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("KhuyenMai");
+
+                    b.Navigation("MonAn");
+                });
+
             modelBuilder.Entity("Backend.Models.LichLamViec", b =>
                 {
                     b.HasOne("Backend.Models.CaLamViec", "CaLamViec")
@@ -909,11 +979,30 @@ namespace Backend.Migrations
                     b.Navigation("NhanVien");
                 });
 
+            modelBuilder.Entity("Backend.Models.LichSuKhuyenMai", b =>
+                {
+                    b.HasOne("Backend.Models.DonHang", "DonHang")
+                        .WithMany()
+                        .HasForeignKey("MaDonHang")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.KhuyenMai", "KhuyenMai")
+                        .WithMany("LichSuKhuyenMai")
+                        .HasForeignKey("MaKhuyenMai")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DonHang");
+
+                    b.Navigation("KhuyenMai");
+                });
+
             modelBuilder.Entity("Backend.Models.MonAn", b =>
                 {
                     b.HasOne("Backend.Models.KhuyenMai", "KhuyenMai")
                         .WithMany()
-                        .HasForeignKey("KhuyenMaiMaKM");
+                        .HasForeignKey("KhuyenMaiMaKhuyenMai");
 
                     b.HasOne("Backend.Models.LoaiMon", "LoaiMon")
                         .WithMany("MonAns")
@@ -998,6 +1087,13 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.Kho", b =>
                 {
                     b.Navigation("NguyenLieu");
+                });
+
+            modelBuilder.Entity("Backend.Models.KhuyenMai", b =>
+                {
+                    b.Navigation("KhuyenMai_MonAn");
+
+                    b.Navigation("LichSuKhuyenMai");
                 });
 
             modelBuilder.Entity("Backend.Models.LoaiMon", b =>

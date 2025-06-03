@@ -1,6 +1,8 @@
 .reservations-container {
   padding: 20px;
   width: 100%;
+  position: relative;
+  min-height: 100vh;
 }
 
 .reservations-header {
@@ -10,16 +12,127 @@
   margin-bottom: 20px;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.search-box input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 250px;
+}
+
+.reservations-table {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+  width: 100%;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+th,
+td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Đặt độ rộng cố định cho các cột */
+th:nth-child(1), td:nth-child(1) { width: 10%; } /* Mã đặt bàn */
+th:nth-child(2), td:nth-child(2) { width: 15%; } /* Tên khách hàng */
+th:nth-child(3), td:nth-child(3) { width: 15%; } /* Số điện thoại */
+th:nth-child(4), td:nth-child(4) { width: 15%; } /* Ngày đặt */
+th:nth-child(5), td:nth-child(5) { width: 15%; } /* Giờ đặt */
+th:nth-child(6), td:nth-child(6) { width: 10%; } /* Số người */
+th:nth-child(7), td:nth-child(7) { width: 10%; } /* Trạng thái */
+th:nth-child(8), td:nth-child(8) { width: 10%; } /* Thao tác */
+
+/* Cho phép text wrap cho cột ghi chú nếu có */
+th:last-child, td:last-child {
+  white-space: normal;
+  min-width: 100px;
+}
+
+th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+tr:hover {
+  background-color: #f9f9f9;
+}
+
+/* Style cho các nút thao tác */
+.edit-button,
+.delete-button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 0 4px;
+  white-space: nowrap;
+}
+
+.edit-button {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Style cho trạng thái */
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-weight: 500;
+  display: inline-block;
+  text-align: center;
+  min-width: 80px;
+}
+
+.status-badge.pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-badge.confirmed {
+  background-color: #e6f4ea;
+  color: #1e7e34;
+}
+
+.status-badge.cancelled {
+  background-color: #fbe9e7;
+  color: #d32f2f;
+}
+
 .reservations-actions {
   display: flex;
   gap: 10px;
-}
-
-.search-input {
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  width: 200px;
 }
 
 .add-button {
@@ -29,42 +142,6 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
-}
-
-.reservations-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-}
-
-.reservations-table th,
-.reservations-table td {
-  border: 1px solid #ddd;
-  padding: 12px;
-  text-align: left;
-}
-
-.reservations-table th {
-  background-color: #f5f5f5;
-}
-
-.edit-button,
-.delete-button {
-  padding: 6px 12px;
-  margin: 0 4px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.edit-button {
-  background-color: #2196f3;
-  color: white;
-}
-
-.delete-button {
-  background-color: #f44336;
-  color: white;
 }
 
 .pagination {

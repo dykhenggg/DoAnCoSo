@@ -21,6 +21,8 @@ namespace Backend.Data
         public DbSet<DonHang> DonHang { get; set; }
         public DbSet<ChiTietDonHang> ChiTietDonHang { get; set; }
         public DbSet<KhuyenMai> KhuyenMai { get; set; }
+        public DbSet<KhuyenMai_MonAn> KhuyenMai_MonAn { get; set; }
+        public DbSet<LichSuKhuyenMai> LichSuKhuyenMai { get; set; }
         public DbSet<CaLamViec> CaLamViec { get; set; }
         public DbSet<LichLamViec> LichLamViec { get; set; }
         public DbSet<ChamCong> ChamCong { get; set; }
@@ -112,11 +114,36 @@ namespace Backend.Data
                 .WithMany(b => b.DatBan)
                 .HasForeignKey(d => d.MaBan)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Cấu hình quan hệ cho KhuyenMai_MonAn
+            modelBuilder.Entity<KhuyenMai_MonAn>()
+                .HasKey(k => new { k.MaKhuyenMai, k.MaMon });
+
+            modelBuilder.Entity<KhuyenMai_MonAn>()
+                .HasOne(k => k.KhuyenMai)
+                .WithMany(k => k.KhuyenMai_MonAn)
+                .HasForeignKey(k => k.MaKhuyenMai)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<KhuyenMai_MonAn>()
+                .HasOne(k => k.MonAn)
+                .WithMany()
+                .HasForeignKey(k => k.MaMon)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Cấu hình quan hệ cho LichSuKhuyenMai
+            modelBuilder.Entity<LichSuKhuyenMai>()
+                .HasOne(l => l.KhuyenMai)
+                .WithMany(k => k.LichSuKhuyenMai)
+                .HasForeignKey(l => l.MaKhuyenMai)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<LichSuKhuyenMai>()
+                .HasOne(l => l.DonHang)
+                .WithMany()
+                .HasForeignKey(l => l.MaDonHang)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
-// Xóa các dòng sau:
-// public DbSet<User> Users { get; set; }
-// public DbSet<KhuyenMai_DonHang> KhuyenMai_DonHangs { get; set; }
 
-// Và xóa tất cả các đoạn code khởi tạo dữ liệu liên quan đến User trong OnModelCreating

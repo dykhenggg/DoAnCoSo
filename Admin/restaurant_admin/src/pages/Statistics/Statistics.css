@@ -1,6 +1,8 @@
 .statistics-container {
   padding: 20px;
   width: 100%;
+  position: relative;
+  min-height: 100vh;
 }
 
 .statistics-header {
