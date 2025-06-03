@@ -3,13 +3,29 @@ import { useNavigate } from 'react-router-dom';
 import './LoginPopup.css'
 import { assets } from '../../assets/assets'
 import { StoreContext } from '../../Context/StoreContext';
-import axios from 'axios';
+import api from '../../utils/axios';
 
 const LoginPopup = ({ setShowLogin }) => {
   const [currState, setCurrState] = useState("Login")
   const [error, setError] = useState("")
   const navigate = useNavigate();
   const { login } = useContext(StoreContext);
+
+  // Safe localStorage access
+  const safeLocalStorage = {
+    setItem: (key, value) => {
+      try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+          window.localStorage.setItem(key, value);
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.error(`Error writing ${key} to localStorage:`, error);
+        return false;
+      }
+    }
+  };
 
   // Lock body scroll when component mounts
   useEffect(() => {
@@ -44,22 +60,23 @@ const LoginPopup = ({ setShowLogin }) => {
 
     try {
       if (currState === "Login") {
-        const response = await axios.post("http://localhost:5078/api/TaiKhoan/login", {
+        const response = await api.post("/TaiKhoan/login", {
           tenDangNhap: e.target[1].value,
           matKhau: e.target[2].value
         });
 
         if (response.data.token) {
-          // Store token in localStorage
-          localStorage.setItem('token', response.data.token);
-          // Store user info
-          login(response.data.taiKhoan);
-          setShowLogin(false);
-          navigate('/');
+          if (safeLocalStorage.setItem('token', response.data.token)) {
+            login(response.data.taiKhoan);
+            setShowLogin(false);
+            navigate('/');
+          } else {
+            setError('Có lỗi xảy ra khi lưu thông tin đăng nhập. Vui lòng thử lại.');
+          }
         }
       } else {
         // Handle registration
-        const response = await axios.post("http://localhost:5078/api/TaiKhoan/register", {
+        const response = await api.post("/TaiKhoan/register", {
           hoTen: e.target[0].value,
           tenDangNhap: e.target[1].value,
           email: e.target[2].value,

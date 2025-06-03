@@ -14,18 +14,18 @@ const Suppliers = () => {
   const [itemsPerPage] = useState(10);
 
   const [newSupplier, setNewSupplier] = useState({
-    tenNhaCungCap: "",
+    tenNCC: "",
     diaChi: "",
-    soDienThoai: "",
+    sdt: "",
     email: "",
-    moTa: "",
+    trangThai: "Active"
   });
 
   // Lọc nhà cung cấp theo từ khóa tìm kiếm
   const filteredSuppliers = suppliers.filter(
     (supplier) =>
-      supplier.tenNhaCungCap.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      supplier.soDienThoai.includes(searchTerm)
+      supplier.tenNCC.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      supplier.sdt.includes(searchTerm)
   );
 
   // Phân trang
@@ -59,22 +59,32 @@ const Suppliers = () => {
     try {
       const response = await axios.post(
         "http://localhost:5078/api/NhaCungCap",
-        newSupplier
+        {
+          tenNCC: newSupplier.tenNCC,
+          diaChi: newSupplier.diaChi,
+          sdt: newSupplier.sdt,
+          email: newSupplier.email,
+          trangThai: newSupplier.trangThai
+        }
       );
       if (response.status === 201) {
         toast.success("Thêm nhà cung cấp thành công");
         fetchSuppliers();
         setShowAddModal(false);
         setNewSupplier({
-          tenNhaCungCap: "",
+          tenNCC: "",
           diaChi: "",
-          soDienThoai: "",
+          sdt: "",
           email: "",
-          moTa: "",
+          trangThai: "Active"
         });
       }
     } catch (error) {
-      toast.error("Lỗi khi thêm nhà cung cấp");
+      if (error.response) {
+        toast.error(`Lỗi: ${error.response.data}`);
+      } else {
+        toast.error("Lỗi khi thêm nhà cung cấp");
+      }
     }
   };
 
@@ -83,14 +93,25 @@ const Suppliers = () => {
     e.preventDefault();
     try {
       await axios.put(
-        `http://localhost:5078/api/NhaCungCap/${selectedSupplier.maNhaCungCap}`,
-        selectedSupplier
+        `http://localhost:5078/api/NhaCungCap/${selectedSupplier.maNCC}`,
+        {
+          maNCC: selectedSupplier.maNCC,
+          tenNCC: selectedSupplier.tenNCC,
+          diaChi: selectedSupplier.diaChi,
+          sdt: selectedSupplier.sdt,
+          email: selectedSupplier.email,
+          trangThai: selectedSupplier.trangThai
+        }
       );
       toast.success("Cập nhật nhà cung cấp thành công");
       fetchSuppliers();
       setShowEditModal(false);
     } catch (error) {
-      toast.error("Lỗi khi cập nhật nhà cung cấp");
+      if (error.response) {
+        toast.error(`Lỗi: ${error.response.data}`);
+      } else {
+        toast.error("Lỗi khi cập nhật nhà cung cấp");
+      }
     }
   };
 
@@ -98,13 +119,17 @@ const Suppliers = () => {
   const handleDeleteSupplier = async () => {
     try {
       await axios.delete(
-        `http://localhost:5078/api/NhaCungCap/${selectedSupplier.maNhaCungCap}`
+        `http://localhost:5078/api/NhaCungCap/${selectedSupplier.maNCC}`
       );
       toast.success("Xóa nhà cung cấp thành công");
       fetchSuppliers();
       setShowDeleteModal(false);
     } catch (error) {
-      toast.error("Lỗi khi xóa nhà cung cấp");
+      if (error.response) {
+        toast.error(`Lỗi: ${error.response.data}`);
+      } else {
+        toast.error("Lỗi khi xóa nhà cung cấp");
+      }
     }
   };
 
@@ -121,6 +146,18 @@ const Suppliers = () => {
         ...prev,
         [name]: value,
       }));
+    }
+  };
+
+  // Hàm chuyển đổi trạng thái sang tiếng Việt
+  const getStatusText = (status) => {
+    switch (status) {
+      case "Active":
+        return "Hoạt động";
+      case "Inactive":
+        return "Dừng hoạt động";
+      default:
+        return status;
     }
   };
 
@@ -154,18 +191,22 @@ const Suppliers = () => {
               <th>Địa chỉ</th>
               <th>Số điện thoại</th>
               <th>Email</th>
-              <th>Mô tả</th>
+              <th>Trạng thái</th>
               <th>Thao tác</th>
             </tr>
           </thead>
           <tbody>
             {currentItems.map((supplier) => (
-              <tr key={supplier.maNhaCungCap}>
-                <td>{supplier.tenNhaCungCap}</td>
+              <tr key={supplier.maNCC}>
+                <td>{supplier.tenNCC}</td>
                 <td>{supplier.diaChi}</td>
-                <td>{supplier.soDienThoai}</td>
+                <td>{supplier.sdt}</td>
                 <td>{supplier.email}</td>
-                <td>{supplier.moTa}</td>
+                <td>
+                  <span className={`status-badge ${supplier.trangThai.toLowerCase()}`}>
+                    {getStatusText(supplier.trangThai)}
+                  </span>
+                </td>
                 <td>
                   <button
                     className="edit-button"
@@ -220,9 +261,10 @@ const Suppliers = () => {
                 <label>Tên nhà cung cấp:</label>
                 <input
                   type="text"
-                  name="tenNhaCungCap"
-                  value={newSupplier.tenNhaCungCap}
+                  name="tenNCC"
+                  value={newSupplier.tenNCC}
                   onChange={handleInputChange}
+                  maxLength={100}
                   required
                 />
               </div>
@@ -233,6 +275,7 @@ const Suppliers = () => {
                   name="diaChi"
                   value={newSupplier.diaChi}
                   onChange={handleInputChange}
+                  maxLength={200}
                   required
                 />
               </div>
@@ -240,9 +283,10 @@ const Suppliers = () => {
                 <label>Số điện thoại:</label>
                 <input
                   type="tel"
-                  name="soDienThoai"
-                  value={newSupplier.soDienThoai}
+                  name="sdt"
+                  value={newSupplier.sdt}
                   onChange={handleInputChange}
+                  maxLength={15}
                   required
                 />
               </div>
@@ -253,16 +297,9 @@ const Suppliers = () => {
                   name="email"
                   value={newSupplier.email}
                   onChange={handleInputChange}
+                  maxLength={100}
                   required
                 />
-              </div>
-              <div className="form-group">
-                <label>Mô tả:</label>
-                <textarea
-                  name="moTa"
-                  value={newSupplier.moTa}
-                  onChange={handleInputChange}
-                ></textarea>
               </div>
               <div className="modal-actions">
                 <button type="submit" className="save-button">
@@ -291,9 +328,10 @@ const Suppliers = () => {
                 <label>Tên nhà cung cấp:</label>
                 <input
                   type="text"
-                  name="tenNhaCungCap"
-                  value={selectedSupplier.tenNhaCungCap}
+                  name="tenNCC"
+                  value={selectedSupplier.tenNCC}
                   onChange={handleInputChange}
+                  maxLength={100}
                   required
                 />
               </div>
@@ -304,6 +342,7 @@ const Suppliers = () => {
                   name="diaChi"
                   value={selectedSupplier.diaChi}
                   onChange={handleInputChange}
+                  maxLength={200}
                   required
                 />
               </div>
@@ -311,9 +350,10 @@ const Suppliers = () => {
                 <label>Số điện thoại:</label>
                 <input
                   type="tel"
-                  name="soDienThoai"
-                  value={selectedSupplier.soDienThoai}
+                  name="sdt"
+                  value={selectedSupplier.sdt}
                   onChange={handleInputChange}
+                  maxLength={15}
                   required
                 />
               </div>
@@ -324,16 +364,21 @@ const Suppliers = () => {
                   name="email"
                   value={selectedSupplier.email}
                   onChange={handleInputChange}
+                  maxLength={100}
                   required
                 />
               </div>
               <div className="form-group">
-                <label>Mô tả:</label>
-                <textarea
-                  name="moTa"
-                  value={selectedSupplier.moTa}
+                <label>Trạng thái:</label>
+                <select
+                  name="trangThai"
+                  value={selectedSupplier.trangThai}
                   onChange={handleInputChange}
-                ></textarea>
+                  required
+                >
+                  <option value="Active">Hoạt động</option>
+                  <option value="Inactive">Dừng hoạt động</option>
+                </select>
               </div>
               <div className="modal-actions">
                 <button type="submit" className="save-button">
@@ -359,7 +404,7 @@ const Suppliers = () => {
             <h3>Xác nhận xóa</h3>
             <p>
               Bạn có chắc chắn muốn xóa nhà cung cấp "
-              {selectedSupplier.tenNhaCungCap}"?
+              {selectedSupplier.tenNCC}"?
             </p>
             <div className="modal-actions">
               <button className="delete-button" onClick={handleDeleteSupplier}>

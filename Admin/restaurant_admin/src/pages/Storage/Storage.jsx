@@ -19,12 +19,11 @@ const Storage = () => {
   const [showTransactionModal, setShowTransactionModal] = useState(false);
   const [newItem, setNewItem] = useState({
     tenNguyenLieu: "",
-    soLuong: 0,
     donVi: "",
-    giaNhap: 0,
-    nhaCungCap: "",
-    dinhMuc: 0,
-    ghiChu: "",
+    soLuongHienTai: 0,
+    soLuongToiThieu: 0,
+    maNCC: 1, // Mặc định là 1, bạn cần thay đổi thành ID thực tế của nhà cung cấp
+    trangThai: "Active"
   });
 
   const [newTransaction, setNewTransaction] = useState({
@@ -105,10 +104,11 @@ const Storage = () => {
     setSelectedItem(null);
     setNewItem({
       tenNguyenLieu: "",
-      soLuong: 0,
       donVi: "",
-      giaNhap: 0,
-      nhaCungCap: "",
+      soLuongHienTai: 0,
+      soLuongToiThieu: 0,
+      maNCC: 1,
+      trangThai: "Active"
     });
   };
 
@@ -146,22 +146,95 @@ const Storage = () => {
     }
   };
 
+  // Fetch suppliers
+  const fetchSuppliers = async () => {
+    try {
+      const response = await axios.get("http://localhost:5078/api/NhaCungCap");
+      if (response.data) {
+        // Chỉ lấy nhà cung cấp đang hoạt động
+        const activeSuppliers = response.data.filter(supplier => supplier.trangThai === "Active");
+        setSuppliers(activeSuppliers);
+      }
+    } catch (error) {
+      toast.error("Không thể lấy danh sách nhà cung cấp");
+    }
+  };
+
   useEffect(() => {
     fetchStorage();
+    fetchSuppliers();
   }, []);
 
   // Add new item
   const handleAddItem = async (e) => {
     e.preventDefault();
     try {
+      // Validate required fields
       if (!newItem.tenNguyenLieu.trim()) {
         toast.error("Vui lòng nhập tên nguyên liệu");
+        return;
+      }
+      if (newItem.tenNguyenLieu.trim().length > 100) {
+        toast.error("Tên nguyên liệu không được vượt quá 100 ký tự");
+        return;
+      }
+      if (!newItem.donVi.trim()) {
+        toast.error("Vui lòng nhập đơn vị");
+        return;
+      }
+      if (newItem.donVi.trim().length > 20) {
+        toast.error("Đơn vị không được vượt quá 20 ký tự");
+        return;
+      }
+
+      // Tìm nhà cung cấp được chọn
+      const selectedSupplier = suppliers.find(s => s.maNCC === parseInt(newItem.maNCC));
+      if (!selectedSupplier) {
+        toast.error("Không tìm thấy nhà cung cấp");
+        return;
+      }
+
+      const itemToSend = {
+        tenNguyenLieu: newItem.tenNguyenLieu.trim(),
+        donVi: newItem.donVi.trim(),
+        soLuongHienTai: parseFloat(newItem.soLuongHienTai),
+        soLuongToiThieu: parseFloat(newItem.soLuongToiThieu),
+        maNCC: selectedSupplier.maNCC,
+        trangThai: "Active",
+        ngayNhap: new Date().toISOString()
+      };
+
+      // Log dữ liệu gửi đi
+      console.log("Data being sent:", itemToSend);
+
+      // Kiểm tra giá trị số
+      if (isNaN(itemToSend.soLuongHienTai) || itemToSend.soLuongHienTai < 0) {
+        toast.error("Số lượng hiện tại không hợp lệ");
+        return;
+      }
+      if (isNaN(itemToSend.soLuongToiThieu) || itemToSend.soLuongToiThieu < 0) {
+        toast.error("Số lượng tối thiểu không hợp lệ");
+        return;
+      }
+      if (isNaN(itemToSend.maNCC) || itemToSend.maNCC <= 0) {
+        toast.error("Vui lòng chọn nhà cung cấp");
+        return;
+      }
+
+      // Kiểm tra định dạng ngày
+      if (!itemToSend.ngayNhap || isNaN(new Date(itemToSend.ngayNhap).getTime())) {
+        toast.error("Ngày nhập không hợp lệ");
         return;
       }
 
       const response = await axios.post(
         "http://localhost:5078/api/Kho",
-        newItem
+        itemToSend,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
       );
       if (response.status === 201) {
         toast.success("Thêm nguyên liệu thành công");
@@ -169,18 +242,31 @@ const Storage = () => {
         setShowAddModal(false);
         setNewItem({
           tenNguyenLieu: "",
-          soLuong: 0,
           donVi: "",
-          giaNhap: 0,
-          nhaCungCap: "",
+          soLuongHienTai: 0,
+          soLuongToiThieu: 0,
+          maNCC: "",
+          trangThai: "Active"
         });
       }
     } catch (error) {
+      console.error("Full error object:", error);
       if (error.response) {
-        toast.error(`Lỗi: ${error.response.data}`);
+        // Log chi tiết lỗi từ server
+        console.error("Error response data:", error.response.data);
+        console.error("Error response status:", error.response.status);
+        console.error("Error response headers:", error.response.headers);
+        
+        // Hiển thị thông báo lỗi chi tiết hơn
+        const errorMessage = typeof error.response.data === 'string' 
+          ? error.response.data 
+          : JSON.stringify(error.response.data);
+        toast.error(`Lỗi server: ${errorMessage}`);
       } else if (error.request) {
+        console.error("Error request:", error.request);
         toast.error("Không thể kết nối đến server");
       } else {
+        console.error("Error message:", error.message);
         toast.error(`Lỗi: ${error.message}`);
       }
     }
@@ -267,11 +353,10 @@ const Storage = () => {
               <th onClick={() => handleSort("tenNguyenLieu")}>
                 Tên nguyên liệu
               </th>
-              <th onClick={() => handleSort("soLuong")}>Số lượng</th>
+              <th onClick={() => handleSort("soLuongHienTai")}>Số lượng</th>
               <th onClick={() => handleSort("donVi")}>Đơn vị</th>
-              <th onClick={() => handleSort("dinhMuc")}>Định mức</th>
-              <th onClick={() => handleSort("giaNhap")}>Giá nhập</th>
-              <th onClick={() => handleSort("nhaCungCap")}>Nhà cung cấp</th>
+              <th onClick={() => handleSort("soLuongToiThieu")}>Số lượng tối thiểu</th>
+              <th onClick={() => handleSort("nhaCungCap.tenNCC")}>Nhà cung cấp</th>
               <th>Thao tác</th>
             </tr>
           </thead>
@@ -279,13 +364,12 @@ const Storage = () => {
             {currentItems.map((item) => (
               <tr key={item.maNguyenLieu}>
                 <td>{item.tenNguyenLieu}</td>
-                <td className={item.soLuong < item.dinhMuc ? "low-stock" : ""}>
-                  {item.soLuong} {item.donVi}
+                <td className={item.soLuongHienTai < item.soLuongToiThieu ? "low-stock" : ""}>
+                  {item.soLuongHienTai} {item.donVi}
                 </td>
                 <td>{item.donVi}</td>
-                <td>{item.dinhMuc}</td>
-                <td>{item.giaNhap.toLocaleString("vi-VN")} VNĐ</td>
-                <td>{item.nhaCungCap}</td>
+                <td>{item.soLuongToiThieu}</td>
+                <td>{item.nhaCungCap?.tenNCC || 'N/A'}</td>
                 <td>
                   <button
                     className="edit-button"
@@ -430,6 +514,92 @@ const Storage = () => {
                 Hủy
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Modal */}
+      {showAddModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h3>Thêm nguyên liệu mới</h3>
+            <form onSubmit={handleAddItem}>
+              <div className="form-group">
+                <label>Tên nguyên liệu:</label>
+                <input
+                  type="text"
+                  name="tenNguyenLieu"
+                  value={newItem.tenNguyenLieu}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Đơn vị:</label>
+                <input
+                  type="text"
+                  name="donVi"
+                  value={newItem.donVi}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Số lượng hiện tại:</label>
+                <input
+                  type="number"
+                  name="soLuongHienTai"
+                  value={newItem.soLuongHienTai}
+                  onChange={handleInputChange}
+                  min="0"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Số lượng tối thiểu:</label>
+                <input
+                  type="number"
+                  name="soLuongToiThieu"
+                  value={newItem.soLuongToiThieu}
+                  onChange={handleInputChange}
+                  min="0"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Nhà cung cấp:</label>
+                <select
+                  name="maNCC"
+                  value={newItem.maNCC}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">Chọn nhà cung cấp</option>
+                  {suppliers.map((supplier) => (
+                    <option key={supplier.maNCC} value={supplier.maNCC}>
+                      {supplier.tenNCC}
+                    </option>
+                  ))}
+                </select>
+                {suppliers.length === 0 && (
+                  <span className="error-message">
+                    Không có nhà cung cấp đang hoạt động
+                  </span>
+                )}
+              </div>
+              <div className="modal-actions">
+                <button type="submit" className="save-button">
+                  Thêm
+                </button>
+                <button
+                  type="button"
+                  className="cancel-button"
+                  onClick={handleCloseModal}
+                >
+                  Hủy
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

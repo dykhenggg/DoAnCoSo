@@ -1,6 +1,8 @@
 .customers-container {
   padding: 20px;
   width: 100%;
+  position: relative;
+  min-height: 100vh;
 }
 
 .customers-header {
@@ -52,11 +54,13 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow-x: auto;
+  margin-bottom: 20px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 th,
@@ -64,6 +68,14 @@ td {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
+}
+
+/* Thêm style cho cột địa chỉ */
+td:nth-child(4) {
+  max-width: 300px;
+  white-space: normal;
+  word-wrap: break-word;
+  line-height: 1.4;
 }
 
 th {
@@ -175,3 +187,35 @@ tr:hover {
   background-color: #f44336;
   color: white;
 }
+
+/* Style cho cột địa chỉ */
+.address-cell {
+  max-width: 300px;
+  min-width: 200px;
+}
+
+.address-cell div {
+  white-space: normal;
+  word-wrap: break-word;
+  line-height: 1.4;
+  color: #333;
+}
+
+.no-address {
+  color: #999;
+  font-style: italic;
+}
+
+/* Đảm bảo bảng có thể scroll ngang khi cần */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* Đặt độ rộng cố định cho các cột */
+th:nth-child(1), td:nth-child(1) { width: 20%; } /* Họ tên */
+th:nth-child(2), td:nth-child(2) { width: 15%; } /* Số điện thoại */
+th:nth-child(3), td:nth-child(3) { width: 25%; } /* Email */
+th:nth-child(4), td:nth-child(4) { width: 30%; } /* Địa chỉ */
+th:nth-child(5), td:nth-child(5) { width: 10%; } /* Thao tác */

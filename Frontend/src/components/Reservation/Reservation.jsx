@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Reservation.css";
 
-const ReservationConfirm = ({ show, onClose }) => {
+const ReservationConfirm = ({ show, onClose, reservationDetails }) => {
   if (!show) return null;
   return (
     <div
@@ -20,8 +20,11 @@ const ReservationConfirm = ({ show, onClose }) => {
           <p>
             Chúng tôi đã nhận thông tin đặt bàn của bạn.
             <br />
-            Chúng tôi sẽ kiểm tra và thông báo cho bạn qua email hoặc số điện
-            thoại đã cung cấp.
+            Mã đặt bàn của bạn là: <strong>{reservationDetails?.maDatBan}</strong>
+            <br />
+            Chúng tôi đã gửi email xác nhận đến địa chỉ: {reservationDetails?.email}
+            <br />
+            Vui lòng kiểm tra email để xác nhận đặt bàn.
           </p>
           <button
             className="reservation-popup-confirm-button"
@@ -51,77 +54,77 @@ const Reservation = () => {
   });
   const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [loadingTables, setLoadingTables] = useState(false);
+  const [reservationDetails, setReservationDetails] = useState(null);
 
-  // Lấy danh sách tất cả các bàn khi component mount
+  // Fetch tables
   useEffect(() => {
     const fetchTables = async () => {
+      setLoadingTables(true);
       try {
         const response = await axios.get("http://localhost:5078/api/Ban");
-        // Chỉ lấy các bàn đang hoạt động (TrangThai = true)
-        const activeTables = response.data.filter((table) => table.trangThai);
-        if (activeTables.length === 0) {
-          setError("Hiện tại không có bàn nào đang hoạt động");
+        if (response.data.length === 0) {
+          setError("Hiện tại không có bàn nào trong hệ thống");
           return;
         }
-        setTables(activeTables);
-        setError(""); // Xóa thông báo lỗi nếu thành công
+        setTables(response.data);
+        setError("");
       } catch (err) {
         console.error(
           "Lỗi khi tải danh sách bàn:",
           err.response?.data || err.message
         );
         setError("Không thể tải danh sách bàn. Vui lòng thử lại sau.");
-        setTables([]); // Reset danh sách bàn khi có lỗi
+        setTables([]);
+      } finally {
+        setLoadingTables(false);
       }
     };
     fetchTables();
   }, []);
 
-  // Lấy danh sách bàn trống khi thay đổi thông tin đặt bàn
+  // Fetch available tables
   useEffect(() => {
     const fetchAvailableTables = async () => {
-      if (!form.day || !form.hourStart || !form.hourEnd || !form.people) return;
+      if (!form.day || !form.hourStart || !form.hourEnd || !form.people) {
+        setAvailableTables([]);
+        return;
+      }
 
-      // Trong useEffect fetchAvailableTables
+      setLoadingTables(true);
       try {
-        // Validate date is not in the past
         const today = new Date();
+        today.setHours(0, 0, 0, 0);
         const reservationDate = new Date(form.day);
+        reservationDate.setHours(0, 0, 0, 0);
+
         if (reservationDate < today) {
           setError("Ngày đặt bàn không thể là ngày trong quá khứ");
+          setAvailableTables([]);
           return;
         }
 
-        // Convert to UTC time for API request
         const startDateTime = new Date(`${form.day}T${form.hourStart}:00`);
         const endDateTime = new Date(`${form.day}T${form.hourEnd}:00`);
 
-        // Format dates in ISO format and handle timezone
-        const startTimeUTC = startDateTime.toISOString();
-        const endTimeUTC = endDateTime.toISOString();
-
-        // Validate time difference (minimum 30 minutes, maximum 4 hours)
-        const timeDiff = (endDateTime - startDateTime) / (1000 * 60); // in minutes
-
+        const timeDiff = (endDateTime - startDateTime) / (1000 * 60);
         if (timeDiff < 30 || timeDiff > 240) {
           setError("Thời gian đặt bàn phải từ 30 phút đến 4 giờ");
+          setAvailableTables([]);
           return;
         }
 
         const response = await axios.get(
-          `http://localhost:5078/api/Ban/available?soNguoi=${form.people}&thoiGianBatDau=${startTimeUTC}&thoiGianKetThuc=${endTimeUTC}`
+          `http://localhost:5078/api/Ban/available?date=${form.day}&startTime=${form.hourStart}&endTime=${form.hourEnd}&people=${form.people}`
         );
         setAvailableTables(response.data);
-
-        if (
-          form.tableId &&
-          !response.data.find((t) => t.maBan === parseInt(form.tableId))
-        ) {
-          setForm((prev) => ({ ...prev, tableId: "" }));
-        }
+        setError("");
       } catch (err) {
-        console.error("Error details:", err.response?.data || err.message);
         setError("Không thể kiểm tra bàn trống. Vui lòng thử lại sau.");
+        console.error("Error fetching available tables:", err);
+      } finally {
+        setLoadingTables(false);
       }
     };
 
@@ -138,42 +141,16 @@ const Reservation = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     setError("");
 
     try {
-      // 1. Kiểm tra số điện thoại đã tồn tại
-      const searchResponse = await axios.get(
-        `http://localhost:5078/api/KhachHang/search?keyword=${form.phone}`
-      );
-      let maKH;
+      const response = await axios.post("http://localhost:5078/api/DatBan", {
+        ...form,
+        trangThai: "Chờ xác nhận"
+      });
 
-      if (searchResponse.data.length > 0) {
-        // Nếu khách hàng đã tồn tại, lấy mã khách hàng
-        maKH = searchResponse.data[0].maKhachHang;
-      } else {
-        // 2. Nếu chưa tồn tại, tạo khách hàng mới
-        const customerResponse = await axios.post(
-          "http://localhost:5078/api/KhachHang",
-          {
-            hoTen: form.name,
-            soDienThoai: form.phone,
-            email: form.email,
-          }
-        );
-        maKH = customerResponse.data.maKhachHang;
-      }
-
-      // 3. Đặt bàn với MaKH
-      const reservationData = {
-        maBan: parseInt(form.tableId),
-        maKH: maKH,
-        thoiGianBatDau: `${form.day}T${form.hourStart}:00`,
-        thoiGianKetThuc: `${form.day}T${form.hourEnd}:00`,
-        soNguoi: parseInt(form.people),
-        ghiChu: form.address,
-      };
-
-      await axios.post("http://localhost:5078/api/DatBan", reservationData);
+      setReservationDetails(response.data);
       setShowConfirm(true);
       setForm({
         name: "",
@@ -188,8 +165,10 @@ const Reservation = () => {
       });
     } catch (err) {
       setError(
-        err.response?.data || "Có lỗi xảy ra khi đặt bàn. Vui lòng thử lại."
+        err.response?.data || "Có lỗi xảy ra khi đặt bàn. Vui lòng thử lại sau."
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -197,12 +176,8 @@ const Reservation = () => {
     <div className="reservation-container">
       <h2>Đặt bàn</h2>
       {error && <div className="error-message">{error}</div>}
-      <form
-        className="reservation-form"
-        onSubmit={handleSubmit}
-        autoComplete="off"
-      >
-        <div className="reservation-form-row">
+      <form onSubmit={handleSubmit} className="reservation-form">
+        <div className="form-group">
           <label>
             Họ và tên
             <input
@@ -210,10 +185,12 @@ const Reservation = () => {
               name="name"
               value={form.name}
               onChange={handleChange}
-              placeholder="Họ tên đầy đủ"
               required
             />
           </label>
+        </div>
+
+        <div className="form-group">
           <label>
             Số điện thoại
             <input
@@ -221,71 +198,40 @@ const Reservation = () => {
               name="phone"
               value={form.phone}
               onChange={handleChange}
-              placeholder="0123456789"
-              pattern="[0-9]{10,12}"
               required
             />
           </label>
         </div>
-        <label>
-          Email
-          <input
-            type="email"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            placeholder="email@example.com"
-          />
-        </label>
-        <label>
-          Địa chỉ
-          <input
-            type="text"
-            name="address"
-            value={form.address}
-            onChange={handleChange}
-            placeholder="Số nhà, đường, phường, quận, thành phố"
-            required
-          />
-        </label>
-        <label>
-          Chọn bàn
-          <select
-            name="tableId"
-            value={form.tableId}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Chọn bàn</option>
-            {availableTables.length > 0 ? (
-              availableTables.map((table) => (
-                <option key={table.maBan} value={table.maBan}>
-                  {table.tenBan} - {table.sucChua} chỗ ngồi
-                </option>
-              ))
-            ) : (
-              <option value="" disabled>
-                {form.day && form.hourStart && form.hourEnd
-                  ? "Không có bàn trống trong thời gian này"
-                  : "Vui lòng chọn thời gian đặt bàn"}
-              </option>
-            )}
-          </select>
-        </label>
-        <div className="reservation-form-row">
+
+        <div className="form-group">
           <label>
-            Ngày
+            Email
             <input
-              type="date"
-              name="day"
-              value={form.day}
-              min={new Date().toISOString().split("T")[0]}
+              type="email"
+              name="email"
+              value={form.email}
               onChange={handleChange}
               required
             />
           </label>
+        </div>
+
+        <div className="form-group">
           <label>
-            Giờ vào
+            Ngày đặt
+            <input
+              type="date"
+              name="day"
+              value={form.day}
+              onChange={handleChange}
+              required
+            />
+          </label>
+        </div>
+
+        <div className="form-group">
+          <label>
+            Giờ bắt đầu
             <input
               type="time"
               name="hourStart"
@@ -294,8 +240,11 @@ const Reservation = () => {
               required
             />
           </label>
+        </div>
+
+        <div className="form-group">
           <label>
-            Giờ ra
+            Giờ kết thúc
             <input
               type="time"
               name="hourEnd"
@@ -304,27 +253,63 @@ const Reservation = () => {
               required
             />
           </label>
+        </div>
+
+        <div className="form-group">
           <label>
             Số người
             <input
               type="number"
               name="people"
-              min="1"
-              max="20"
               value={form.people}
               onChange={handleChange}
+              min="1"
               required
             />
           </label>
         </div>
 
-        <button type="submit" className="reservation-submit-btn">
-          Đặt chỗ
+        <div className="form-group">
+          <label>
+            Chọn bàn
+            {loadingTables ? (
+              <div className="loading-message">Đang tải danh sách bàn...</div>
+            ) : availableTables.length > 0 ? (
+              <select
+                name="tableId"
+                value={form.tableId}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Chọn bàn</option>
+                {availableTables.map((table) => (
+                  <option key={table.maBan} value={table.maBan}>
+                    {table.tenBan} - Sức chứa: {table.sucChua} người
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <div className="warning-message">
+                {form.day && form.hourStart && form.hourEnd && form.people
+                  ? "Không có bàn phù hợp trong thời gian này"
+                  : "Vui lòng chọn thời gian và số người để xem bàn trống"}
+              </div>
+            )}
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          className="reservation-submit-btn"
+          disabled={loading || loadingTables}
+        >
+          {loading ? "Đang xử lý..." : "Đặt bàn"}
         </button>
       </form>
-      <ReservationConfirm
-        show={showConfirm}
-        onClose={() => setShowConfirm(false)}
+      <ReservationConfirm 
+        show={showConfirm} 
+        onClose={() => setShowConfirm(false)} 
+        reservationDetails={reservationDetails}
       />
     </div>
   );

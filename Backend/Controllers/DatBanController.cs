@@ -47,8 +47,8 @@ namespace Backend.Controllers
                     MaBan = dto.MaBan,
                     MaKH = dto.MaKH,
                     NgayDat = DateTime.UtcNow,
-                    ThoiGianBatDau = dto.ThoiGianBatDau,
-                    ThoiGianKetThuc = dto.ThoiGianKetThuc,
+                    ThoiGianBatDau = DateTime.SpecifyKind(dto.ThoiGianBatDau, DateTimeKind.Utc),
+                    ThoiGianKetThuc = DateTime.SpecifyKind(dto.ThoiGianKetThuc, DateTimeKind.Utc),
                     SoNguoi = dto.SoNguoi,
                     GhiChu = dto.GhiChu
                 };

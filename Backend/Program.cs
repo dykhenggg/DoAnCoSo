@@ -45,11 +45,12 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("AllowSpecificOrigin", policy =>
     {
-        policy.WithOrigins("http://localhost:5173", "http://localhost:5174")
+        policy.WithOrigins("http://localhost:3000", "http://localhost:5173", "http://localhost:5174")
               .AllowAnyMethod()
               .AllowAnyHeader()
+              .AllowCredentials()
               .WithExposedHeaders("Content-Disposition");
     });
 });
@@ -58,8 +59,9 @@ builder.Services.AddScoped<AuthService>();
 
 var app = builder.Build();
 
+// Đảm bảo CORS được áp dụng trước các middleware khác
+app.UseCors("AllowSpecificOrigin");
 app.UseStaticFiles();
-app.UseCors("AllowAll");
 
 if (app.Environment.IsDevelopment())
 {

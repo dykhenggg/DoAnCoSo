@@ -94,10 +94,10 @@ const Reservations = () => {
   // Filter reservations
   const filteredReservations = reservations.filter(
     (reservation) =>
-      reservation.tenKhachHang
+      reservation.khachHang?.hoTen
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      reservation.soDienThoai.includes(searchTerm)
+      reservation.khachHang?.soDienThoai.includes(searchTerm)
   );
 
   // Pagination
@@ -145,9 +145,9 @@ const Reservations = () => {
           {currentItems.map((reservation) => (
             <tr key={reservation.maDatBan}>
               <td>{reservation.maDatBan}</td>
-              <td>{reservation.tenBan}</td>
-              <td>{reservation.tenKhachHang}</td>
-              <td>{reservation.soDienThoai}</td>
+              <td>{reservation.ban?.tenBan}</td>
+              <td>{reservation.khachHang?.hoTen}</td>
+              <td>{reservation.khachHang?.soDienThoai}</td>
               <td>{new Date(reservation.ngayDat).toLocaleDateString()}</td>
               <td>
                 {new Date(reservation.thoiGianBatDau).toLocaleTimeString()}

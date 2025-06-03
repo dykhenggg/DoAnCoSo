@@ -168,7 +168,13 @@ const Customers = () => {
                 <td>{customer.hoTen}</td>
                 <td>{customer.soDienThoai}</td>
                 <td>{customer.email}</td>
-                <td>{customer.diaChi}</td>
+                <td className="address-cell">
+                  {customer.diaChi ? (
+                    <div title={customer.diaChi}>{customer.diaChi}</div>
+                  ) : (
+                    <span className="no-address">Chưa có địa chỉ</span>
+                  )}
+                </td>
                 <td>
                   <button
                     className="edit-button"

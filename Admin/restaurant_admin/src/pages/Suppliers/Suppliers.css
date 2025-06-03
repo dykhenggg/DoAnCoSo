@@ -1,6 +1,8 @@
 .suppliers-container {
   padding: 20px;
   width: 100%;
+  position: relative;
+  min-height: 100vh;
 }
 
 .suppliers-header {
@@ -183,4 +185,21 @@ th {
 .cancel-button {
   background-color: #6c757d;
   color: white;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.status-badge.active {
+  background-color: #e6f4ea;
+  color: #1e7e34;
+}
+
+.status-badge.inactive {
+  background-color: #fbe9e7;
+  color: #d32f2f;
 }
