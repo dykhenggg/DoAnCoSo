@@ -20,9 +20,11 @@ const ReservationConfirm = ({ show, onClose, reservationDetails }) => {
           <p>
             Chúng tôi đã nhận thông tin đặt bàn của bạn.
             <br />
-            Mã đặt bàn của bạn là: <strong>{reservationDetails?.maDatBan}</strong>
+            Mã đặt bàn của bạn là:{" "}
+            <strong>{reservationDetails?.maDatBan}</strong>
             <br />
-            Chúng tôi đã gửi email xác nhận đến địa chỉ: {reservationDetails?.email}
+            Chúng tôi đã gửi email xác nhận đến địa chỉ:{" "}
+            {reservationDetails?.email}
             <br />
             Vui lòng kiểm tra email để xác nhận đặt bàn.
           </p>
@@ -147,7 +149,7 @@ const Reservation = () => {
     try {
       const response = await axios.post("http://localhost:5078/api/DatBan", {
         ...form,
-        trangThai: "Chờ xác nhận"
+        trangThai: "Chờ xác nhận",
       });
 
       setReservationDetails(response.data);
@@ -306,9 +308,9 @@ const Reservation = () => {
           {loading ? "Đang xử lý..." : "Đặt bàn"}
         </button>
       </form>
-      <ReservationConfirm 
-        show={showConfirm} 
-        onClose={() => setShowConfirm(false)} 
+      <ReservationConfirm
+        show={showConfirm}
+        onClose={() => setShowConfirm(false)}
         reservationDetails={reservationDetails}
       />
     </div>

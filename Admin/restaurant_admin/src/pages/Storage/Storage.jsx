@@ -23,7 +23,7 @@ const Storage = () => {
     soLuongHienTai: 0,
     soLuongToiThieu: 0,
     maNCC: 1, // Mặc định là 1, bạn cần thay đổi thành ID thực tế của nhà cung cấp
-    trangThai: "Active"
+    trangThai: "Active",
   });
 
   const [newTransaction, setNewTransaction] = useState({
@@ -35,10 +35,8 @@ const Storage = () => {
   });
 
   // Lọc và sắp xếp dữ liệu
-  const filteredItems = storage.filter(
-    (item) =>
-      item.tenNguyenLieu.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.nhaCungCap.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredItems = storage.filter((item) =>
+    item.tenNguyenLieu.toLowerCase().includes(searchTerm.toLowerCase().trim())
   );
 
   const sortedItems = sortField
@@ -55,6 +53,11 @@ const Storage = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = sortedItems.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(sortedItems.length / itemsPerPage);
+
+  // Reset trang về 1 khi thay đổi searchTerm
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
 
   // Xử lý giao dịch kho
   const handleTransaction = async (e) => {
@@ -87,11 +90,16 @@ const Storage = () => {
     }
   };
 
-  // Khởi tạo selectedItem khi mở modal chỉnh sửa
+  // Handle edit button click
   const handleEdit = (item) => {
     setSelectedItem({
-      ...item,
-      nhaCungCap: item.nhaCungCap || "",
+      maNguyenLieu: item.maNguyenLieu,
+      tenNguyenLieu: item.tenNguyenLieu,
+      donVi: item.donVi,
+      soLuongHienTai: item.soLuongHienTai,
+      soLuongToiThieu: item.soLuongToiThieu,
+      maNCC: item.nhaCungCap?.maNCC || item.maNCC,
+      trangThai: item.trangThai || "Active",
     });
     setShowEditModal(true);
   };
@@ -108,7 +116,7 @@ const Storage = () => {
       soLuongHienTai: 0,
       soLuongToiThieu: 0,
       maNCC: 1,
-      trangThai: "Active"
+      trangThai: "Active",
     });
   };
 
@@ -152,7 +160,9 @@ const Storage = () => {
       const response = await axios.get("http://localhost:5078/api/NhaCungCap");
       if (response.data) {
         // Chỉ lấy nhà cung cấp đang hoạt động
-        const activeSuppliers = response.data.filter(supplier => supplier.trangThai === "Active");
+        const activeSuppliers = response.data.filter(
+          (supplier) => supplier.trangThai === "Active"
+        );
         setSuppliers(activeSuppliers);
       }
     } catch (error) {
@@ -188,7 +198,9 @@ const Storage = () => {
       }
 
       // Tìm nhà cung cấp được chọn
-      const selectedSupplier = suppliers.find(s => s.maNCC === parseInt(newItem.maNCC));
+      const selectedSupplier = suppliers.find(
+        (s) => s.maNCC === parseInt(newItem.maNCC)
+      );
       if (!selectedSupplier) {
         toast.error("Không tìm thấy nhà cung cấp");
         return;
@@ -201,7 +213,7 @@ const Storage = () => {
         soLuongToiThieu: parseFloat(newItem.soLuongToiThieu),
         maNCC: selectedSupplier.maNCC,
         trangThai: "Active",
-        ngayNhap: new Date().toISOString()
+        ngayNhap: new Date().toISOString(),
       };
 
       // Log dữ liệu gửi đi
@@ -222,7 +234,10 @@ const Storage = () => {
       }
 
       // Kiểm tra định dạng ngày
-      if (!itemToSend.ngayNhap || isNaN(new Date(itemToSend.ngayNhap).getTime())) {
+      if (
+        !itemToSend.ngayNhap ||
+        isNaN(new Date(itemToSend.ngayNhap).getTime())
+      ) {
         toast.error("Ngày nhập không hợp lệ");
         return;
       }
@@ -232,8 +247,8 @@ const Storage = () => {
         itemToSend,
         {
           headers: {
-            'Content-Type': 'application/json'
-          }
+            "Content-Type": "application/json",
+          },
         }
       );
       if (response.status === 201) {
@@ -246,7 +261,7 @@ const Storage = () => {
           soLuongHienTai: 0,
           soLuongToiThieu: 0,
           maNCC: "",
-          trangThai: "Active"
+          trangThai: "Active",
         });
       }
     } catch (error) {
@@ -256,11 +271,12 @@ const Storage = () => {
         console.error("Error response data:", error.response.data);
         console.error("Error response status:", error.response.status);
         console.error("Error response headers:", error.response.headers);
-        
+
         // Hiển thị thông báo lỗi chi tiết hơn
-        const errorMessage = typeof error.response.data === 'string' 
-          ? error.response.data 
-          : JSON.stringify(error.response.data);
+        const errorMessage =
+          typeof error.response.data === "string"
+            ? error.response.data
+            : JSON.stringify(error.response.data);
         toast.error(`Lỗi server: ${errorMessage}`);
       } else if (error.request) {
         console.error("Error request:", error.request);
@@ -276,22 +292,51 @@ const Storage = () => {
   const handleEditItem = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(
+      // Validate required fields
+      if (!selectedItem.tenNguyenLieu?.trim()) {
+        toast.error("Vui lòng nhập tên nguyên liệu");
+        return;
+      }
+      if (!selectedItem.donVi?.trim()) {
+        toast.error("Vui lòng nhập đơn vị");
+        return;
+      }
+      if (selectedItem.soLuongHienTai < 0) {
+        toast.error("Số lượng hiện tại không hợp lệ");
+        return;
+      }
+      if (selectedItem.soLuongToiThieu < 0) {
+        toast.error("Số lượng tối thiểu không hợp lệ");
+        return;
+      }
+
+      // Convert data types before sending
+      const payload = {
+        maNguyenLieu: parseInt(selectedItem.maNguyenLieu),
+        tenNguyenLieu: selectedItem.tenNguyenLieu.trim(),
+        donVi: selectedItem.donVi.trim(),
+        soLuongHienTai: parseFloat(selectedItem.soLuongHienTai),
+        soLuongToiThieu: parseFloat(selectedItem.soLuongToiThieu),
+        maNCC: parseInt(selectedItem.maNCC),
+        trangThai: selectedItem.trangThai || "Active",
+      };
+
+      console.log("Sending payload:", payload); // Debug log
+
+      const response = await axios.put(
         `http://localhost:5078/api/Kho/${selectedItem.maNguyenLieu}`,
-        {
-          maNguyenLieu: selectedItem.maNguyenLieu,
-          tenNguyenLieu: selectedItem.tenNguyenLieu,
-          soLuong: selectedItem.soLuong,
-          donVi: selectedItem.donVi,
-          giaNhap: selectedItem.giaNhap,
-          nhaCungCap: selectedItem.nhaCungCap,
-        }
+        payload
       );
-      toast.success("Cập nhật nguyên liệu thành công");
-      fetchStorage();
-      setShowEditModal(false);
+
+      if (response.status === 200) {
+        toast.success("Cập nhật nguyên liệu thành công");
+        await fetchStorage(); // Refresh the list
+        setShowEditModal(false);
+      }
     } catch (error) {
+      console.error("Edit error:", error);
       if (error.response) {
+        console.log("Error response data:", error.response.data); // Debug log
         toast.error(`Lỗi: ${error.response.data}`);
       } else if (error.request) {
         toast.error("Không thể kết nối đến server");
@@ -304,14 +349,33 @@ const Storage = () => {
   // Delete item
   const handleDeleteItem = async () => {
     try {
-      await axios.delete(
-        `http://localhost:5078/api/Kho/${selectedItem.maNguyenLieu}`
+      if (!selectedItem?.maNguyenLieu) {
+        toast.error("Không tìm thấy mã nguyên liệu");
+        return;
+      }
+
+      console.log("Deleting item:", selectedItem); // Debug log
+
+      const response = await axios.delete(
+        `http://localhost:5078/api/Kho/${parseInt(selectedItem.maNguyenLieu)}`
       );
-      toast.success("Xóa nguyên liệu thành công");
-      fetchStorage();
-      setShowDeleteModal(false);
+
+      if (response.status === 204) {
+        toast.success("Xóa nguyên liệu thành công");
+        await fetchStorage(); // Refresh the list
+        setShowDeleteModal(false);
+        setSelectedItem(null); // Reset selected item
+      }
     } catch (error) {
-      toast.error("Lỗi khi xóa nguyên liệu");
+      console.error("Delete error:", error);
+      if (error.response) {
+        console.log("Error response data:", error.response.data); // Debug log
+        toast.error(`Lỗi: ${error.response.data}`);
+      } else if (error.request) {
+        toast.error("Không thể kết nối đến server");
+      } else {
+        toast.error(`Lỗi: ${error.message}`);
+      }
     }
   };
 
@@ -324,21 +388,30 @@ const Storage = () => {
         </div>
         <div className="header-right">
           <div className="search-box">
+            <i className="fas fa-search search-icon"></i>
             <input
               type="text"
-              placeholder="Tìm kiếm nguyên liệu..."
+              placeholder="Nhập tên nguyên liệu để tìm kiếm..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              aria-label="Tìm kiếm nguyên liệu"
             />
+            {searchTerm && (
+              <button
+                className="clear-search"
+                onClick={() => setSearchTerm("")}
+                title="Xóa tìm kiếm"
+                aria-label="Xóa tìm kiếm"
+              >
+                <i className="fas fa-times"></i>
+              </button>
+            )}
           </div>
           <button
             className="transaction-button"
             onClick={() => setShowTransactionModal(true)}
           >
             <i className="fas fa-exchange-alt"></i> Giao dịch kho
-          </button>
-          <button className="inventory-button" onClick={handleInventoryCheck}>
-            <i className="fas fa-clipboard-check"></i> Kiểm kê
           </button>
           <button className="add-button" onClick={() => setShowAddModal(true)}>
             <i className="fas fa-plus"></i> Thêm nguyên liệu
@@ -355,8 +428,12 @@ const Storage = () => {
               </th>
               <th onClick={() => handleSort("soLuongHienTai")}>Số lượng</th>
               <th onClick={() => handleSort("donVi")}>Đơn vị</th>
-              <th onClick={() => handleSort("soLuongToiThieu")}>Số lượng tối thiểu</th>
-              <th onClick={() => handleSort("nhaCungCap.tenNCC")}>Nhà cung cấp</th>
+              <th onClick={() => handleSort("soLuongToiThieu")}>
+                Số lượng tối thiểu
+              </th>
+              <th onClick={() => handleSort("nhaCungCap.tenNCC")}>
+                Nhà cung cấp
+              </th>
               <th>Thao tác</th>
             </tr>
           </thead>
@@ -364,12 +441,18 @@ const Storage = () => {
             {currentItems.map((item) => (
               <tr key={item.maNguyenLieu}>
                 <td>{item.tenNguyenLieu}</td>
-                <td className={item.soLuongHienTai < item.soLuongToiThieu ? "low-stock" : ""}>
+                <td
+                  className={
+                    item.soLuongHienTai < item.soLuongToiThieu
+                      ? "low-stock"
+                      : ""
+                  }
+                >
                   {item.soLuongHienTai} {item.donVi}
                 </td>
                 <td>{item.donVi}</td>
                 <td>{item.soLuongToiThieu}</td>
-                <td>{item.nhaCungCap?.tenNCC || 'N/A'}</td>
+                <td>{item.nhaCungCap?.tenNCC || "N/A"}</td>
                 <td>
                   <button
                     className="edit-button"
@@ -497,6 +580,87 @@ const Storage = () => {
           </div>
         </div>
       )}
+
+      {/* Edit Modal */}
+      {showEditModal && selectedItem && (
+        <div className="modal">
+          <div className="modal-content">
+            <h3>Chỉnh sửa nguyên liệu</h3>
+            <form onSubmit={handleEditItem}>
+              <div className="form-group">
+                <label>Tên nguyên liệu:</label>
+                <input
+                  type="text"
+                  name="tenNguyenLieu"
+                  value={selectedItem.tenNguyenLieu}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Đơn vị:</label>
+                <input
+                  type="text"
+                  name="donVi"
+                  value={selectedItem.donVi}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Số lượng hiện tại:</label>
+                <input
+                  type="number"
+                  name="soLuongHienTai"
+                  value={selectedItem.soLuongHienTai}
+                  onChange={handleInputChange}
+                  min="0"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Số lượng tối thiểu:</label>
+                <input
+                  type="number"
+                  name="soLuongToiThieu"
+                  value={selectedItem.soLuongToiThieu}
+                  onChange={handleInputChange}
+                  min="0"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Nhà cung cấp:</label>
+                <select
+                  name="maNCC"
+                  value={selectedItem.maNCC}
+                  onChange={handleInputChange}
+                  required
+                >
+                  {suppliers.map((supplier) => (
+                    <option key={supplier.maNCC} value={supplier.maNCC}>
+                      {supplier.tenNCC}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="modal-actions">
+                <button type="submit" className="save-button">
+                  Lưu
+                </button>
+                <button
+                  type="button"
+                  className="cancel-button"
+                  onClick={() => setShowEditModal(false)}
+                >
+                  Hủy
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Delete Modal */}
       {showDeleteModal && selectedItem && (
         <div className="modal">
@@ -504,14 +668,25 @@ const Storage = () => {
             <h3>Xác nhận xóa</h3>
             <p>
               Bạn có chắc chắn muốn xóa nguyên liệu "
-              {selectedItem.tenNguyenLieu}"?
+              <strong>{selectedItem.tenNguyenLieu}</strong>"?
+            </p>
+            <p className="warning-text">
+              Lưu ý: Hành động này không thể hoàn tác!
             </p>
             <div className="modal-actions">
-              <button className="delete-button" onClick={handleDeleteItem}>
-                Xóa
-              </button>
-              <button className="cancel-button" onClick={handleCloseModal}>
+              <button
+                type="button"
+                className="cancel-button"
+                onClick={handleCloseModal}
+              >
                 Hủy
+              </button>
+              <button
+                type="button"
+                className="delete-button"
+                onClick={handleDeleteItem}
+              >
+                Xóa
               </button>
             </div>
           </div>

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Backend.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20250602170906_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250605182828_RemovePhoneNumberFromEmployee")]
+    partial class RemovePhoneNumberFromEmployee
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -664,9 +664,6 @@ namespace Backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MaNV"));
 
-                    b.Property<int>("BoPhanMaBoPhan")
-                        .HasColumnType("integer");
-
                     b.Property<string>("ChucVu")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -695,20 +692,12 @@ namespace Backend.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<string>("SDT")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("character varying(15)");
-
                     b.HasKey("MaNV");
-
-                    b.HasIndex("BoPhanMaBoPhan");
 
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.HasIndex("SDT")
-                        .IsUnique();
+                    b.HasIndex("MaBoPhan");
 
                     b.ToTable("NhanVien");
                 });
@@ -853,7 +842,7 @@ namespace Backend.Migrations
                     b.HasOne("Backend.Models.DonHang", "DonHang")
                         .WithMany("ChiTietDonHang")
                         .HasForeignKey("MaDonHang")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Backend.Models.MonAn", "MonAn")
@@ -1041,8 +1030,8 @@ namespace Backend.Migrations
                 {
                     b.HasOne("Backend.Models.BoPhan", "BoPhan")
                         .WithMany("NhanVien")
-                        .HasForeignKey("BoPhanMaBoPhan")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("MaBoPhan")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("BoPhan");

@@ -67,12 +67,12 @@ namespace Backend.Services
 
         public bool IsAdmin(string role)
         {
-            return role == UserRoles.QuanLy;
+            return Enum.TryParse<UserRoles>(role, true, out UserRoles parsedRole) && parsedRole == UserRoles.QuanLy;
         }
 
         public bool IsEmployee(string role)
         {
-            return role == UserRoles.NhanVien;
+            return Enum.TryParse<UserRoles>(role, true, out UserRoles parsedRole) && parsedRole == UserRoles.NhanVien;
         }
     }
 }

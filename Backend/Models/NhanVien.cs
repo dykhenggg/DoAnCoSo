@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Backend.Models
 {
@@ -17,10 +18,6 @@ namespace Backend.Models
         [RegularExpression(@"^[^\s@]+@[^\s@]+\.[^\s@]+$", ErrorMessage = "Email không hợp lệ")]
         public string Email { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Số điện thoại không được để trống")]
-        [StringLength(15, ErrorMessage = "Số điện thoại không được vượt quá 15 ký tự")]
-        public string SDT { get; set; } = string.Empty;
-
         [StringLength(200, ErrorMessage = "Địa chỉ không được vượt quá 200 ký tự")]
         public string DiaChi { get; set; } = string.Empty;
 
@@ -34,9 +31,11 @@ namespace Backend.Models
 
         [Required(ErrorMessage = "Mã bộ phận không được để trống")]
         public int MaBoPhan { get; set; }
-        public virtual BoPhan BoPhan { get; set; } = null!;
 
-        // Collection navigation property
+        [ForeignKey("MaBoPhan")]
+        public virtual BoPhan? BoPhan { get; set; }
+
+        // Collection navigation properties
         public virtual ICollection<CaLamViec> CaLamViec { get; set; } = new List<CaLamViec>();
         public virtual ICollection<ChamCong> ChamCong { get; set; } = new List<ChamCong>();
     }

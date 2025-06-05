@@ -20,15 +20,75 @@
 
 .header-right {
   display: flex;
-  gap: 10px;
   align-items: center;
+  gap: 12px;
+}
+
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 6px 12px;
+  min-width: 300px;
+  transition: all 0.3s ease;
+}
+
+.search-box:focus-within {
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-icon {
+  color: #6c757d;
+  font-size: 16px;
+  margin-right: 10px;
 }
 
 .search-box input {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  width: 250px;
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 8px 0;
+  font-size: 15px;
+  color: #495057;
+  width: 100%;
+}
+
+.search-box input::placeholder {
+  color: #adb5bd;
+  font-size: 14px;
+}
+
+.search-box input:focus {
+  outline: none;
+}
+
+.clear-search {
+  background: none;
+  border: none;
+  padding: 4px;
+  margin-left: 8px;
+  cursor: pointer;
+  opacity: 0.6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  transition: all 0.2s ease;
+}
+
+.clear-search:hover {
+  opacity: 1;
+  background-color: #e9ecef;
+}
+
+.clear-search i {
+  font-size: 14px;
+  color: #495057;
 }
 
 .storage-table {
@@ -65,40 +125,41 @@ th:hover {
   font-weight: 600;
 }
 
-.transaction-button,
-.inventory-button,
-.add-button {
-  padding: 8px 16px;
+.transaction-button {
+  background-color: #ffc107;
+  color: #212529;
   border: none;
   border-radius: 4px;
+  padding: 8px 16px;
+  margin-right: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
-  font-weight: 500;
-  transition: all 0.2s;
 }
 
-.transaction-button {
-  background-color: #6c757d;
-  color: white;
-}
-
-.inventory-button {
-  background-color: #17a2b8;
-  color: white;
+.transaction-button:hover {
+  background-color: #ffca2c;
 }
 
 .add-button {
   background-color: #28a745;
   color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.transaction-button:hover,
-.inventory-button:hover,
 .add-button:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
+  background-color: #218838;
+}
+
+.add-button i {
+  font-size: 14px;
 }
 
 .pagination {
@@ -190,6 +251,13 @@ th:hover {
   border-radius: 4px;
   cursor: pointer;
   font-weight: 500;
+}
+
+.warning-text {
+  color: #dc3545;
+  font-size: 0.9em;
+  margin: 10px 0;
+  font-style: italic;
 }
 
 .save-button {
