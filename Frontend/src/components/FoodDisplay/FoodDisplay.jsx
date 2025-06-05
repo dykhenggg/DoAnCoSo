@@ -18,7 +18,7 @@ const FoodDisplay = ({ category }) => {
                 id={item._id}
                 name={item.name}
                 description={item.description}
-                price={item.price}
+                price={item.price.toLocaleString()}
                 image={item.image}
               />
             );

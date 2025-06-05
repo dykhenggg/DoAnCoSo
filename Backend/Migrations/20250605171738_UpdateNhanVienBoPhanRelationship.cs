@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class UpdateNhanVienBoPhanRelationship : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -140,15 +140,14 @@ namespace Backend.Migrations
                     DiaChi = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     ChucVu = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     MatKhau = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    MaBoPhan = table.Column<int>(type: "integer", nullable: false),
-                    BoPhanMaBoPhan = table.Column<int>(type: "integer", nullable: false)
+                    MaBoPhan = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_NhanVien", x => x.MaNV);
                     table.ForeignKey(
-                        name: "FK_NhanVien_BoPhan_BoPhanMaBoPhan",
-                        column: x => x.BoPhanMaBoPhan,
+                        name: "FK_NhanVien_BoPhan_MaBoPhan",
+                        column: x => x.MaBoPhan,
                         principalTable: "BoPhan",
                         principalColumn: "MaBoPhan",
                         onDelete: ReferentialAction.Cascade);
@@ -677,15 +676,15 @@ namespace Backend.Migrations
                 column: "MaNL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_NhanVien_BoPhanMaBoPhan",
-                table: "NhanVien",
-                column: "BoPhanMaBoPhan");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_NhanVien_Email",
                 table: "NhanVien",
                 column: "Email",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NhanVien_MaBoPhan",
+                table: "NhanVien",
+                column: "MaBoPhan");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NhanVien_SDT",
