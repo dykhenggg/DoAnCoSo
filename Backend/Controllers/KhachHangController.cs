@@ -54,7 +54,8 @@ namespace Backend.Controllers
             {
                 HoTen = dto.HoTen,
                 SoDienThoai = dto.SoDienThoai,
-                Email = dto.Email
+                Email = dto.Email,
+                DiaChi = dto.DiaChi
             };
 
             _context.KhachHang.Add(khachHang);
@@ -77,8 +78,43 @@ namespace Backend.Controllers
             khachHang.HoTen = dto.HoTen;
             khachHang.SoDienThoai = dto.SoDienThoai;
             khachHang.Email = dto.Email;
+            khachHang.DiaChi = dto.DiaChi;
 
             await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var khachHang = await _context.KhachHang
+                .Include(k => k.DonHang)
+                .FirstOrDefaultAsync(k => k.MaKhachHang == id);
+
+            if (khachHang == null)
+                return NotFound();
+
+            // Kiểm tra xem khách hàng có đơn hàng nào không
+            if (khachHang.DonHang.Any())
+                return BadRequest("Không thể xóa khách hàng này vì đã có đơn hàng liên quan");
+
+            // Kiểm tra xem khách hàng có đặt bàn nào trong tương lai không
+            var currentTime = DateTime.UtcNow;
+            var hasActiveDatBan = await _context.DatBan
+                .AnyAsync(d => d.MaKH == id && d.ThoiGianBatDau <= currentTime && d.ThoiGianKetThuc >= currentTime);
+            
+            if (hasActiveDatBan)
+                return BadRequest("Không thể xóa khách hàng này vì đang có đặt bàn đang sử dụng");
+
+            // Xóa tất cả các đặt bàn trong tương lai
+            var futureDatBan = await _context.DatBan
+                .Where(d => d.MaKH == id && d.ThoiGianBatDau > currentTime)
+                .ToListAsync();
+            
+            _context.DatBan.RemoveRange(futureDatBan);
+            _context.KhachHang.Remove(khachHang);
+            await _context.SaveChangesAsync();
+
             return NoContent();
         }
 

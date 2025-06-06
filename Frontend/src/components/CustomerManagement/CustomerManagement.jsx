@@ -25,7 +25,7 @@ const CustomerManagement = () => {
   const fetchCustomers = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:5000/api/customers');
+      const response = await axios.get('http://localhost:5078/api/KhachHang');
       setCustomers(response.data);
       setError('');
     } catch (err) {
@@ -49,16 +49,18 @@ const CustomerManagement = () => {
     try {
       setLoading(true);
       const dataToSubmit = {
-        ...formData,
+        hoTen: formData.fullName,
         email: formData.email.trim() || null,
-        address: formData.address.trim() || null
+        soDienThoai: formData.phone,
+        diaChi: formData.address.trim() || null,
+        trangThai: formData.status
       };
 
       if (selectedCustomer) {
-        await axios.put(`http://localhost:5000/api/customers/${selectedCustomer._id}`, dataToSubmit);
+        await axios.put(`http://localhost:5078/api/KhachHang/${selectedCustomer.maKhachHang}`, dataToSubmit);
         setSuccess('Customer updated successfully');
       } else {
-        await axios.post('http://localhost:5000/api/customers', dataToSubmit);
+        await axios.post('http://localhost:5078/api/KhachHang', dataToSubmit);
         setSuccess('Customer added successfully');
       }
       setFormData({
@@ -82,11 +84,11 @@ const CustomerManagement = () => {
   const handleEdit = (customer) => {
     setSelectedCustomer(customer);
     setFormData({
-      fullName: customer.fullName,
+      fullName: customer.hoTen,
       email: customer.email || '',
-      phone: customer.phone,
-      address: customer.address || '',
-      status: customer.status
+      phone: customer.soDienThoai,
+      address: customer.diaChi || '',
+      status: customer.trangThai
     });
     setShowModal(true);
   };
@@ -94,8 +96,8 @@ const CustomerManagement = () => {
   const handleToggleStatus = async (customerId, currentStatus) => {
     try {
       setLoading(true);
-      await axios.patch(`http://localhost:5000/api/customers/${customerId}`, {
-        status: currentStatus === 'active' ? 'inactive' : 'active'
+      await axios.patch(`http://localhost:5078/api/KhachHang/${customerId}`, {
+        trangThai: currentStatus === 'active' ? 'inactive' : 'active'
       });
       setSuccess('Customer status updated successfully');
       fetchCustomers();
@@ -111,7 +113,7 @@ const CustomerManagement = () => {
     if (window.confirm('Are you sure you want to delete this customer?')) {
       try {
         setLoading(true);
-        await axios.delete(`http://localhost:5000/api/customers/${customerId}`);
+        await axios.delete(`http://localhost:5078/api/KhachHang/${customerId}`);
         setSuccess('Customer deleted successfully');
         fetchCustomers();
       } catch (err) {
@@ -126,9 +128,9 @@ const CustomerManagement = () => {
   const filteredCustomers = customers.filter(customer => {
     const searchLower = searchTerm.toLowerCase();
     return (
-      customer.fullName.toLowerCase().includes(searchLower) ||
+      customer.hoTen.toLowerCase().includes(searchLower) ||
       (customer.email && customer.email.toLowerCase().includes(searchLower)) ||
-      customer.phone.includes(searchTerm)
+      customer.soDienThoai.includes(searchTerm)
     );
   });
 
@@ -182,14 +184,14 @@ const CustomerManagement = () => {
             </thead>
             <tbody>
               {filteredCustomers.map(customer => (
-                <tr key={customer._id}>
-                  <td>{customer.fullName}</td>
+                <tr key={customer.maKhachHang}>
+                  <td>{customer.hoTen}</td>
                   <td>{customer.email || '-'}</td>
-                  <td>{customer.phone}</td>
-                  <td>{customer.address || '-'}</td>
+                  <td>{customer.soDienThoai}</td>
+                  <td>{customer.diaChi || '-'}</td>
                   <td>
-                    <span className={`status ${customer.status}`}>
-                      {customer.status}
+                    <span className={`status ${customer.trangThai}`}>
+                      {customer.trangThai}
                     </span>
                   </td>
                   <td>
@@ -201,14 +203,14 @@ const CustomerManagement = () => {
                         Edit
                       </button>
                       <button
-                        className={`action-btn ${customer.status === 'active' ? 'deactivate' : 'activate'}`}
-                        onClick={() => handleToggleStatus(customer._id, customer.status)}
+                        className={`action-btn ${customer.trangThai === 'active' ? 'deactivate' : 'activate'}`}
+                        onClick={() => handleToggleStatus(customer.maKhachHang, customer.trangThai)}
                       >
-                        {customer.status === 'active' ? 'Deactivate' : 'Activate'}
+                        {customer.trangThai === 'active' ? 'Deactivate' : 'Activate'}
                       </button>
                       <button
                         className="action-btn delete"
-                        onClick={() => handleDelete(customer._id)}
+                        onClick={() => handleDelete(customer.maKhachHang)}
                       >
                         Delete
                       </button>
