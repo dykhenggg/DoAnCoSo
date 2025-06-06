@@ -26,16 +26,6 @@ const Sidebar = () => {
       ],
     },
     {
-      section: "Quản lý hệ thống",
-      items: [
-        {
-          to: "/accounts",
-          label: "Quản lý tài khoản",
-          icon: assets.order_icon,
-        },
-      ],
-    },
-    {
       section: "Quản lý nhân sự",
       items: [
         {

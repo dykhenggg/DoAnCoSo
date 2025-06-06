@@ -34,11 +34,25 @@ namespace Backend.Data
         public DbSet<NhaCungCap> NhaCungCap { get; set; }
         public DbSet<TaiKhoan> TaiKhoan { get; set; }
         public DbSet<HoaDon> HoaDon { get; set; }
-        public DbSet<NguyenLieu> NguyenLieu { get; set; } 
+        public DbSet<NguyenLieu> NguyenLieu { get; set; }
+        public DbSet<DatBanMonAn> DatBanMonAn { get; set; }
 
         // Override OnModelCreating để cấu hình các quan hệ và khóa chính
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            // NhanVien configurations
+            modelBuilder.Entity<NhanVien>()
+                .HasOne(n => n.BoPhan)
+                .WithMany(b => b.NhanVien)
+                .HasForeignKey(n => n.MaBoPhan)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<NhanVien>()
+                .HasIndex(n => n.Email)
+                .IsUnique();
+
             // Thêm dữ liệu mặc định cho vai trò
             modelBuilder.Entity<VaiTro>().HasData(
                 new VaiTro
@@ -75,39 +89,12 @@ namespace Backend.Data
             modelBuilder.Entity<KhuyenMai>()
                 .HasIndex(k => new { k.NgayBatDau, k.NgayKetThuc });
 
-            // NhanVien configurations
-            modelBuilder.Entity<NhanVien>()
-                .HasIndex(n => n.Email)
-                .IsUnique();
-
-            modelBuilder.Entity<NhanVien>()
-                .HasIndex(n => n.SDT)
-                .IsUnique();
-
-            // // User configurations
-            // modelBuilder.Entity<User>()
-            //     .HasIndex(u => u.Email)
-            //     .IsUnique();
-
-            // modelBuilder.Entity<User>()
-            //     .HasIndex(u => u.SDT)
-            //     .IsUnique();
-
-            // modelBuilder.Entity<User>()
-            //     .HasOne(u => u.VaiTro)
-            //     .WithMany(r => r.Users)
-            //     .HasForeignKey(u => u.MaVaiTro)
-            //     .OnDelete(DeleteBehavior.Restrict);
-
             // Relationship configurations
-            // modelBuilder.Entity<KhuyenMai_DonHang>()
-            //     .HasKey(k => new { k.MaDonHang, k.MaKhuyenMai });
-
             modelBuilder.Entity<ChiTietDonHang>()
                 .HasOne(c => c.DonHang)
                 .WithMany(d => d.ChiTietDonHang)
                 .HasForeignKey(c => c.MaDonHang)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<DatBan>()
                 .HasOne(d => d.Ban)
@@ -143,6 +130,19 @@ namespace Backend.Data
                 .WithMany()
                 .HasForeignKey(l => l.MaDonHang)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Cấu hình quan hệ cho DatBanMonAn
+            modelBuilder.Entity<DatBanMonAn>()
+                .HasOne(d => d.DatBan)
+                .WithMany(d => d.DatBanMonAn)
+                .HasForeignKey(d => d.MaDatBan)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<DatBanMonAn>()
+                .HasOne(d => d.MonAn)
+                .WithMany()
+                .HasForeignKey(d => d.MaMon)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

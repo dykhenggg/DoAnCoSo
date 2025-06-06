@@ -9,7 +9,6 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import Login from "./components/Login/Login";
 
 // Pages
-import AccountList from "./pages/Accounts/AccountList";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Foods from "./pages/Foods/Foods";
 import Categories from "./pages/Categories/Categories";
@@ -52,7 +51,6 @@ const App = () => {
           <Route path="/promotions" element={<Promotions />} />
           <Route path="/workschedule" element={<WorkSchedule />} />
           <Route path="/human-resources" element={<HumanResources />} />
-          <Route path="/accounts" element={<AccountList />} />
         </Routes>
       </div>
     </div>

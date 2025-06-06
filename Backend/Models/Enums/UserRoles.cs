@@ -1,8 +1,8 @@
 namespace Backend.Models.Enums
 {
-    public static class UserRoles
+    public enum UserRoles
     {
-        public const string QuanLy = "QuanLy";
-        public const string NhanVien = "NhanVien";
+        QuanLy,
+        NhanVien
     }
 }

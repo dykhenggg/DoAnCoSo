@@ -20,9 +20,11 @@ const ReservationConfirm = ({ show, onClose, reservationDetails }) => {
           <p>
             Chúng tôi đã nhận thông tin đặt bàn của bạn.
             <br />
-            Mã đặt bàn của bạn là: <strong>{reservationDetails?.maDatBan}</strong>
+            Mã đặt bàn của bạn là:{" "}
+            <strong>{reservationDetails?.maDatBan}</strong>
             <br />
-            Chúng tôi đã gửi email xác nhận đến địa chỉ: {reservationDetails?.email}
+            Chúng tôi đã gửi email xác nhận đến địa chỉ:{" "}
+            {reservationDetails?.email}
             <br />
             Vui lòng kiểm tra email để xác nhận đặt bàn.
           </p>
@@ -161,8 +163,8 @@ const Reservation = () => {
       const response = await axios.post("http://localhost:5078/api/DatBan", {
         maBan: parseInt(form.tableId),
         maKH: khachHangResponse.data.maKhachHang,
-        thoiGianBatDau: new Date(`${form.day}T${form.hourStart}:00`),
-        thoiGianKetThuc: new Date(`${form.day}T${form.hourEnd}:00`),
+        thoiGianBatDau: new Date(`${form.day}T${form.hourStart}:00`).toISOString(),
+        thoiGianKetThuc: new Date(`${form.day}T${form.hourEnd}:00`).toISOString(),
         soNguoi: parseInt(form.people),
         ghiChu: ""
       });
@@ -337,9 +339,9 @@ const Reservation = () => {
           {loading ? "Đang xử lý..." : "Đặt bàn"}
         </button>
       </form>
-      <ReservationConfirm 
-        show={showConfirm} 
-        onClose={() => setShowConfirm(false)} 
+      <ReservationConfirm
+        show={showConfirm}
+        onClose={() => setShowConfirm(false)}
         reservationDetails={reservationDetails}
       />
     </div>

@@ -20,6 +20,8 @@ const Reservations = () => {
     soNguoi: "",
     ghiChu: "",
   });
+  const [selectedFoods, setSelectedFoods] = useState([]);
+  const [showFoodsModal, setShowFoodsModal] = useState(false);
 
   // Fetch reservations
   const fetchReservations = async () => {
@@ -28,6 +30,18 @@ const Reservations = () => {
       setReservations(response.data);
     } catch (error) {
       toast.error("Lỗi khi tải danh sách đặt bàn");
+    }
+  };
+
+  // Fetch foods for a reservation
+  const fetchReservationFoods = async (maDatBan) => {
+    try {
+      const response = await axios.get(`http://localhost:5078/api/DatBan/${maDatBan}/MonAn`);
+      setSelectedFoods(response.data);
+      setShowFoodsModal(true);
+    } catch (error) {
+      toast.error("Lỗi khi tải thông tin món ăn");
+      console.error("Error fetching foods:", error);
     }
   };
 
@@ -138,6 +152,8 @@ const Reservations = () => {
             <th>Thời gian bắt đầu</th>
             <th>Thời gian kết thúc</th>
             <th>Số người</th>
+            <th>Ghi chú</th>
+            <th>Món ăn</th>
             <th>Thao tác</th>
           </tr>
         </thead>
@@ -148,15 +164,27 @@ const Reservations = () => {
               <td>{reservation.ban?.tenBan}</td>
               <td>{reservation.khachHang?.hoTen}</td>
               <td>{reservation.khachHang?.soDienThoai}</td>
-              <td>{new Date(reservation.ngayDat).toLocaleDateString()}</td>
-              <td>
-                {new Date(reservation.thoiGianBatDau).toLocaleTimeString()}
-              </td>
-              <td>
-                {new Date(reservation.thoiGianKetThuc).toLocaleTimeString()}
-              </td>
+              <td>{new Date(reservation.ngayDat).toLocaleDateString('vi-VN')}</td>
+              <td>{new Date(new Date(reservation.thoiGianBatDau).getTime() + 5 * 60 * 60 * 1000).toLocaleTimeString('vi-VN', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false
+              })}</td>
+              <td>{new Date(new Date(reservation.thoiGianKetThuc).getTime() + 5 * 60 * 60 * 1000).toLocaleTimeString('vi-VN', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false
+              })}</td>
               <td>{reservation.soNguoi}</td>
-              <td>{reservation.ghiChu}</td>
+              <td className="note-cell">{reservation.ghiChu}</td>
+              <td>
+                <button
+                  className="view-foods-button"
+                  onClick={() => fetchReservationFoods(reservation.maDatBan)}
+                >
+                  Xem món ăn
+                </button>
+              </td>
               <td>
                 <button
                   className="edit-button"
@@ -197,6 +225,56 @@ const Reservations = () => {
           Sau
         </button>
       </div>
+
+      {/* Foods Modal */}
+      {showFoodsModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>Chi tiết món ăn đã đặt</h3>
+              <button onClick={() => setShowFoodsModal(false)} className="close-button">
+                &times;
+              </button>
+            </div>
+            <div className="foods-list">
+              {selectedFoods.length > 0 ? (
+                <table className="foods-table">
+                  <thead>
+                    <tr>
+                      <th>Tên món</th>
+                      <th>Số lượng</th>
+                      <th>Đơn giá</th>
+                      <th>Thành tiền</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedFoods.map((food) => (
+                      <tr key={food.id}>
+                        <td>{food.tenMon}</td>
+                        <td>{food.soLuong}</td>
+                        <td>{food.donGia.toLocaleString()} VNĐ</td>
+                        <td>{(food.soLuong * food.donGia).toLocaleString()} VNĐ</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colSpan="3" className="total-label">Tổng tiền:</td>
+                      <td className="total-amount">
+                        {selectedFoods
+                          .reduce((total, food) => total + food.soLuong * food.donGia, 0)
+                          .toLocaleString()} VNĐ
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              ) : (
+                <p>Không có món ăn nào được đặt</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Add Modal */}
       {showAddModal && (

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Backend.Data;
 using Backend.Models;
 using Backend.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers
 {
@@ -64,13 +65,45 @@ namespace Backend.Controllers
             return CreatedAtAction(nameof(GetAll), new { id = khachHang.MaKhachHang }, khachHang);
         }
 
+        [AllowAnonymous]
+        [HttpPost("FindOrCreate")]
+        public async Task<ActionResult<object>> FindOrCreate(KhachHangDTO dto)
+        {
+            if (string.IsNullOrEmpty(dto.SoDienThoai))
+            {
+                return BadRequest("Số điện thoại không được để trống");
+            }
+
+            var existingCustomer = await _context.KhachHang
+                .FirstOrDefaultAsync(k => k.SoDienThoai == dto.SoDienThoai);
+
+            if (existingCustomer != null)
+            {
+                return Ok(new { maKH = existingCustomer.MaKhachHang });
+            }
+            else
+            {
+                var newCustomer = new KhachHang
+                {
+                    HoTen = dto.HoTen,
+                    SoDienThoai = dto.SoDienThoai,
+                    Email = dto.Email,
+                    DiaChi = dto.DiaChi
+                };
+
+                _context.KhachHang.Add(newCustomer);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(GetAll), new { id = newCustomer.MaKhachHang }, new { maKH = newCustomer.MaKhachHang });
+            }
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, KhachHangDTO dto)
         {
             var khachHang = await _context.KhachHang.FindAsync(id);
             if (khachHang == null) return NotFound();
 
-            // Kiểm tra trùng SĐT khi cập nhật
             if (await _context.KhachHang.AnyAsync(k => 
                 k.MaKhachHang != id && k.SoDienThoai == dto.SoDienThoai))
                 return BadRequest("Số điện thoại đã tồn tại");
@@ -94,11 +127,9 @@ namespace Backend.Controllers
             if (khachHang == null)
                 return NotFound();
 
-            // Kiểm tra xem khách hàng có đơn hàng nào không
             if (khachHang.DonHang.Any())
                 return BadRequest("Không thể xóa khách hàng này vì đã có đơn hàng liên quan");
 
-            // Kiểm tra xem khách hàng có đặt bàn nào trong tương lai không
             var currentTime = DateTime.UtcNow;
             var hasActiveDatBan = await _context.DatBan
                 .AnyAsync(d => d.MaKH == id && d.ThoiGianBatDau <= currentTime && d.ThoiGianKetThuc >= currentTime);
@@ -106,7 +137,6 @@ namespace Backend.Controllers
             if (hasActiveDatBan)
                 return BadRequest("Không thể xóa khách hàng này vì đang có đặt bàn đang sử dụng");
 
-            // Xóa tất cả các đặt bàn trong tương lai
             var futureDatBan = await _context.DatBan
                 .Where(d => d.MaKH == id && d.ThoiGianBatDau > currentTime)
                 .ToListAsync();

@@ -335,7 +335,6 @@ const Departments = () => {
                   <tr>
                     <th>Họ tên</th>
                     <th>Email</th>
-                    <th>Số điện thoại</th>
                     <th>Địa chỉ</th>
                     <th>Trạng thái</th>
                   </tr>
@@ -343,7 +342,7 @@ const Departments = () => {
                 <tbody>
                   {employees.length === 0 ? (
                     <tr>
-                      <td colSpan="5" style={{ textAlign: "center" }}>
+                      <td colSpan="4" style={{ textAlign: "center" }}>
                         Chưa có nhân viên trong bộ phận này
                       </td>
                     </tr>
@@ -352,7 +351,6 @@ const Departments = () => {
                       <tr key={emp.maNhanVien}>
                         <td>{emp.hoTen}</td>
                         <td>{emp.email}</td>
-                        <td>{emp.soDienThoai}</td>
                         <td>{emp.diaChi}</td>
                       </tr>
                     ))

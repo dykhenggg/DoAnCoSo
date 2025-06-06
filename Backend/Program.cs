@@ -43,15 +43,15 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("QuanLy", "NhanVien"));
 });
 
+// Cấu hình CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigin", policy =>
+    options.AddDefaultPolicy(policy =>
     {
         policy.WithOrigins("http://localhost:3000", "http://localhost:5173", "http://localhost:5174")
               .AllowAnyMethod()
               .AllowAnyHeader()
-              .AllowCredentials()
-              .WithExposedHeaders("Content-Disposition");
+              .AllowCredentials();
     });
 });
 
@@ -59,17 +59,20 @@ builder.Services.AddScoped<AuthService>();
 
 var app = builder.Build();
 
-// Đảm bảo CORS được áp dụng trước các middleware khác
-app.UseCors("AllowSpecificOrigin");
-app.UseStaticFiles();
-
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
 
+// Đảm bảo CORS được áp dụng trước các middleware khác
+app.UseCors();
+
+app.UseStaticFiles();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 app.Run();
