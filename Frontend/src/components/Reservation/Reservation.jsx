@@ -147,28 +147,46 @@ const Reservation = () => {
     setError("");
 
     try {
-      const response = await axios.post("http://localhost:5078/api/DatBan", {
-        ...form,
-        trangThai: "Chờ xác nhận",
+      // Tạo khách hàng trước
+      const khachHangResponse = await axios.post("http://localhost:5078/api/KhachHang", {
+        hoTen: form.name,
+        soDienThoai: form.phone,
+        email: form.email,
+        diaChi: form.address
       });
 
-      setReservationDetails(response.data);
-      setShowConfirm(true);
-      setForm({
-        name: "",
-        phone: "",
-        email: "",
-        address: "",
-        day: "",
-        hourStart: "",
-        hourEnd: "",
-        people: 1,
-        tableId: "",
+      if (!khachHangResponse.data?.maKhachHang) {
+        throw new Error("Không thể tạo thông tin khách hàng");
+      }
+
+      // Đặt bàn với mã khách hàng vừa tạo
+      const response = await axios.post("http://localhost:5078/api/DatBan", {
+        maBan: parseInt(form.tableId),
+        maKH: khachHangResponse.data.maKhachHang,
+        thoiGianBatDau: new Date(`${form.day}T${form.hourStart}:00`).toISOString(),
+        thoiGianKetThuc: new Date(`${form.day}T${form.hourEnd}:00`).toISOString(),
+        soNguoi: parseInt(form.people),
+        ghiChu: ""
       });
+
+      if (response.data) {
+        setReservationDetails(response.data);
+        setShowConfirm(true);
+        setForm({
+          name: "",
+          phone: "",
+          email: "",
+          address: "",
+          day: "",
+          hourStart: "",
+          hourEnd: "",
+          people: 1,
+          tableId: "",
+        });
+      }
     } catch (err) {
-      setError(
-        err.response?.data || "Có lỗi xảy ra khi đặt bàn. Vui lòng thử lại sau."
-      );
+      const errorMessage = err.response?.data?.message || err.response?.data || err.message || "Có lỗi xảy ra khi đặt bàn. Vui lòng thử lại sau.";
+      setError(typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage));
     } finally {
       setLoading(false);
     }
@@ -212,6 +230,19 @@ const Reservation = () => {
               type="email"
               name="email"
               value={form.email}
+              onChange={handleChange}
+              required
+            />
+          </label>
+        </div>
+
+        <div className="form-group">
+          <label>
+            Địa chỉ
+            <input
+              type="text"
+              name="address"
+              value={form.address}
               onChange={handleChange}
               required
             />

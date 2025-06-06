@@ -23,29 +23,38 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<dynamic>>> GetAll()
         {
-            var monAns = await _context.MonAn
-                .Include(m => m.LoaiMon)
-                .Include(m => m.KhuyenMai)
-                .Select(m => new
-                {
-                    m.MaMon,
-                    m.TenMon,
-                    m.Gia,
-                    m.GiaSauGiam,
-                    m.MaLoai,
-                    LoaiMon = new
+            try
+            {
+                var monAns = await _context.MonAn
+                    .Include(m => m.LoaiMon)
+                    .Include(m => m.KhuyenMai)
+                    .Select(m => new
                     {
-                        m.LoaiMon.MaLoai,
-                        m.LoaiMon.TenLoai
-                    },
-                    m.HinhAnh,
-                    m.MaKM,
-                    PhanTramGiam = m.KhuyenMai != null ? (decimal?)m.KhuyenMai.PhanTramGiam : null
-                })
-                .OrderBy(m => m.TenMon)
-                .ToListAsync();
+                        m.MaMon,
+                        m.TenMon,
+                        m.Gia,
+                        m.GiaSauGiam,
+                        m.MaLoai,
+                        LoaiMon = new
+                        {
+                            m.LoaiMon.MaLoai,
+                            m.LoaiMon.TenLoai
+                        },
+                        m.HinhAnh,
+                        m.MaKM,
+                        PhanTramGiam = m.KhuyenMai != null ? (decimal?)m.KhuyenMai.PhanTramGiam : null
+                    })
+                    .OrderBy(m => m.TenMon)
+                    .ToListAsync();
 
-            return Ok(monAns);
+                return Ok(monAns);
+            }
+            catch (Exception ex)
+            {
+                // Log the error
+                Console.WriteLine($"Error in GetAll: {ex.Message}");
+                return StatusCode(500, new { message = "Có lỗi xảy ra khi lấy danh sách món ăn", error = ex.Message });
+            }
         }
 
         [HttpGet("LoaiMon")]

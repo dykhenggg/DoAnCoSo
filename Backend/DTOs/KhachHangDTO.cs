@@ -14,5 +14,8 @@ namespace Backend.DTOs
 
         [EmailAddress]
         public string? Email { get; set; }
+
+        [StringLength(200)]
+        public string DiaChi { get; set; } = string.Empty;
     }
 }

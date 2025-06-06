@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Backend.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20250605182828_RemovePhoneNumberFromEmployee")]
-    partial class RemovePhoneNumberFromEmployee
+    [Migration("20250606123939_AddDatBanMonAn")]
+    partial class AddDatBanMonAn
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -197,6 +197,50 @@ namespace Backend.Migrations
                     b.HasIndex("MaKH");
 
                     b.ToTable("DatBan");
+                });
+
+            modelBuilder.Entity("Backend.Models.DatBanMonAn", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("DonGia")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("GhiChu")
+                        .HasColumnType("text");
+
+                    b.Property<int>("MaDatBan")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MaMon")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("NgayCapNhat")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("NgayTao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("NguoiCapNhat")
+                        .HasColumnType("text");
+
+                    b.Property<string>("NguoiTao")
+                        .HasColumnType("text");
+
+                    b.Property<int>("SoLuong")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MaDatBan");
+
+                    b.HasIndex("MaMon");
+
+                    b.ToTable("DatBanMonAn");
                 });
 
             modelBuilder.Entity("Backend.Models.DonHang", b =>
@@ -875,6 +919,25 @@ namespace Backend.Migrations
                     b.Navigation("KhachHang");
                 });
 
+            modelBuilder.Entity("Backend.Models.DatBanMonAn", b =>
+                {
+                    b.HasOne("Backend.Models.DatBan", "DatBan")
+                        .WithMany("DatBanMonAn")
+                        .HasForeignKey("MaDatBan")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.MonAn", "MonAn")
+                        .WithMany()
+                        .HasForeignKey("MaMon")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("DatBan");
+
+                    b.Navigation("MonAn");
+                });
+
             modelBuilder.Entity("Backend.Models.DonHang", b =>
                 {
                     b.HasOne("Backend.Models.KhachHang", "KhachHang")
@@ -1062,6 +1125,11 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.BoPhan", b =>
                 {
                     b.Navigation("NhanVien");
+                });
+
+            modelBuilder.Entity("Backend.Models.DatBan", b =>
+                {
+                    b.Navigation("DatBanMonAn");
                 });
 
             modelBuilder.Entity("Backend.Models.DonHang", b =>

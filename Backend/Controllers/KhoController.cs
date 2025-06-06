@@ -35,22 +35,46 @@ namespace Backend.Controllers
                 .ToListAsync();
         }
 
-        [HttpPost("nhapkho")]
-        public async Task<ActionResult> NhapKho(GiaoDichKhoDTO dto)
+        [HttpPost("giaodich")]
+        [HttpPut("giaodich")]
+        public async Task<ActionResult> GiaoDichKho(GiaoDichKhoDTO dto)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
                 var nguyenLieu = await _context.Kho.FindAsync(dto.MaNguyenLieu);
-                if (nguyenLieu == null) return NotFound();
+                if (nguyenLieu == null)
+                    return NotFound("Không tìm thấy nguyên liệu");
 
-                nguyenLieu.SoLuongHienTai += dto.SoLuong;
-                
+                if (nguyenLieu.TrangThai != "Active")
+                    return BadRequest("Nguyên liệu đã ngừng hoạt động");
+
+                // Kiểm tra số lượng
+                if (dto.SoLuong <= 0)
+                    return BadRequest("Số lượng phải lớn hơn 0");
+
+                // Xử lý xuất kho
+                if (dto.LoaiGiaoDich.ToLower() == "xuat")
+                {
+                    if (nguyenLieu.SoLuongHienTai < dto.SoLuong)
+                        return BadRequest("Số lượng trong kho không đủ");
+                    nguyenLieu.SoLuongHienTai -= dto.SoLuong;
+                }
+                // Xử lý nhập kho
+                else if (dto.LoaiGiaoDich.ToLower() == "nhap")
+                {
+                    nguyenLieu.SoLuongHienTai += dto.SoLuong;
+                }
+                else
+                {
+                    return BadRequest("Loại giao dịch không hợp lệ");
+                }
+
                 var giaoDich = new GiaoDichKho
                 {
                     MaNguyenLieu = dto.MaNguyenLieu,
                     SoLuong = dto.SoLuong,
-                    Loai = "NhapKho",
+                    Loai = dto.LoaiGiaoDich,
                     NgayGio = DateTime.UtcNow,
                     LyDo = dto.GhiChu ?? string.Empty
                 };
@@ -59,12 +83,16 @@ namespace Backend.Controllers
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
-                return Ok(giaoDich);
+                return Ok(new { 
+                    message = "Giao dịch thành công",
+                    giaoDich = giaoDich,
+                    soLuongHienTai = nguyenLieu.SoLuongHienTai
+                });
             }
-            catch
+            catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                throw;
+                return BadRequest($"Lỗi khi thực hiện giao dịch: {ex.Message}");
             }
         }
 
@@ -98,55 +126,69 @@ namespace Backend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Kho kho)
+        public async Task<IActionResult> UpdateKho(int id, KhoDTO khoDTO)
         {
-            if (id != kho.MaNguyenLieu)
-                return BadRequest();
-
-            if (string.IsNullOrEmpty(kho.TenNguyenLieu))
-                return BadRequest("Tên nguyên liệu không được để trống");
-
-            var existingKho = await _context.Kho.FindAsync(id);
-            if (existingKho == null)
-                return NotFound();
-
-            existingKho.TenNguyenLieu = kho.TenNguyenLieu;
-            existingKho.DonVi = kho.DonVi;
-            existingKho.SoLuongToiThieu = kho.SoLuongToiThieu;
-            existingKho.MaNCC = kho.MaNCC;
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _context.Kho.AnyAsync(k => k.MaNguyenLieu == id))
+                var kho = await _context.Kho.FindAsync(id);
+                if (kho == null)
+                {
                     return NotFound();
-                throw;
-            }
+                }
 
-            return NoContent();
+                kho.TenNguyenLieu = khoDTO.TenNguyenLieu;
+                kho.DonVi = khoDTO.DonVi;
+                kho.SoLuongHienTai = khoDTO.SoLuongHienTai;
+                kho.SoLuongToiThieu = khoDTO.SoLuongToiThieu;
+                kho.MaNCC = khoDTO.MaNCC;
+                kho.TrangThai = khoDTO.TrangThai;
+
+                await _context.SaveChangesAsync();
+                return Ok(kho);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteKho(int id)
         {
-            var kho = await _context.Kho.FindAsync(id);
-            if (kho == null)
-                return NotFound();
+            try
+            {
+                var kho = await _context.Kho.FindAsync(id);
+                if (kho == null)
+                {
+                    return NotFound();
+                }
 
-            // Kiểm tra xem nguyên liệu có đang được sử dụng trong công thức món ăn không
-            var isUsedInRecipe = await _context.NguyenLieu
-                .AnyAsync(nl => nl.MaNguyenLieu == id);
+                kho.TrangThai = "Inactive";
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-            if (isUsedInRecipe)
-                return BadRequest("Không thể xóa nguyên liệu đang được sử dụng trong công thức món ăn");
+        [HttpGet("lichsu")]
+        public async Task<ActionResult<IEnumerable<GiaoDichKho>>> GetLichSuGiaoDich()
+        {
+            try
+            {
+                var lichSu = await _context.GiaoDichKho
+                    .Include(g => g.Kho)
+                    .OrderByDescending(g => g.NgayGio)
+                    .ToListAsync();
 
-            kho.TrangThai = "Inactive";
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+                return Ok(lichSu);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Lỗi khi lấy lịch sử giao dịch: {ex.Message}");
+            }
         }
     }
 }

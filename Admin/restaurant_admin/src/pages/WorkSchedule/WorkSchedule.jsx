@@ -140,7 +140,7 @@ const WorkSchedule = () => {
   };
 
   const handleBack = () => {
-    navigate("/humanresources");
+    navigate("/human-resources");
   };
 
   return (

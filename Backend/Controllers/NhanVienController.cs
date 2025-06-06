@@ -49,29 +49,29 @@ namespace Backend.Controllers
         [HttpPost]
         public async Task<ActionResult<object>> Create(NhanVienDTO dto)
         {
-            if (string.IsNullOrWhiteSpace(dto.HoTen))
+            if (string.IsNullOrWhiteSpace(dto.hoTen))
                 return BadRequest("Họ tên không được để trống");
 
-            if (string.IsNullOrWhiteSpace(dto.Email))
+            if (string.IsNullOrWhiteSpace(dto.email))
                 return BadRequest("Email không được để trống");
 
             var emailExists = await _context.NhanVien
-                .AnyAsync(n => n.Email.ToLower() == dto.Email.ToLower());
+                .AnyAsync(n => n.Email.ToLower() == dto.email.ToLower());
             if (emailExists)
                 return BadRequest("Email đã được sử dụng");
 
-            var boPhan = await _context.BoPhan.FindAsync(dto.MaBoPhan);
+            var boPhan = await _context.BoPhan.FindAsync(dto.maBoPhan);
             if (boPhan == null)
                 return BadRequest("Bộ phận không tồn tại");
 
             var nhanVien = new NhanVien
             {
-                HoTen = dto.HoTen.Trim(),
-                Email = dto.Email.Trim().ToLower(),
-                DiaChi = dto.DiaChi?.Trim() ?? string.Empty,
-                ChucVu = dto.ChucVu,
-                MatKhau = _authService.HashPassword(dto.MatKhau ?? "123456"),
-                MaBoPhan = dto.MaBoPhan
+                HoTen = dto.hoTen.Trim(),
+                Email = dto.email.Trim().ToLower(),
+                DiaChi = dto.diaChi?.Trim() ?? string.Empty,
+                ChucVu = dto.chucVu,
+                MatKhau = _authService.HashPassword(dto.matKhau ?? "123456"),
+                MaBoPhan = dto.maBoPhan
             };
 
             _context.NhanVien.Add(nhanVien);

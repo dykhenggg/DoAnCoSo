@@ -239,8 +239,8 @@ const FieldError = ({ error }) => {
 
 const Promotions = () => {
   const [promotions, setPromotions] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [dishes, setDishes] = useState([]);
+  const [selectedDishes, setSelectedDishes] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showStatsModal, setShowStatsModal] = useState(false);
@@ -258,9 +258,9 @@ const Promotions = () => {
     phanTramGiam: 0,
     ngayBatDau: "",
     ngayKetThuc: "",
-    dieuKien: "",
+    dieuKien: "Không có điều kiện",
     trangThai: true,
-    maLoaiMon: [],
+    maMon: [],
   });
 
   // Fetch promotions
@@ -282,16 +282,16 @@ const Promotions = () => {
     }
   };
 
-  // Fetch categories
-  const fetchCategories = async () => {
+  // Fetch dishes
+  const fetchDishes = async () => {
     try {
-      const response = await axios.get("/api/LoaiMon");
-      console.log("Categories data:", response.data);
-      setCategories(response.data);
+      const response = await axios.get("/api/MonAn");
+      console.log("Dishes data:", response.data);
+      setDishes(response.data);
     } catch (err) {
-      console.error("Error fetching categories:", err);
+      console.error("Error fetching dishes:", err);
       setError(
-        "Không thể tải danh sách loại món: " +
+        "Không thể tải danh sách món ăn: " +
           (err.response?.data || err.message)
       );
     }
@@ -312,7 +312,7 @@ const Promotions = () => {
 
   useEffect(() => {
     fetchPromotions();
-    fetchCategories();
+    fetchDishes();
   }, []);
 
   // Hàm xử lý lỗi từ server
@@ -380,7 +380,7 @@ const Promotions = () => {
       ngayKetThuc: "Ngày kết thúc",
       dieuKien: "Điều kiện",
       trangThai: "Trạng thái",
-      maLoaiMon: "Loại món",
+      maMon: "Món ăn",
     };
     return translations[field] || field;
   };
@@ -415,38 +415,15 @@ const Promotions = () => {
 
       case "ngayKetThuc":
         if (!value) return "Vui lòng chọn ngày kết thúc";
-        if (formData.ngayBatDau) {
-          const endDate = new Date(value);
-          const startDate = new Date(formData.ngayBatDau);
-          if (endDate <= startDate) {
-            return "Ngày kết thúc phải sau ngày bắt đầu";
-          }
-          // Kiểm tra thời gian khuyến mãi không quá 1 năm
-          const oneYearFromStart = new Date(startDate);
-          oneYearFromStart.setFullYear(oneYearFromStart.getFullYear() + 1);
-          if (endDate > oneYearFromStart) {
-            return "Thời gian khuyến mãi không được vượt quá 1 năm";
-          }
+        const endDate = new Date(value);
+        const startDateValue = new Date(formData.ngayBatDau);
+        if (endDate <= startDateValue) {
+          return "Ngày kết thúc phải sau ngày bắt đầu";
         }
         return "";
 
-      case "dieuKien":
-        if (!value.trim()) return "Vui lòng nhập điều kiện áp dụng";
-        if (value.trim().length < 5) return "Điều kiện phải có ít nhất 5 ký tự";
-        if (value.trim().length > 500)
-          return "Điều kiện không được vượt quá 500 ký tự";
-        return "";
-
-      case "maLoaiMon":
-        if (
-          !Array.isArray(selectedCategories) ||
-          selectedCategories.length === 0
-        ) {
-          return "Vui lòng chọn ít nhất một loại món";
-        }
-        if (selectedCategories.length > 10) {
-          return "Không thể áp dụng cho quá 10 loại món";
-        }
+      case "maMon":
+        if (!value || value.length === 0) return "Vui lòng chọn ít nhất một món ăn";
         return "";
 
       default:
@@ -468,16 +445,16 @@ const Promotions = () => {
       }
     });
 
-    // Validate danh sách loại món riêng
-    const categoryError = validateField("maLoaiMon", selectedCategories);
-    if (categoryError) {
-      errors.maLoaiMon = categoryError;
+    // Validate danh sách món ăn riêng
+    const dishError = validateField("maMon", selectedDishes);
+    if (dishError) {
+      errors.maMon = dishError;
       hasError = true;
     }
 
     console.log("Validation results:", {
-      selectedCategories,
-      categoryError,
+      selectedDishes,
+      dishError,
       errors,
       hasError,
     });
@@ -506,145 +483,54 @@ const Promotions = () => {
     }
   };
 
-  // Handle category selection
-  const handleCategoryChange = (categoryId, checked) => {
-    console.log("Category change:", {
-      categoryId,
-      checked,
-      currentSelected: selectedCategories,
-      categoryIdType: typeof categoryId,
-    });
-
-    // Đảm bảo categoryId là số
-    const numericCategoryId = Number(categoryId);
-
+  // Handle dish selection
+  const handleDishChange = (dishId, checked) => {
+    const numericDishId = Number(dishId);
     const newSelected = checked
-      ? [...selectedCategories, numericCategoryId]
-      : selectedCategories.filter((id) => id !== numericCategoryId);
+      ? [...selectedDishes, numericDishId]
+      : selectedDishes.filter((id) => id !== numericDishId);
 
-    console.log("New selected categories:", {
-      newSelected,
-      types: newSelected.map((id) => typeof id),
-    });
+    setSelectedDishes(newSelected);
 
-    setSelectedCategories(newSelected);
-
-    // Chỉ validate khi đã submit form và có lỗi
     if (showError) {
-      const error = validateField("maLoaiMon", newSelected);
-      console.log("Validation after change:", { error, newSelected });
+      const error = validateField("maMon", newSelected);
       setFieldErrors((prev) => ({
         ...prev,
-        maLoaiMon: error,
+        maMon: error,
       }));
     }
   };
 
   const handleAddPromotion = async (e) => {
     e.preventDefault();
-    console.log("Starting form submission...");
-    console.log("Current selected categories:", selectedCategories);
+    setShowError(true);
 
-    setShowError(true); // Bật chế độ hiển thị lỗi
+    const errors = {};
+    Object.keys(formData).forEach(key => {
+      const error = validateField(key, formData[key]);
+      if (error) errors[key] = error;
+    });
 
-    if (!validateForm()) {
-      console.log("Form validation failed:", {
-        fieldErrors,
-        selectedCategories,
-        formData,
-      });
-      // Cuộn đến trường lỗi đầu tiên
-      const firstErrorField = document.querySelector(
-        '[style*="border: 1px solid #d32f2f"]'
-      );
-      if (firstErrorField) {
-        firstErrorField.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
       return;
     }
 
     try {
       setLoading(true);
-      setError(null);
-
-      // Đảm bảo selectedCategories là mảng số nguyên
-      const validatedCategories = selectedCategories.map((id) => Number(id));
-      console.log("Validated categories:", validatedCategories);
-
-      const requestData = {
+      const response = await axios.post("/api/KhuyenMai", {
         ...formData,
-        ngayBatDau: new Date(formData.ngayBatDau).toISOString(),
-        ngayKetThuc: new Date(formData.ngayKetThuc).toISOString(),
-        maLoaiMon: validatedCategories,
-        phanTramGiam: Number(formData.phanTramGiam),
-      };
-
-      // Log dữ liệu trước khi gửi
-      console.log("Preparing to send data:", {
-        raw: requestData,
-        stringified: JSON.stringify(requestData, null, 2),
+        maMon: selectedDishes,
       });
-
-      const response = await axios.post("/api/KhuyenMai", requestData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      console.log("Server response:", response.data);
-
+      console.log("Add promotion response:", response.data);
       setShowAddModal(false);
       resetForm();
       fetchPromotions();
     } catch (err) {
-      console.error("Error details:", {
-        message: err.message,
-        response: err.response?.data,
-        status: err.response?.status,
-        headers: err.response?.headers,
-        config: {
-          url: err.config?.url,
-          method: err.config?.method,
-          data: err.config?.data,
-        },
-      });
-
-      let errorMessages = [];
-      if (err.response?.data) {
-        if (typeof err.response.data === "object") {
-          // Xử lý lỗi validation từ ASP.NET Core
-          if (
-            err.response.data.title ===
-            "One or more validation errors occurred."
-          ) {
-            Object.entries(err.response.data.errors || {}).forEach(
-              ([field, errors]) => {
-                if (Array.isArray(errors)) {
-                  errors.forEach((error) => {
-                    const fieldName = translateFieldName(field);
-                    errorMessages.push(`${fieldName}: ${error}`);
-                  });
-                }
-              }
-            );
-          } else {
-            // Xử lý các lỗi khác từ server
-            errorMessages.push(
-              err.response.data.message || "Dữ liệu không hợp lệ"
-            );
-          }
-        } else if (typeof err.response.data === "string") {
-          errorMessages.push(err.response.data);
-        }
-      }
-
-      if (errorMessages.length === 0) {
-        errorMessages = [
-          "Không thể thêm khuyến mãi. Vui lòng kiểm tra lại thông tin.",
-        ];
-      }
-
-      setError(errorMessages);
+      console.error("Error adding promotion:", err);
+      setError(
+        "Không thể thêm khuyến mãi: " + (err.response?.data || err.message)
+      );
     } finally {
       setLoading(false);
     }
@@ -656,7 +542,7 @@ const Promotions = () => {
       setLoading(true);
       await axios.put(`/api/KhuyenMai/${currentPromotion.maKhuyenMai}`, {
         ...formData,
-        maLoaiMon: selectedCategories,
+        maMon: selectedDishes,
       });
       setShowEditModal(false);
       resetForm();
@@ -702,11 +588,11 @@ const Promotions = () => {
       phanTramGiam: 0,
       ngayBatDau: "",
       ngayKetThuc: "",
-      dieuKien: "",
+      dieuKien: "Không có điều kiện",
       trangThai: true,
-      maLoaiMon: [],
+      maMon: [],
     });
-    setSelectedCategories([]);
+    setSelectedDishes([]);
     setFieldErrors({});
     setShowError(false);
   };
@@ -726,9 +612,9 @@ const Promotions = () => {
       ngayKetThuc: promotion.ngayKetThuc.split("T")[0],
       dieuKien: promotion.dieuKien,
       trangThai: promotion.trangThai,
-      maLoaiMon: promotion.maLoaiMon,
+      maMon: promotion.maMon,
     });
-    setSelectedCategories(promotion.maLoaiMon);
+    setSelectedDishes(promotion.maMon);
     setShowEditModal(true);
   };
 
@@ -826,12 +712,12 @@ const Promotions = () => {
                 </p>
                 <p>
                   <strong>Áp dụng cho:</strong>
-                  <span className="category-tags">
-                    {promotion.maLoaiMon.map((ma) => {
-                      const category = categories.find((c) => c.maLoai === ma);
-                      return category ? (
-                        <span key={ma} className="category-tag">
-                          {category.tenLoai}
+                  <span className="dish-tags">
+                    {promotion.maMon.map((ma) => {
+                      const dish = dishes.find((d) => d.maMon === ma);
+                      return dish ? (
+                        <span key={ma} className="dish-tag">
+                          {dish.tenMon}
                         </span>
                       ) : null;
                     })}
@@ -978,60 +864,60 @@ const Promotions = () => {
 
               <div className="form-group">
                 <label>
-                  Áp dụng cho loại món <span className="required">*</span>
+                  Áp dụng cho món ăn <span className="required">*</span>
                 </label>
                 <div
-                  className={`category-selection ${
-                    fieldErrors.maLoaiMon ? "error" : ""
+                  className={`dish-selection ${
+                    fieldErrors.maMon ? "error" : ""
                   }`}
                 >
-                  {categories.length === 0 ? (
-                    <div className="loading-categories">
-                      Đang tải danh sách loại món...
+                  {dishes.length === 0 ? (
+                    <div className="loading-dishes">
+                      Đang tải danh sách món ăn...
                     </div>
                   ) : (
-                    <div className="category-grid">
-                      {categories.map((category) => (
+                    <div className="dish-grid">
+                      {dishes.map((dish) => (
                         <label
-                          key={category.maLoai}
-                          className={`category-item ${
-                            selectedCategories.includes(Number(category.maLoai))
+                          key={dish.maMon}
+                          className={`dish-item ${
+                            selectedDishes.includes(Number(dish.maMon))
                               ? "selected"
                               : ""
                           }`}
                         >
                           <input
                             type="checkbox"
-                            checked={selectedCategories.includes(
-                              Number(category.maLoai)
+                            checked={selectedDishes.includes(
+                              Number(dish.maMon)
                             )}
                             onChange={(e) =>
-                              handleCategoryChange(
-                                category.maLoai,
+                              handleDishChange(
+                                dish.maMon,
                                 e.target.checked
                               )
                             }
                           />
-                          <span>{category.tenLoai}</span>
+                          <span>{dish.tenMon}</span>
                         </label>
                       ))}
                     </div>
                   )}
                 </div>
-                <FieldError error={fieldErrors.maLoaiMon} />
-                {selectedCategories.length > 0 && (
-                  <div className="selected-categories">
+                <FieldError error={fieldErrors.maMon} />
+                {selectedDishes.length > 0 && (
+                  <div className="selected-dishes">
                     <span className="selected-count">
-                      Đã chọn {selectedCategories.length} loại món
+                      Đã chọn {selectedDishes.length} món ăn
                     </span>
-                    <div className="category-tags">
-                      {selectedCategories.map((ma) => {
-                        const category = categories.find(
-                          (c) => Number(c.maLoai) === ma
+                    <div className="dish-tags">
+                      {selectedDishes.map((ma) => {
+                        const dish = dishes.find(
+                          (d) => Number(d.maMon) === ma
                         );
-                        return category ? (
-                          <span key={ma} className="category-tag">
-                            {category.tenLoai}
+                        return dish ? (
+                          <span key={ma} className="dish-tag">
+                            {dish.tenMon}
                           </span>
                         ) : null;
                       })}
@@ -1039,7 +925,7 @@ const Promotions = () => {
                   </div>
                 )}
                 <small className="form-help">
-                  Chọn các loại món sẽ được áp dụng khuyến mãi (tối đa 10 loại)
+                  Chọn các món ăn sẽ được áp dụng khuyến mãi
                 </small>
               </div>
 
@@ -1161,72 +1047,72 @@ const Promotions = () => {
                 </div>
               </div>
               <div className="form-group">
-                <label>Áp dụng cho loại món</label>
+                <label>Áp dụng cho món ăn</label>
                 <div
-                  className={`category-selection ${
-                    fieldErrors.maLoaiMon ? "error" : ""
+                  className={`dish-selection ${
+                    fieldErrors.maMon ? "error" : ""
                   }`}
                 >
-                  {categories.length === 0 ? (
-                    <div className="loading-categories">
-                      Đang tải danh sách loại món...
+                  {dishes.length === 0 ? (
+                    <div className="loading-dishes">
+                      Đang tải danh sách món ăn...
                     </div>
                   ) : (
-                    <div className="category-grid">
-                      {categories.map((category) => (
+                    <div className="dish-grid">
+                      {dishes.map((dish) => (
                         <label
-                          key={category.maLoai}
-                          className={`category-item ${
-                            selectedCategories.includes(Number(category.maLoai))
+                          key={dish.maMon}
+                          className={`dish-item ${
+                            selectedDishes.includes(Number(dish.maMon))
                               ? "selected"
                               : ""
                           }`}
                         >
                           <input
                             type="checkbox"
-                            checked={selectedCategories.includes(
-                              Number(category.maLoai)
+                            checked={selectedDishes.includes(
+                              Number(dish.maMon)
                             )}
                             onChange={(e) => {
                               const newSelected = e.target.checked
                                 ? [
-                                    ...selectedCategories,
-                                    Number(category.maLoai),
+                                    ...selectedDishes,
+                                    Number(dish.maMon),
                                   ]
-                                : selectedCategories.filter(
-                                    (id) => id !== Number(category.maLoai)
+                                : selectedDishes.filter(
+                                    (id) => id !== Number(dish.maMon)
                                   );
-                              setSelectedCategories(newSelected);
+                              setSelectedDishes(newSelected);
                               const error = validateField(
-                                "maLoaiMon",
+                                "maMon",
                                 newSelected
                               );
                               setFieldErrors((prev) => ({
                                 ...prev,
-                                maLoaiMon: error,
+                                maMon: error,
                               }));
                             }}
                           />
-                          <span>{category.tenLoai}</span>
+                          <span>{dish.tenMon}</span>
                         </label>
                       ))}
                     </div>
                   )}
                 </div>
-                <FieldError error={fieldErrors.maLoaiMon} />
-                {selectedCategories.length > 0 && (
-                  <div className="selected-categories">
+                <FieldError error={fieldErrors.maMon} />
+                {selectedDishes.length > 0 && (
+                  <div className="selected-dishes">
                     <span className="selected-count">
-                      Đã chọn {selectedCategories.length} loại món
+                      Đã chọn {selectedDishes.length} món ăn
                     </span>
-                    <div className="category-tags">
-                      {selectedCategories.map((ma) => {
-                        const category = categories.find(
-                          (c) => Number(c.maLoai) === ma
+                    <div className="dish-tags">
+                      {selectedDishes.map((ma) => {
+                        const dish = dishes.find(
+                          (d) => Number(d.maMon) === ma
                         );
-                        return category ? (
-                          <span key={ma} className="category-tag">
-                            {category.tenLoai}
+                        return dish ? (
+                          <span key={ma} className="dish-tag">
+                            {dish.tenMon}
                           </span>
                         ) : null;
                       })}
@@ -1234,7 +1120,7 @@ const Promotions = () => {
                   </div>
                 )}
                 <small className="form-help">
-                  Chọn các loại món sẽ được áp dụng khuyến mãi (tối đa 10 loại)
+                  Chọn các món ăn sẽ được áp dụng khuyến mãi
                 </small>
               </div>
               <div className="modal-actions">

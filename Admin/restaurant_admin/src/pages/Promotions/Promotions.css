@@ -838,3 +838,80 @@ select:focus {
     grid-template-columns: 1fr;
   }
 }
+
+.dish-selection {
+  margin-top: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.dish-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.dish-item {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dish-item:hover {
+  background-color: #f5f5f5;
+}
+
+.dish-item.selected {
+  background-color: #e3f2fd;
+  border-color: #2196f3;
+}
+
+.dish-item input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.dish-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.dish-tag {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.selected-dishes {
+  margin-top: 10px;
+}
+
+.selected-count {
+  font-size: 12px;
+  color: #666;
+}
+
+.loading-dishes {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+/* Error state */
+.dish-selection.error {
+  border-color: #d32f2f;
+}
+
+.dish-selection.error .dish-item {
+  border-color: #ffcdd2;
+}

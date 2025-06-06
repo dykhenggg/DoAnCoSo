@@ -22,5 +22,8 @@ namespace Backend.DTOs
 
         [Required]
         public int MaNCC { get; set; }
+
+        [Required]
+        public string TrangThai { get; set; } = "Active";
     }
 } 

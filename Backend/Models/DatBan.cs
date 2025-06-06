@@ -34,5 +34,8 @@ namespace Backend.Models
 
         [ForeignKey("MaBan")] 
         public virtual Ban Ban { get; set; } = null!;
+
+        // Navigation property for menu items
+        public virtual ICollection<DatBanMonAn> DatBanMonAn { get; set; } = new List<DatBanMonAn>();
     }
 }
