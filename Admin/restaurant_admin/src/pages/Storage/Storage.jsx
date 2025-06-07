@@ -38,6 +38,18 @@ const Storage = () => {
     ghiChu: "",
   });
 
+  const [showInventoryModal, setShowInventoryModal] = useState(false);
+  const [inventoryItems, setInventoryItems] = useState([]);
+  const [inventoryDate, setInventoryDate] = useState(new Date().toISOString().split('T')[0]);
+  const [inventoryNote, setInventoryNote] = useState("");
+  const [showInventoryHistoryModal, setShowInventoryHistoryModal] = useState(false);
+  const [inventoryHistory, setInventoryHistory] = useState([]);
+  const [inventoryHistorySearchTerm, setInventoryHistorySearchTerm] = useState("");
+  const [inventoryHistoryCurrentPage, setInventoryHistoryCurrentPage] = useState(1);
+  const [inventoryHistoryItemsPerPage] = useState(10);
+  const [showInventoryDetailsModal, setShowInventoryDetailsModal] = useState(false);
+  const [selectedInventoryDetails, setSelectedInventoryDetails] = useState(null);
+
   // Lọc và sắp xếp dữ liệu
   const filteredItems = storage.filter((item) =>
     item.tenNguyenLieu.toLowerCase().includes(searchTerm.toLowerCase().trim())
@@ -163,14 +175,104 @@ const Storage = () => {
   // Kiểm kê kho
   const handleInventoryCheck = async () => {
     try {
-      const response = await axios.get("http://localhost:5078/api/Kho/kiemke");
+      const response = await axios.get("http://localhost:5078/api/KiemKeKho/kiemke");
       if (response.status === 200) {
-        toast.success("Kiểm kê kho thành công");
-        setStorage(response.data);
+        const items = response.data.map(item => ({
+          ...item,
+          actualQuantity: item.soLuongHienTai,
+          difference: 0,
+          note: ""
+        }));
+        setInventoryItems(items);
+        setShowInventoryModal(true);
       }
     } catch (error) {
-      toast.error("Lỗi khi kiểm kê kho");
+      console.error("Inventory check error:", error);
+      if (error.response) {
+        const errorMessage = typeof error.response.data === 'object' 
+          ? JSON.stringify(error.response.data)
+          : error.response.data;
+        toast.error(`Lỗi server: ${errorMessage}`);
+      } else if (error.request) {
+        toast.error("Không thể kết nối đến server");
+      } else {
+        toast.error(`Lỗi: ${error.message}`);
+      }
     }
+  };
+
+  // Save inventory check results
+  const handleSaveInventoryCheck = async () => {
+    try {
+      // Tạo ngày giờ UTC
+      const now = new Date();
+      const utcDate = new Date(Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate(),
+        now.getUTCHours(),
+        now.getUTCMinutes(),
+        now.getUTCSeconds()
+      ));
+
+      const inventoryData = {
+        ngayKiemKe: utcDate.toISOString(), // Gửi dạng UTC
+        nguoiKiemKe: "Admin", // TODO: Lấy từ thông tin người dùng đang đăng nhập
+        ghiChu: inventoryNote,
+        chiTietKiemKe: inventoryItems.map(item => ({
+          maNguyenLieu: item.maNguyenLieu,
+          soLuongThucTe: parseFloat(item.actualQuantity) || 0,
+          chenhLech: parseFloat(item.difference) || 0,
+          ghiChu: item.note || ""
+        }))
+      };
+
+      console.log("Sending inventory data:", inventoryData); // Log dữ liệu gửi đi
+
+      const response = await axios.post(
+        "http://localhost:5078/api/KiemKeKho/luu",
+        inventoryData,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Lưu kết quả kiểm kê thành công");
+        setShowInventoryModal(false);
+        await fetchStorage(); // Refresh storage data
+      }
+    } catch (error) {
+      console.error("Save inventory error:", error);
+      if (error.response) {
+        const errorMessage = typeof error.response.data === 'object' 
+          ? JSON.stringify(error.response.data)
+          : error.response.data;
+        toast.error(`Lỗi server: ${errorMessage}`);
+      } else if (error.request) {
+        toast.error("Không thể kết nối đến server");
+      } else {
+        toast.error(`Lỗi: ${error.message}`);
+      }
+    }
+  };
+
+  // Update inventory item quantity
+  const handleInventoryItemChange = (maNguyenLieu, field, value) => {
+    setInventoryItems(prevItems => 
+      prevItems.map(item => {
+        if (item.maNguyenLieu === maNguyenLieu) {
+          const updatedItem = { ...item, [field]: value };
+          if (field === 'actualQuantity') {
+            updatedItem.difference = value - item.soLuongHienTai;
+          }
+          return updatedItem;
+        }
+        return item;
+      })
+    );
   };
 
   // Handle edit button click
@@ -314,6 +416,50 @@ const Storage = () => {
       return 'Định dạng không hợp lệ';
     }
   };
+
+  // Fetch inventory history
+  const fetchInventoryHistory = async () => {
+    try {
+      const response = await axios.get("http://localhost:5078/api/KiemKeKho/lichsu");
+      if (response.data) {
+        setInventoryHistory(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching inventory history:", error);
+      if (error.response) {
+        const errorMessage = typeof error.response.data === 'object' 
+          ? JSON.stringify(error.response.data)
+          : error.response.data;
+        toast.error(`Lỗi server: ${errorMessage}`);
+      } else if (error.request) {
+        toast.error("Không thể kết nối đến server");
+      } else {
+        toast.error(`Lỗi: ${error.message}`);
+      }
+    }
+  };
+
+  // Filter inventory history
+  const filteredInventoryHistory = inventoryHistory.filter((item) =>
+    item.nguoiKiemKe?.toLowerCase().includes(inventoryHistorySearchTerm.toLowerCase().trim()) ||
+    item.chiTietKiemKe?.some(ct => 
+      ct.tenNguyenLieu?.toLowerCase().includes(inventoryHistorySearchTerm.toLowerCase().trim())
+    )
+  );
+
+  // Paginate inventory history
+  const indexOfLastInventoryHistoryItem = inventoryHistoryCurrentPage * inventoryHistoryItemsPerPage;
+  const indexOfFirstInventoryHistoryItem = indexOfLastInventoryHistoryItem - inventoryHistoryItemsPerPage;
+  const currentInventoryHistoryItems = filteredInventoryHistory.slice(
+    indexOfFirstInventoryHistoryItem,
+    indexOfLastInventoryHistoryItem
+  );
+  const totalInventoryHistoryPages = Math.ceil(filteredInventoryHistory.length / inventoryHistoryItemsPerPage) || 1;
+
+  // Reset inventory history page when search term changes
+  useEffect(() => {
+    setInventoryHistoryCurrentPage(1);
+  }, [inventoryHistorySearchTerm]);
 
   useEffect(() => {
     fetchStorage();
@@ -553,6 +699,21 @@ const Storage = () => {
             )}
           </div>
           <button
+            className="inventory-button"
+            onClick={handleInventoryCheck}
+          >
+            <i className="fas fa-clipboard-check"></i> Kiểm kê kho
+          </button>
+          <button
+            className="inventory-history-button"
+            onClick={() => {
+              setShowInventoryHistoryModal(true);
+              fetchInventoryHistory();
+            }}
+          >
+            <i className="fas fa-history"></i> Lịch sử kiểm kê
+          </button>
+          <button
             className="history-button"
             onClick={() => {
               setShowHistoryModal(true);
@@ -697,10 +858,10 @@ const Storage = () => {
                   {storage
                     .filter(item => item.trangThai === "Active")
                     .map((item) => (
-                      <option key={item.maNguyenLieu} value={item.maNguyenLieu}>
+                    <option key={item.maNguyenLieu} value={item.maNguyenLieu}>
                         {item.tenNguyenLieu} (Hiện có: {item.soLuongHienTai} {item.donVi})
-                      </option>
-                    ))}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="form-group">
@@ -1051,6 +1212,233 @@ const Storage = () => {
               <button
                 className="close-button"
                 onClick={() => setShowHistoryModal(false)}
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Inventory Check Modal */}
+      {showInventoryModal && (
+        <div className="modal-overlay">
+          <div className="modal-content inventory-modal">
+            <h2>Kiểm Kê Kho</h2>
+            <div className="inventory-header">
+              <div className="inventory-date">
+                <label>Ngày kiểm kê:</label>
+                <input
+                  type="text"
+                  value={new Date().toLocaleString('vi-VN', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                  disabled
+                />
+              </div>
+              <div className="inventory-note">
+                <label>Ghi chú:</label>
+                <textarea
+                  value={inventoryNote}
+                  onChange={(e) => setInventoryNote(e.target.value)}
+                  placeholder="Nhập ghi chú kiểm kê..."
+                />
+              </div>
+            </div>
+            <div className="inventory-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nguyên liệu</th>
+                    <th>Số lượng hệ thống</th>
+                    <th>Số lượng thực tế</th>
+                    <th>Chênh lệch</th>
+                    <th>Ghi chú</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {inventoryItems.map((item) => (
+                    <tr key={item.maNguyenLieu}>
+                      <td>{item.tenNguyenLieu}</td>
+                      <td>{item.soLuongHienTai}</td>
+                      <td>
+                        <input
+                          type="number"
+                          value={item.actualQuantity}
+                          onChange={(e) => handleInventoryItemChange(
+                            item.maNguyenLieu,
+                            'actualQuantity',
+                            parseFloat(e.target.value) || 0
+                          )}
+                        />
+                      </td>
+                      <td className={item.difference !== 0 ? 'highlight' : ''}>
+                        {item.difference}
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          value={item.note}
+                          onChange={(e) => handleInventoryItemChange(
+                            item.maNguyenLieu,
+                            'note',
+                            e.target.value
+                          )}
+                          placeholder="Ghi chú..."
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="modal-actions">
+              <button
+                className="btn-save"
+                onClick={handleSaveInventoryCheck}
+              >
+                Lưu kết quả
+              </button>
+              <button
+                className="btn-cancel"
+                onClick={() => setShowInventoryModal(false)}
+              >
+                Hủy
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Inventory History Modal */}
+      {showInventoryHistoryModal && (
+        <div className="modal-overlay">
+          <div className="modal-content inventory-history-modal">
+            <h2>Lịch Sử Kiểm Kê Kho</h2>
+            <div className="search-box">
+              <i className="fas fa-search search-icon"></i>
+              <input
+                type="text"
+                placeholder="Tìm kiếm theo người kiểm kê hoặc tên nguyên liệu..."
+                value={inventoryHistorySearchTerm}
+                onChange={(e) => setInventoryHistorySearchTerm(e.target.value)}
+              />
+              {inventoryHistorySearchTerm && (
+                <button
+                  className="clear-search"
+                  onClick={() => setInventoryHistorySearchTerm("")}
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              )}
+            </div>
+            <div className="inventory-history-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Ngày kiểm kê</th>
+                    <th>Người kiểm kê</th>
+                    <th>Ghi chú</th>
+                    <th>Chi tiết</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentInventoryHistoryItems.length > 0 ? (
+                    currentInventoryHistoryItems.map((item) => (
+                      <tr key={item.maKiemKe}>
+                        <td>{formatDate(item.ngayKiemKe)}</td>
+                        <td>{item.nguoiKiemKe}</td>
+                        <td>{item.ghiChu || "-"}</td>
+                        <td>
+                          <button
+                            className="view-details-button"
+                            onClick={() => {
+                              setSelectedInventoryDetails(item.chiTietKiemKe);
+                              setShowInventoryDetailsModal(true);
+                            }}
+                          >
+                            <i className="fas fa-eye"></i> Xem chi tiết
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="4" style={{ textAlign: 'center' }}>
+                        Không có dữ liệu kiểm kê
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div className="pagination">
+              <button
+                onClick={() => setInventoryHistoryCurrentPage(inventoryHistoryCurrentPage - 1)}
+                disabled={inventoryHistoryCurrentPage === 1}
+              >
+                <i className="fas fa-chevron-left"></i> Trước
+              </button>
+              <span>
+                {inventoryHistoryCurrentPage} / {totalInventoryHistoryPages}
+              </span>
+              <button
+                onClick={() => setInventoryHistoryCurrentPage(inventoryHistoryCurrentPage + 1)}
+                disabled={inventoryHistoryCurrentPage === totalInventoryHistoryPages}
+              >
+                Sau <i className="fas fa-chevron-right"></i>
+              </button>
+            </div>
+            <div className="modal-actions">
+              <button
+                className="close-button"
+                onClick={() => setShowInventoryHistoryModal(false)}
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Inventory Details Modal */}
+      {showInventoryDetailsModal && selectedInventoryDetails && (
+        <div className="modal-overlay">
+          <div className="modal-content inventory-details-modal">
+            <h2>Chi Tiết Kiểm Kê</h2>
+            <div className="inventory-details-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nguyên liệu</th>
+                    <th>Số lượng thực tế</th>
+                    <th>Chênh lệch</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedInventoryDetails.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.tenNguyenLieu}</td>
+                      <td>{item.soLuongThucTe}</td>
+                      <td className={item.chenhLech !== 0 ? 'highlight' : ''}>
+                        {item.chenhLech}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="modal-actions">
+              <button
+                className="close-button"
+                onClick={() => {
+                  setShowInventoryDetailsModal(false);
+                  setSelectedInventoryDetails(null);
+                }}
               >
                 Đóng
               </button>

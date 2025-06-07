@@ -36,6 +36,8 @@ namespace Backend.Data
         public DbSet<HoaDon> HoaDon { get; set; }
         public DbSet<NguyenLieu> NguyenLieu { get; set; }
         public DbSet<DatBanMonAn> DatBanMonAn { get; set; }
+        public DbSet<KiemKeKho> KiemKeKho { get; set; }
+        public DbSet<ChiTietKiemKe> ChiTietKiemKe { get; set; }
 
         // Override OnModelCreating để cấu hình các quan hệ và khóa chính
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -142,6 +144,22 @@ namespace Backend.Data
                 .HasOne(d => d.MonAn)
                 .WithMany()
                 .HasForeignKey(d => d.MaMon)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Cấu hình cho KiemKeKho
+            modelBuilder.Entity<KiemKeKho>()
+                .HasIndex(k => k.NgayKiemKe);
+
+            modelBuilder.Entity<ChiTietKiemKe>()
+                .HasOne(c => c.KiemKeKho)
+                .WithMany(k => k.ChiTietKiemKe)
+                .HasForeignKey(c => c.MaKiemKe)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ChiTietKiemKe>()
+                .HasOne(c => c.NguyenLieu)
+                .WithMany()
+                .HasForeignKey(c => c.MaNguyenLieu)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

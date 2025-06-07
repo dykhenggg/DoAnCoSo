@@ -27,7 +27,8 @@ namespace Backend.Controllers
             {
                 var monAns = await _context.MonAn
                     .Include(m => m.LoaiMon)
-                    .Include(m => m.KhuyenMai)
+                    .Include(m => m.KhuyenMai_MonAn)
+                        .ThenInclude(km => km.KhuyenMai)
                     .Select(m => new
                     {
                         m.MaMon,
@@ -41,8 +42,17 @@ namespace Backend.Controllers
                             m.LoaiMon.TenLoai
                         },
                         m.HinhAnh,
-                        m.MaKM,
-                        PhanTramGiam = m.KhuyenMai != null ? (decimal?)m.KhuyenMai.PhanTramGiam : null
+                        KhuyenMai = m.KhuyenMai_MonAn
+                            .Where(km => km.KhuyenMai.TrangThai && 
+                                       km.KhuyenMai.NgayBatDau <= DateTime.UtcNow && 
+                                       km.KhuyenMai.NgayKetThuc >= DateTime.UtcNow)
+                            .Select(km => new
+                            {
+                                km.KhuyenMai.MaKhuyenMai,
+                                km.KhuyenMai.TenKhuyenMai,
+                                km.KhuyenMai.PhanTramGiam
+                            })
+                            .FirstOrDefault()
                     })
                     .OrderBy(m => m.TenMon)
                     .ToListAsync();
@@ -83,16 +93,51 @@ namespace Backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<MonAn>> GetById(int id)
+        public async Task<ActionResult<dynamic>> GetById(int id)
         {
-            var monAn = await _context.MonAn.FindAsync(id);
+            var monAn = await _context.MonAn
+                .Include(m => m.LoaiMon)
+                .Include(m => m.KhuyenMai_MonAn)
+                    .ThenInclude(km => km.KhuyenMai)
+                .Include(m => m.NguyenLieu)
+                .FirstOrDefaultAsync(m => m.MaMon == id);
 
             if (monAn == null)
             {
                 return NotFound();
             }
 
-            return monAn;
+            return new
+            {
+                monAn.MaMon,
+                monAn.TenMon,
+                monAn.Gia,
+                monAn.GiaSauGiam,
+                monAn.MaLoai,
+                LoaiMon = new
+                {
+                    monAn.LoaiMon.MaLoai,
+                    monAn.LoaiMon.TenLoai
+                },
+                monAn.HinhAnh,
+                KhuyenMai = monAn.KhuyenMai_MonAn
+                    .Where(km => km.KhuyenMai.TrangThai && 
+                               km.KhuyenMai.NgayBatDau <= DateTime.UtcNow && 
+                               km.KhuyenMai.NgayKetThuc >= DateTime.UtcNow)
+                    .Select(km => new
+                    {
+                        km.KhuyenMai.MaKhuyenMai,
+                        km.KhuyenMai.TenKhuyenMai,
+                        km.KhuyenMai.PhanTramGiam
+                    })
+                    .FirstOrDefault(),
+                NguyenLieu = monAn.NguyenLieu.Select(nl => new
+                {
+                    nl.MaNL,
+                    nl.SoLuong,
+                    nl.DonVi
+                })
+            };
         }
 
         [HttpPost]

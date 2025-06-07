@@ -15,12 +15,12 @@ const Menu = ({ onAddToCart, selectedItems }) => {
             MaMon: item.maMon,
             TenMon: item.tenMon,
             Gia: item.gia,
-            GiaSauGiam: item.giaSauGiam,
+            GiaSauGiam: Math.round(item.gia * 0.8),
             MaLoai: item.maLoai,
             LoaiMon: item.loaiMon,
             HinhAnh: `http://localhost:5078/images/${item.hinhAnh}`,
             MaKM: item.maKM,
-            PhanTramGiam: item.phanTramGiam
+            PhanTramGiam: 20
           }));
           setMenuItems(formattedItems);
         } else {
@@ -60,7 +60,12 @@ const Menu = ({ onAddToCart, selectedItems }) => {
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Thực đơn</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-gray-800">Thực đơn</h2>
+        <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-semibold">
+          Giảm giá 20% khi đặt bàn kèm món ăn
+        </div>
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {menuItems.map((item) => {
@@ -90,6 +95,7 @@ const Menu = ({ onAddToCart, selectedItems }) => {
                     <>
                       <p className="text-gray-500 line-through">{item.Gia?.toLocaleString('vi-VN')}đ</p>
                       <p className="text-blue-600 font-semibold">{item.GiaSauGiam?.toLocaleString('vi-VN')}đ</p>
+                      <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">-20%</span>
                     </>
                   ) : (
                     <p className="text-blue-600 font-semibold">{price?.toLocaleString('vi-VN')}đ</p>

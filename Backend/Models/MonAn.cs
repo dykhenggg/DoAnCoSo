@@ -28,15 +28,14 @@ namespace Backend.Models
         public string HinhAnh { get; set; } = string.Empty;
 
         [NotMapped]
-        public decimal GiaSauGiam => Gia * (1 - (KhuyenMai?.PhanTramGiam ?? 0) / 100);
-
-        [ForeignKey("MaKM")]
-        public int? MaKM { get; set; }
-        public virtual KhuyenMai? KhuyenMai { get; set; }
+        public decimal GiaSauGiam => Gia * (1 - (KhuyenMai_MonAn?.FirstOrDefault()?.KhuyenMai?.PhanTramGiam ?? 0) / 100);
 
         public virtual ICollection<ChiTietDonHang> ChiTietDonHang { get; set; } = new List<ChiTietDonHang>();
     
         // Thêm quan hệ với NguyenLieu
         public virtual ICollection<NguyenLieu> NguyenLieu { get; set; } = new List<NguyenLieu>();
+
+        // Quan hệ nhiều-nhiều với KhuyenMai
+        public virtual ICollection<KhuyenMai_MonAn> KhuyenMai_MonAn { get; set; } = new List<KhuyenMai_MonAn>();
     }
 }

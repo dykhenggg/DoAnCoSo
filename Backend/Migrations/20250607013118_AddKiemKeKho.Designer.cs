@@ -3,6 +3,7 @@ using System;
 using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Backend.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    partial class RestaurantDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250607013118_AddKiemKeKho")]
+    partial class AddKiemKeKho
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -509,14 +512,9 @@ namespace Backend.Migrations
                     b.Property<int>("MaMon")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("MonAnMaMon")
-                        .HasColumnType("integer");
-
                     b.HasKey("MaKhuyenMai", "MaMon");
 
                     b.HasIndex("MaMon");
-
-                    b.HasIndex("MonAnMaMon");
 
                     b.ToTable("KhuyenMai_MonAn");
                 });
@@ -656,6 +654,12 @@ namespace Backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("KhuyenMaiMaKhuyenMai")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("MaKM")
+                        .HasColumnType("integer");
+
                     b.Property<int>("MaLoai")
                         .HasColumnType("integer");
 
@@ -677,6 +681,8 @@ namespace Backend.Migrations
                         .HasColumnType("character varying(100)");
 
                     b.HasKey("MaMon");
+
+                    b.HasIndex("KhuyenMaiMaKhuyenMai");
 
                     b.HasIndex("MaLoai");
 
@@ -1083,10 +1089,6 @@ namespace Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Backend.Models.MonAn", null)
-                        .WithMany("KhuyenMai_MonAn")
-                        .HasForeignKey("MonAnMaMon");
-
                     b.Navigation("KhuyenMai");
 
                     b.Navigation("MonAn");
@@ -1132,11 +1134,17 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.MonAn", b =>
                 {
+                    b.HasOne("Backend.Models.KhuyenMai", "KhuyenMai")
+                        .WithMany()
+                        .HasForeignKey("KhuyenMaiMaKhuyenMai");
+
                     b.HasOne("Backend.Models.LoaiMon", "LoaiMon")
                         .WithMany("MonAns")
                         .HasForeignKey("MaLoai")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("KhuyenMai");
 
                     b.Navigation("LoaiMon");
                 });
@@ -1240,8 +1248,6 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.MonAn", b =>
                 {
                     b.Navigation("ChiTietDonHang");
-
-                    b.Navigation("KhuyenMai_MonAn");
 
                     b.Navigation("NguyenLieu");
                 });

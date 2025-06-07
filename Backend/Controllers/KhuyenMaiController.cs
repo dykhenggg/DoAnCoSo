@@ -27,7 +27,7 @@ namespace Backend.Controllers
             public DateTime NgayKetThuc { get; set; }
             public string DieuKien { get; set; }
             public bool TrangThai { get; set; }
-            public List<int> MaLoaiMon { get; set; }
+            public List<int> MaMon { get; set; }
         }
 
         [HttpGet]
@@ -36,7 +36,6 @@ namespace Backend.Controllers
             var khuyenMais = await _context.KhuyenMai
                 .Include(k => k.KhuyenMai_MonAn)
                     .ThenInclude(km => km.MonAn)
-                        .ThenInclude(m => m.LoaiMon)
                 .Select(k => new
                 {
                     k.MaKhuyenMai,
@@ -47,10 +46,13 @@ namespace Backend.Controllers
                     k.NgayKetThuc,
                     k.DieuKien,
                     k.TrangThai,
-                    MaLoaiMon = k.KhuyenMai_MonAn
-                        .Select(km => km.MonAn.LoaiMon.MaLoai)
-                        .Distinct()
-                        .ToList()
+                    MonAn = k.KhuyenMai_MonAn.Select(km => new
+                    {
+                        km.MonAn.MaMon,
+                        km.MonAn.TenMon,
+                        km.MonAn.Gia,
+                        GiaSauGiam = km.MonAn.Gia * (1 - k.PhanTramGiam / 100)
+                    }).ToList()
                 })
                 .OrderByDescending(k => k.NgayBatDau)
                 .ToListAsync();
@@ -59,11 +61,30 @@ namespace Backend.Controllers
         }
 
         [HttpGet("active")]
-        public async Task<ActionResult<IEnumerable<KhuyenMai>>> GetActive()
+        public async Task<ActionResult<IEnumerable<dynamic>>> GetActive()
         {
             var now = DateTime.UtcNow;
             return await _context.KhuyenMai
-                .Where(k => k.NgayBatDau <= now && k.NgayKetThuc >= now)
+                .Include(k => k.KhuyenMai_MonAn)
+                    .ThenInclude(km => km.MonAn)
+                .Where(k => k.NgayBatDau <= now && k.NgayKetThuc >= now && k.TrangThai)
+                .Select(k => new
+                {
+                    k.MaKhuyenMai,
+                    k.TenKhuyenMai,
+                    k.MoTa,
+                    k.PhanTramGiam,
+                    k.NgayBatDau,
+                    k.NgayKetThuc,
+                    k.DieuKien,
+                    MonAn = k.KhuyenMai_MonAn.Select(km => new
+                    {
+                        km.MonAn.MaMon,
+                        km.MonAn.TenMon,
+                        km.MonAn.Gia,
+                        GiaSauGiam = km.MonAn.Gia * (1 - k.PhanTramGiam / 100)
+                    }).ToList()
+                })
                 .ToListAsync();
         }
 
@@ -74,6 +95,16 @@ namespace Backend.Controllers
 
             try
             {
+                // Kiểm tra các món ăn có tồn tại
+                var monAns = await _context.MonAn
+                    .Where(m => request.MaMon.Contains(m.MaMon))
+                    .ToListAsync();
+
+                if (monAns.Count != request.MaMon.Count)
+                {
+                    return BadRequest("Một số món ăn không tồn tại");
+                }
+
                 // Tạo khuyến mãi mới
                 var khuyenMai = new KhuyenMai
                 {
@@ -88,11 +119,6 @@ namespace Backend.Controllers
 
                 _context.KhuyenMai.Add(khuyenMai);
                 await _context.SaveChangesAsync();
-
-                // Lấy danh sách món ăn thuộc các loại món được chọn
-                var monAns = await _context.MonAn
-                    .Where(m => request.MaLoaiMon.Contains(m.MaLoai))
-                    .ToListAsync();
 
                 // Thêm quan hệ khuyến mãi - món ăn
                 foreach (var monAn in monAns)
@@ -129,6 +155,16 @@ namespace Backend.Controllers
 
                 if (khuyenMai == null) return NotFound();
 
+                // Kiểm tra các món ăn có tồn tại
+                var monAns = await _context.MonAn
+                    .Where(m => request.MaMon.Contains(m.MaMon))
+                    .ToListAsync();
+
+                if (monAns.Count != request.MaMon.Count)
+                {
+                    return BadRequest("Một số món ăn không tồn tại");
+                }
+
                 // Cập nhật thông tin khuyến mãi
                 khuyenMai.TenKhuyenMai = request.TenKhuyenMai;
                 khuyenMai.MoTa = request.MoTa;
@@ -140,11 +176,6 @@ namespace Backend.Controllers
 
                 // Xóa các quan hệ cũ
                 _context.KhuyenMai_MonAn.RemoveRange(khuyenMai.KhuyenMai_MonAn);
-
-                // Lấy danh sách món ăn mới
-                var monAns = await _context.MonAn
-                    .Where(m => request.MaLoaiMon.Contains(m.MaLoai))
-                    .ToListAsync();
 
                 // Thêm quan hệ mới
                 foreach (var monAn in monAns)

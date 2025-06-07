@@ -63,13 +63,13 @@ namespace Backend.Controllers
                 // Xử lý nhập kho
                 else if (dto.LoaiGiaoDich.ToLower() == "nhap")
                 {
-                    nguyenLieu.SoLuongHienTai += dto.SoLuong;
+                nguyenLieu.SoLuongHienTai += dto.SoLuong;
                 }
                 else
                 {
                     return BadRequest("Loại giao dịch không hợp lệ");
                 }
-
+                
                 var giaoDich = new GiaoDichKho
                 {
                     MaNguyenLieu = dto.MaNguyenLieu,
@@ -159,7 +159,7 @@ namespace Backend.Controllers
             {
                 var kho = await _context.Kho.FindAsync(id);
                 if (kho == null)
-                {
+            {
                     return NotFound();
                 }
 
